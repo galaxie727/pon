@@ -256,7 +256,6 @@
     border:none;
     border-radius:18px;
     overflow:hidden;
-    background:#1c2230;
     border:1px solid rgba(255,255,255,.08);
     color:#fff;
     font-size:12px;
@@ -267,6 +266,7 @@
     justify-content:center;
     text-align:center;
     position:relative;
+    background:#1c2230;
   }
   .tileBtn.drawn{
     outline:2px solid rgba(255,230,120,.95);
@@ -275,15 +275,33 @@
   .tileBtn:disabled{
     opacity:.55;
   }
+  .tileInner{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .tileTint{
+    position:absolute;
+    inset:0;
+    opacity:.22;
+  }
   .tileImg{
     width:100%;
     height:100%;
     object-fit:cover;
     display:block;
+    position:relative;
+    z-index:1;
   }
   .tileFallback{
     padding:6px;
     line-height:1.25;
+    position:relative;
+    z-index:1;
+    text-shadow:0 1px 2px rgba(0,0,0,.35);
   }
 
   .controls{
@@ -333,8 +351,7 @@
   .girlOverlay,
   .resultOverlay,
   .roundOverlay,
-  .titleOverlay,
-  .discardOverlay{
+  .titleOverlay{
     position:fixed;
     inset:0;
     z-index:100;
@@ -345,14 +362,14 @@
   .girlOverlay.show,
   .resultOverlay.show,
   .roundOverlay.show,
-  .titleOverlay.show,
-  .discardOverlay.show{
+  .titleOverlay.show{
     opacity:1;
     pointer-events:auto;
   }
 
   .girlOverlay{
     background:#000;
+    z-index:130;
   }
   .girlBg{
     position:absolute;
@@ -405,6 +422,59 @@
     text-shadow:0 1px 2px rgba(0,0,0,.28);
   }
 
+  .bigTileWrap{
+    display:none;
+    width:100%;
+    margin:0 0 16px;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:10px;
+  }
+  .bigTileWrap.show{
+    display:flex;
+  }
+  .bigTileCard{
+    width:min(56vw,240px);
+    aspect-ratio:1 / 1;
+    border-radius:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+    border:3px solid rgba(255,255,255,.22);
+    box-shadow:0 18px 36px rgba(0,0,0,.30);
+    color:#fff;
+    text-shadow:0 1px 2px rgba(0,0,0,.35);
+    background:#1b2130;
+  }
+  .bigTileTint{
+    position:absolute;
+    inset:0;
+    opacity:.28;
+  }
+  .bigTileImg{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    position:relative;
+    z-index:1;
+  }
+  .bigTileFallback{
+    position:relative;
+    z-index:1;
+    font-size:28px;
+    font-weight:900;
+    padding:16px;
+    text-align:center;
+  }
+  .bigTileCaption{
+    font-size:16px;
+    font-weight:900;
+    text-shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+
   .roundOverlay{
     z-index:110;
     background:rgba(5,7,12,.86);
@@ -429,42 +499,6 @@
     font-size:16px;
     font-weight:800;
     opacity:.9;
-  }
-
-  .discardOverlay{
-    z-index:115;
-    background:rgba(5,7,12,.80);
-  }
-  .discardStage{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:14px;
-    padding:24px;
-  }
-  .discardCard{
-    width:min(56vw,240px);
-    aspect-ratio:1 / 1;
-    border-radius:28px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:28px;
-    font-weight:900;
-    border:3px solid rgba(255,255,255,.22);
-    box-shadow:0 18px 36px rgba(0,0,0,.30);
-    color:#fff;
-    text-shadow:0 1px 2px rgba(0,0,0,.35);
-    padding:16px;
-    text-align:center;
-  }
-  .discardText{
-    font-size:16px;
-    font-weight:900;
-    opacity:.96;
   }
 
   .titleOverlay{
@@ -676,6 +710,14 @@
     <img src="girl1.png" alt="チー娘" class="girlBg" id="girlBg">
     <div class="girlShade"></div>
     <div class="girlUi">
+      <div class="bigTileWrap" id="bigTileWrap">
+        <div class="bigTileCard" id="bigTileCard">
+          <div class="bigTileTint" id="bigTileTint"></div>
+          <div class="bigTileFallback" id="bigTileFallback">デカブサ</div>
+        </div>
+        <div class="bigTileCaption" id="bigTileCaption">デカブサを捨てる</div>
+      </div>
+
       <div class="girlSpeech">
         <div class="girlName" id="girlName">チー娘A</div>
         <div class="girlText" id="girlText">いくよ。</div>
@@ -687,13 +729,6 @@
     <div class="roundStage">
       <div class="roundMain" id="roundOverlayMain">東局</div>
       <div class="roundSub" id="roundOverlaySub">開局</div>
-    </div>
-  </div>
-
-  <div class="discardOverlay" id="discardOverlay">
-    <div class="discardStage">
-      <div class="discardCard" id="discardCard">デカブサ</div>
-      <div class="discardText" id="discardText">デカブサを捨てる</div>
     </div>
   </div>
 
@@ -717,7 +752,7 @@
   const WAIT_LONG = 1450;
   const WAIT_RON_CHECK = 900;
   const WAIT_NEXT_ROUND = 1100;
-  const WAIT_DISCARD_PREVIEW = 780;
+  const WAIT_DISCARD_PREVIEW = 900;
   const ROUNDS = ["東","南","西","北"];
 
   const TILES = [
@@ -808,6 +843,7 @@
   let waitingPlayerDiscard = false;
   let justDrawnIndex = -1;
   let historyLogs = [];
+  let currentGirlIndex = 0;
 
   const turnLabel = document.getElementById("turnLabel");
   const roundLabel = document.getElementById("roundLabel");
@@ -831,14 +867,15 @@
   const girlBg = document.getElementById("girlBg");
   const girlNameEl = document.getElementById("girlName");
   const girlTextEl = document.getElementById("girlText");
+  const bigTileWrap = document.getElementById("bigTileWrap");
+  const bigTileCard = document.getElementById("bigTileCard");
+  const bigTileTint = document.getElementById("bigTileTint");
+  const bigTileFallback = document.getElementById("bigTileFallback");
+  const bigTileCaption = document.getElementById("bigTileCaption");
 
   const roundOverlay = document.getElementById("roundOverlay");
   const roundOverlayMain = document.getElementById("roundOverlayMain");
   const roundOverlaySub = document.getElementById("roundOverlaySub");
-
-  const discardOverlay = document.getElementById("discardOverlay");
-  const discardCard = document.getElementById("discardCard");
-  const discardText = document.getElementById("discardText");
 
   const resultOverlay = document.getElementById("resultOverlay");
   const resultTitle = document.getElementById("resultTitle");
@@ -963,16 +1000,54 @@
     return isWinningHand(temp);
   }
 
-  function showGirl(girlIndex, text){
+  function setGirl(girlIndex){
+    currentGirlIndex = girlIndex;
     const g = girls[girlIndex];
     girlBg.src = g.image;
     girlNameEl.textContent = g.name;
+  }
+
+  function showGirl(girlIndex, text){
+    setGirl(girlIndex);
     girlTextEl.textContent = text;
+    bigTileWrap.classList.remove("show");
     girlOverlay.classList.add("show");
   }
 
+  function updateGirlText(text){
+    girlTextEl.textContent = text;
+  }
+
   function hideGirl(){
+    bigTileWrap.classList.remove("show");
     girlOverlay.classList.remove("show");
+  }
+
+  function showBigTile(tileId, caption){
+    const tile = getTileById(tileId);
+    bigTileTint.style.background = getTileColor(tileId);
+    bigTileCard.innerHTML = "";
+    bigTileCard.appendChild(bigTileTint);
+
+    if(tile && tile.image){
+      const img = document.createElement("img");
+      img.className = "bigTileImg";
+      img.src = tile.image;
+      img.alt = tile.name;
+      img.onerror = () => {
+        bigTileCard.innerHTML = "";
+        bigTileCard.appendChild(bigTileTint);
+        bigTileFallback.textContent = tile.name;
+        bigTileCard.appendChild(bigTileFallback);
+      };
+      bigTileCard.appendChild(img);
+    } else {
+      bigTileFallback.textContent = getTileName(tileId);
+      bigTileCard.appendChild(bigTileFallback);
+    }
+
+    bigTileCaption.textContent = caption;
+    bigTileWrap.classList.add("show");
   }
 
   async function showRoundIntro(){
@@ -984,25 +1059,24 @@
     await wait(260);
   }
 
-  async function showDiscardPreview(tileId){
-    discardCard.style.background = getTileColor(tileId);
-    discardCard.textContent = getTileName(tileId);
-    discardText.textContent = `${getTileName(tileId)}を捨てる`;
-    discardOverlay.classList.add("show");
-    await wait(WAIT_DISCARD_PREVIEW);
-    discardOverlay.classList.remove("show");
-    await wait(140);
-  }
-
   function renderTileContent(parent, tileId){
     const tile = getTileById(tileId);
     parent.innerHTML = "";
+
+    const inner = document.createElement("div");
+    inner.className = "tileInner";
+
+    const tint = document.createElement("div");
+    tint.className = "tileTint";
+    tint.style.background = getTileColor(tileId);
+    inner.appendChild(tint);
 
     if(!tile){
       const div = document.createElement("div");
       div.className = "tileFallback";
       div.textContent = tileId;
-      parent.appendChild(div);
+      inner.appendChild(div);
+      parent.appendChild(inner);
       return;
     }
 
@@ -1011,9 +1085,15 @@
     img.src = tile.image;
     img.alt = tile.name;
     img.onerror = () => {
-      parent.innerHTML = `<div class="tileFallback">${tile.name}</div>`;
+      inner.innerHTML = "";
+      inner.appendChild(tint);
+      const fallback = document.createElement("div");
+      fallback.className = "tileFallback";
+      fallback.textContent = tile.name;
+      inner.appendChild(fallback);
     };
-    parent.appendChild(img);
+    inner.appendChild(img);
+    parent.appendChild(inner);
   }
 
   function renderDiscardPile(){
@@ -1395,8 +1475,10 @@
       statusMain.textContent = "あなたの番";
       subInfo.textContent = "1枚引いて6枚→1枚捨てる";
       await wait(WAIT_LONG);
+      updateGirlText(rand(girls[girlIndex].thinkHuman));
+      await wait(900);
       hideGirl();
-      await wait(260);
+      await wait(180);
       await playerDrawPhase(girlIndex);
     } else {
       const girlIndex = player.girlIndex;
@@ -1404,9 +1486,7 @@
       statusMain.textContent = `${player.name}の番`;
       subInfo.textContent = "相手が考え中";
       await wait(WAIT_LONG);
-      hideGirl();
-      await wait(260);
-      await cpuTurn(turnIndex);
+      await cpuTurn(turnIndex, girlIndex);
     }
   }
 
@@ -1416,6 +1496,7 @@
     setBusy(true);
 
     if(deck.length <= 0){
+      hideGirl();
       await endRoundByJudgement();
       setBusy(false);
       return;
@@ -1429,6 +1510,7 @@
     await wait(420);
 
     if(isWinningHand(me.hand)){
+      hideGirl();
       statusMain.textContent = `3枚×2セット完成`;
       subInfo.textContent = "ツモ";
       renderAll();
@@ -1438,20 +1520,13 @@
     }
 
     if(getCompletedTriples(me.hand) >= 1 || getBestCount(me.hand) >= 2){
-      showGirl(girlIndex, rand(girls[girlIndex].drawHumanGood));
+      updateGirlText(rand(girls[girlIndex].drawHumanGood));
     } else {
-      showGirl(girlIndex, rand(girls[girlIndex].drawHumanNormal));
+      updateGirlText(rand(girls[girlIndex].drawHumanNormal));
     }
     statusMain.textContent = `${getTileName(tileId)} を引いた`;
-    subInfo.textContent = "少し考えてみよう";
+    subInfo.textContent = "1枚選んで捨てよう";
     await wait(WAIT_LONG);
-    hideGirl();
-
-    await wait(240);
-    showGirl(girlIndex, rand(girls[girlIndex].thinkHuman));
-    statusMain.textContent = "手を選んでいる";
-    subInfo.textContent = "1枚タップして捨ててね";
-    await wait(1000);
     hideGirl();
 
     waitingPlayerDiscard = true;
@@ -1469,7 +1544,11 @@
     const removed = me.hand.splice(index, 1)[0];
     justDrawnIndex = -1;
 
-    await showDiscardPreview(removed);
+    const girlIndex = getSupportGirlIndex();
+    showGirl(girlIndex, "……");
+    showBigTile(removed, `${getTileName(removed)}を捨てる`);
+    await wait(WAIT_DISCARD_PREVIEW);
+    hideGirl();
 
     discardPile.push({ tileId: removed, owner: me.name });
 
@@ -1493,25 +1572,26 @@
     await introTurn();
   }
 
-  async function cpuTurn(playerIndex){
+  async function cpuTurn(playerIndex, girlIndex){
     if(gameEnded) return;
 
     setBusy(true);
 
     if(deck.length <= 0){
+      hideGirl();
       await endRoundByJudgement();
       setBusy(false);
       return;
     }
 
     const player = players[playerIndex];
-    const girlIndex = player.girlIndex;
     const tileId = drawTile(player);
     renderAll();
 
     await wait(420);
 
     if(isWinningHand(player.hand)){
+      hideGirl();
       statusMain.textContent = `${player.name} が3枚×2セット完成`;
       subInfo.textContent = "ツモ";
       renderAll();
@@ -1521,31 +1601,32 @@
     }
 
     if(getCompletedTriples(player.hand) >= 1 || getBestCount(player.hand) >= 2){
-      showGirl(girlIndex, rand(girls[girlIndex].drawCpuGood));
+      updateGirlText(rand(girls[girlIndex].drawCpuGood));
     } else {
-      showGirl(girlIndex, rand(girls[girlIndex].drawCpuNormal));
+      updateGirlText(rand(girls[girlIndex].drawCpuNormal));
     }
     statusMain.textContent = `${player.name} が1枚引いた`;
     subInfo.textContent = "相手が様子を見ている";
     await wait(WAIT_LONG);
-    hideGirl();
 
-    await wait(220);
-    showGirl(girlIndex, rand(girls[girlIndex].thinkCpu));
+    updateGirlText("……");
+    await wait(520);
+
+    updateGirlText(rand(girls[girlIndex].thinkCpu));
     statusMain.textContent = `${player.name} が考えている`;
     subInfo.textContent = "どの牌を切るか悩み中";
     await wait(980);
-    hideGirl();
 
-    await wait(200);
-    showGirl(girlIndex, rand(girls[girlIndex].discard));
-    await wait(950);
-    hideGirl();
+    updateGirlText(rand(girls[girlIndex].discard));
+    await wait(700);
 
     const discardIndex = cpuChooseDiscardIndex(player);
     const removed = player.hand.splice(discardIndex, 1)[0];
 
-    await showDiscardPreview(removed);
+    updateGirlText("……");
+    showBigTile(removed, `${getTileName(removed)}を捨てる`);
+    await wait(WAIT_DISCARD_PREVIEW);
+    hideGirl();
 
     discardPile.push({ tileId: removed, owner: player.name });
 
@@ -1590,7 +1671,6 @@
     hideGirl();
     hideResultScreen();
     roundOverlay.classList.remove("show");
-    discardOverlay.classList.remove("show");
 
     players.forEach(p => {
       p.point = START_POINT;
