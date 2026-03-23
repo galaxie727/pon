@@ -119,54 +119,86 @@
   .badge-b{ background:#bedcff; }
   .badge-c{ background:#d6ffb8; }
 
-  .centerWrap{
+  .topArea{
     padding:12px;
     margin-bottom:12px;
   }
-  .centerGrid{
+  .topGrid{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
+    grid-template-columns:116px 1fr;
+    gap:10px;
+    align-items:stretch;
   }
-  .stackBox{
+  .wallBox,
+  .riverBox{
     background:rgba(255,255,255,.05);
     border:1px solid rgba(255,255,255,.06);
     border-radius:18px;
     padding:12px;
-    min-height:112px;
+  }
+  .topTitle{
+    font-size:13px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+  .wallInner{
+    min-height:124px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    gap:8px;
   }
-  .stackTitle{
-    font-size:12px;
-    opacity:.8;
-    margin-bottom:8px;
-    font-weight:800;
-  }
-  .stackCount{
-    font-size:34px;
+  .wallCount{
+    font-size:40px;
     font-weight:900;
     line-height:1;
   }
-  .lastDiscardBox{
-    width:92px;
-    height:92px;
-    border-radius:16px;
+  .wallSub{
+    font-size:12px;
+    opacity:.78;
+  }
+
+  .riverHead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .riverOwner{
+    font-size:12px;
+    opacity:.82;
+    text-align:right;
+  }
+  .riverGrid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:6px;
+    min-height:124px;
+    align-content:start;
+  }
+  .riverTile{
+    aspect-ratio:1 / 1;
+    border-radius:12px;
     overflow:hidden;
+    background:#1b2130;
+    border:1px solid rgba(255,255,255,.08);
     display:flex;
     align-items:center;
     justify-content:center;
-    background:#1b2130;
-    border:1px solid rgba(255,255,255,.08);
+    position:relative;
   }
-  .lastOwner{
-    margin-top:8px;
+  .riverTile.last{
+    outline:2px solid rgba(255,230,120,.95);
+  }
+  .riverEmpty{
+    min-height:124px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-size:12px;
-    opacity:.8;
-    min-height:18px;
-    text-align:center;
+    opacity:.65;
   }
 
   .cpuWrap{
@@ -470,6 +502,9 @@
     .roundMain{
       font-size:46px;
     }
+    .topGrid{
+      grid-template-columns:104px 1fr;
+    }
   }
 </style>
 </head>
@@ -491,16 +526,23 @@
       <div class="scoreList" id="scoreList"></div>
     </div>
 
-    <div class="panel centerWrap">
-      <div class="centerGrid">
-        <div class="stackBox">
-          <div class="stackTitle">山札</div>
-          <div class="stackCount" id="deckCount">0</div>
+    <div class="panel topArea">
+      <div class="topGrid">
+        <div class="wallBox">
+          <div class="topTitle">山札</div>
+          <div class="wallInner">
+            <div class="wallCount" id="deckCount">0</div>
+            <div class="wallSub">残り枚数</div>
+          </div>
         </div>
-        <div class="stackBox">
-          <div class="stackTitle">最後に捨てた牌</div>
-          <div class="lastDiscardBox" id="lastDiscardBox">-</div>
-          <div class="lastOwner" id="lastOwner">---</div>
+
+        <div class="riverBox">
+          <div class="riverHead">
+            <div class="topTitle">捨て牌</div>
+            <div class="riverOwner" id="lastOwner">---</div>
+          </div>
+          <div class="riverGrid" id="riverGrid"></div>
+          <div class="riverEmpty" id="riverEmpty">まだ捨て牌はありません</div>
         </div>
       </div>
     </div>
@@ -645,14 +687,13 @@
   ];
 
   let deck = [];
+  let discardPile = [];
   let turnIndex = 0;
   let roundIndex = 0;
   let gameEnded = false;
   let busy = false;
   let waitingPlayerDiscard = false;
   let justDrawnIndex = -1;
-  let lastDiscard = null;
-  let lastDiscardOwner = "---";
   let historyLogs = [];
 
   const turnLabel = document.getElementById("turnLabel");
@@ -661,13 +702,15 @@
   const subInfo = document.getElementById("subInfo");
   const scoreList = document.getElementById("scoreList");
   const deckCount = document.getElementById("deckCount");
-  const lastDiscardBox = document.getElementById("lastDiscardBox");
-  const lastOwner = document.getElementById("lastOwner");
   const cpuGrid = document.getElementById("cpuGrid");
   const handEl = document.getElementById("hand");
   const historyBox = document.getElementById("historyBox");
   const resetBtn = document.getElementById("resetBtn");
   const retryBtn = document.getElementById("retryBtn");
+
+  const riverGrid = document.getElementById("riverGrid");
+  const riverEmpty = document.getElementById("riverEmpty");
+  const lastOwner = document.getElementById("lastOwner");
 
   const girlOverlay = document.getElementById("girlOverlay");
   const girlBg = document.getElementById("girlBg");
@@ -839,17 +882,25 @@
     parent.appendChild(img);
   }
 
-  function renderLastDiscard(){
-    lastDiscardBox.innerHTML = "";
-    if(!lastDiscard){
-      lastDiscardBox.textContent = "-";
+  function renderDiscardPile(){
+    riverGrid.innerHTML = "";
+
+    if(!discardPile.length){
+      riverEmpty.style.display = "flex";
+      lastOwner.textContent = "---";
       return;
     }
-    const inner = document.createElement("div");
-    inner.style.width = "100%";
-    inner.style.height = "100%";
-    renderTileContent(inner, lastDiscard);
-    lastDiscardBox.appendChild(inner);
+
+    riverEmpty.style.display = "none";
+
+    discardPile.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "riverTile" + (index === discardPile.length - 1 ? " last" : "");
+      renderTileContent(div, item.tileId);
+      riverGrid.appendChild(div);
+    });
+
+    lastOwner.textContent = discardPile[discardPile.length - 1].owner;
   }
 
   function renderScores(){
@@ -908,8 +959,7 @@
     turnLabel.textContent = `現在の番：${getCurrentPlayer().name}`;
     roundLabel.textContent = `${ROUNDS[roundIndex]}局`;
     deckCount.textContent = deck.length;
-    lastOwner.textContent = lastDiscardOwner;
-    renderLastDiscard();
+    renderDiscardPile();
     renderScores();
     renderCpuBoxes();
     renderHand();
@@ -958,8 +1008,6 @@
         score += 1000;
       } else if(count === 2){
         score += 100;
-      } else {
-        score += 0;
       }
 
       if(getCompletedTriples(hand) >= 1 && count === 2){
@@ -1181,9 +1229,8 @@
     if(gameEnded) return;
 
     deck = createDeck();
+    discardPile = [];
     players.forEach(p => p.hand = []);
-    lastDiscard = null;
-    lastDiscardOwner = "---";
     justDrawnIndex = -1;
     waitingPlayerDiscard = false;
 
@@ -1285,8 +1332,8 @@
 
     const me = players[0];
     const removed = me.hand.splice(index, 1)[0];
-    lastDiscard = removed;
-    lastDiscardOwner = me.name;
+    discardPile.push({ tileId: removed, owner: me.name });
+
     justDrawnIndex = -1;
 
     statusMain.textContent = `${getTileName(removed)} を捨てた`;
@@ -1360,8 +1407,7 @@
 
     const discardIndex = cpuChooseDiscardIndex(player);
     const removed = player.hand.splice(discardIndex, 1)[0];
-    lastDiscard = removed;
-    lastDiscardOwner = player.name;
+    discardPile.push({ tileId: removed, owner: player.name });
 
     statusMain.textContent = `${player.name} が ${getTileName(removed)} を捨てた`;
     subInfo.textContent = "ロン判定中";
@@ -1411,14 +1457,13 @@
     });
 
     deck = [];
+    discardPile = [];
     turnIndex = 0;
     roundIndex = 0;
     gameEnded = false;
     busy = false;
     waitingPlayerDiscard = false;
     justDrawnIndex = -1;
-    lastDiscard = null;
-    lastDiscardOwner = "---";
     historyLogs = [];
 
     statusMain.textContent = "ゲーム開始";
