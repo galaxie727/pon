@@ -44,6 +44,7 @@
     border-radius:22px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
   }
+
   .statusBox{
     padding:14px 14px 10px;
     margin-bottom:12px;
@@ -721,7 +722,7 @@
         ツモ・ロンあり、東南西北の半チャン。
       </div>
       <button class="startBtn" id="startBtn" type="button">START</button>
-      <div class="titleNote">通常手札5枚 / 3枚×2セットで上がり</div>
+      <div class="titleNote">半チャン開始時に東南西北をシャッフル</div>
     </div>
   </div>
 
@@ -782,7 +783,7 @@
   const WAIT_NEXT_ROUND = 1100;
   const WAIT_DISCARD_PREVIEW = 900;
   const WAIT_ROUND_RESULT = 2200;
-  const ROUNDS = ["東","南","西","北"];
+  const ROUNDS = ["東局","南局","西局","北局"];
   const WIN_LABEL = {
     tsumo:"ツモ",
     ron:"ロン",
@@ -791,15 +792,15 @@
   };
 
   const TILES = [
-    { id:"dekabusa", name:"デカブサ", short:"デ", color:"#e74c3c", image:"tile_dekabusa.png" },
-    { id:"ani", name:"デカブサ兄", short:"兄", color:"#f1c40f", image:"tile_aniki.png" },
-    { id:"namaken", name:"ナマケン", short:"ナ", color:"#3498db", image:"tile_namaken.png" },
-    { id:"tora", name:"トラさん", short:"ト", color:"#2ecc71", image:"tile_torasan.png" },
-    { id:"king", name:"キング", short:"キ", color:"#9b59b6", image:"tile_king.png" },
-    { id:"gori", name:"ゴリさん", short:"ゴ", color:"#8e5c2c", image:"tile_gorisan.png" },
-    { id:"kabao", name:"カバオ", short:"カ", color:"#e67e22", image:"tile_kabao.png" },
-    { id:"kan", name:"カンえもん", short:"カン", color:"#666666", image:"tile_kanemon.png" },
-    { id:"pan", name:"パンパン", short:"パ", color:"#ff77cc", image:"tile_panpan.png" }
+    { id:"dekabusa", name:"デカブサ", color:"#e74c3c", image:"tile_dekabusa.png" },
+    { id:"ani", name:"デカブサ兄", color:"#f1c40f", image:"tile_aniki.png" },
+    { id:"namaken", name:"ナマケン", color:"#3498db", image:"tile_namaken.png" },
+    { id:"tora", name:"トラさん", color:"#2ecc71", image:"tile_torasan.png" },
+    { id:"king", name:"キング", color:"#9b59b6", image:"tile_king.png" },
+    { id:"gori", name:"ゴリさん", color:"#8e5c2c", image:"tile_gorisan.png" },
+    { id:"kabao", name:"カバオ", color:"#e67e22", image:"tile_kabao.png" },
+    { id:"kan", name:"カンえもん", color:"#666666", image:"tile_kanemon.png" },
+    { id:"pan", name:"パンパン", color:"#ff77cc", image:"tile_panpan.png" }
   ];
 
   const players = [
@@ -827,7 +828,8 @@
       drawRound:["流局だね。","今回は誰もそろわなかった。","引き分けだよ。","次の局いこ。"],
       hako:["飛んじゃったね。","ここで終了だよ。","ハコテンだね。","決まったかも。"],
       finalWinYou:["やった、あなたの勝ち。","優勝おめでとう。","先にトップだね。","いい感じで終われたね。"],
-      finalWinCpu:["やった、私が勝ち。","先に決めたよ。","勝っちゃった。","これで1位だね。"]
+      finalWinCpu:["やった、私が勝ち。","先に決めたよ。","勝っちゃった。","これで1位だね。"],
+      eastBonus:["東からいくよ。","親番スタートだね。","東、いい位置だよ。"]
     },
     {
       name:"チー娘B",
@@ -846,7 +848,8 @@
       drawRound:["流局ね。","誰も上がれなかったか。","今局はなし。","次で決める。"],
       hako:["飛んだね。","ここで終了。","もう持たないか。","決着ね。"],
       finalWinYou:["あなたの勝ちか。まあいいけど。","先にトップね。","はいはい、おめでとう。","最後はあなたか。"],
-      finalWinCpu:["私の勝ち。","まあ当然かな。","トップで終了。","予定通り。"]
+      finalWinCpu:["私の勝ち。","まあ当然かな。","トップで終了。","予定通り。"],
+      eastBonus:["東ね。悪くない。","最初は東から。","親番スタートか。"]
     },
     {
       name:"チー娘C",
@@ -865,7 +868,8 @@
       drawRound:["流局。","誰も上がらない。","……終わり。","次。"],
       hako:["飛んだ。","ここで終わり。","ハコテン。","……決まり。"],
       finalWinYou:["あなたが優勝。","……おめでとう。","トップだね。","終わり。あなたの勝ち。"],
-      finalWinCpu:["私が優勝。","……終わり。","勝った。","これで終わり。"]
+      finalWinCpu:["私が優勝。","……終わり。","勝った。","これで終わり。"],
+      eastBonus:["東。","最初は東から。","……親番。"]
     }
   ];
 
@@ -878,7 +882,6 @@
   let waitingPlayerDiscard = false;
   let justDrawnIndex = -1;
   let historyLogs = [];
-  let currentGirlIndex = 0;
 
   const turnLabel = document.getElementById("turnLabel");
   const roundLabel = document.getElementById("roundLabel");
@@ -939,11 +942,16 @@
     return arr;
   }
 
-  function seatPlayers(){
+  function assignSeats(){
     const seats = shuffle(["東","南","西","北"]);
     players.forEach((p, i) => {
       p.seat = seats[i];
     });
+  }
+
+  function sortBySeat(list){
+    const rank = { "東":0, "南":1, "西":2, "北":3 };
+    return [...list].sort((a,b) => rank[a.seat] - rank[b.seat]);
   }
 
   function setBusy(flag){
@@ -973,12 +981,20 @@
     });
   }
 
+  function getTurnOrder(){
+    return sortBySeat(players);
+  }
+
   function getCurrentPlayer(){
-    return players[turnIndex];
+    return getTurnOrder()[turnIndex];
   }
 
   function getSupportGirlIndex(){
     return Math.floor(Math.random() * 3);
+  }
+
+  function getEastPlayer(){
+    return players.find(p => p.seat === "東");
   }
 
   function getTileById(id){
@@ -1047,15 +1063,10 @@
     return isWinningHand(temp);
   }
 
-  function setGirl(girlIndex){
-    currentGirlIndex = girlIndex;
+  function showGirl(girlIndex, text){
     const g = girls[girlIndex];
     girlBg.src = g.image;
     girlNameEl.textContent = g.name;
-  }
-
-  function showGirl(girlIndex, text){
-    setGirl(girlIndex);
     girlTextEl.textContent = text;
     bigTileWrap.classList.remove("show");
     girlOverlay.classList.add("show");
@@ -1098,7 +1109,7 @@
   }
 
   async function showRoundIntro(){
-    roundOverlayMain.textContent = `${ROUNDS[roundIndex]}局`;
+    roundOverlayMain.textContent = ROUNDS[roundIndex];
     roundOverlaySub.textContent = "開局";
     roundOverlay.classList.add("show");
     await wait(1150);
@@ -1167,10 +1178,7 @@
 
   function renderScores(){
     scoreList.innerHTML = "";
-    const ordered = [...players].sort((a,b) => {
-      const rank = { "東":0, "南":1, "西":2, "北":3 };
-      return rank[a.seat] - rank[b.seat];
-    });
+    const ordered = getTurnOrder();
 
     ordered.forEach(player => {
       const row = document.createElement("div");
@@ -1209,7 +1217,7 @@
   function renderAll(){
     const current = getCurrentPlayer();
     turnLabel.textContent = `${current.seat}　${current.name}の番`;
-    roundLabel.textContent = `${ROUNDS[roundIndex]}局`;
+    roundLabel.textContent = ROUNDS[roundIndex];
     deckCount.textContent = deck.length;
     renderDiscardPile();
     renderScores();
@@ -1276,9 +1284,9 @@
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  function applyTsumoPoints(winnerIndex){
-    players.forEach((p, idx) => {
-      if(idx === winnerIndex){
+  function applyTsumoPoints(winner){
+    players.forEach((p) => {
+      if(p.id === winner.id){
         p.point += 3;
       } else {
         p.point -= 1;
@@ -1286,9 +1294,9 @@
     });
   }
 
-  function applyRonPoints(winnerIndex, discarderIndex){
-    players[winnerIndex].point += 2;
-    players[discarderIndex].point -= 2;
+  function applyRonPoints(winner, discarder){
+    winner.point += 2;
+    discarder.point -= 2;
   }
 
   function getFinalWinnersByPoints(){
@@ -1347,8 +1355,7 @@
     await wait(180);
   }
 
-  async function playRoundEndByTsumo(winnerIndex){
-    const winner = players[winnerIndex];
+  async function playRoundEndByTsumo(winner){
     const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
     const g = girls[girlIndex];
 
@@ -1357,15 +1364,15 @@
     await wait(WAIT_LONG);
     hideGirl();
 
-    applyTsumoPoints(winnerIndex);
-    addHistory(`${ROUNDS[roundIndex]}局：${winner.name} がツモ。`);
+    applyTsumoPoints(winner);
+    addHistory(`${ROUNDS[roundIndex]}：${winner.seat} ${winner.name} がツモ。`);
 
     statusMain.textContent = `${winner.name} ツモ`;
     subInfo.textContent = `他3人から各1点`;
     renderAll();
 
     await showRoundResult(
-      `${ROUNDS[roundIndex]}局終了`,
+      `${ROUNDS[roundIndex]}終了`,
       `${winner.seat}　${winner.name}　${WIN_LABEL.tsumo}`,
       "他の3人から各1点"
     );
@@ -1382,9 +1389,7 @@
     await nextRoundOrFinish();
   }
 
-  async function playRoundEndByRon(winnerIndex, discarderIndex, tileId){
-    const winner = players[winnerIndex];
-    const discarder = players[discarderIndex];
+  async function playRoundEndByRon(winner, discarder, tileId){
     const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
     const g = girls[girlIndex];
 
@@ -1393,15 +1398,15 @@
     await wait(WAIT_LONG);
     hideGirl();
 
-    applyRonPoints(winnerIndex, discarderIndex);
-    addHistory(`${ROUNDS[roundIndex]}局：${winner.name} が ${discarder.name} の ${getTileName(tileId)} でロン。`);
+    applyRonPoints(winner, discarder);
+    addHistory(`${ROUNDS[roundIndex]}：${winner.seat} ${winner.name} が ${discarder.seat} ${discarder.name} の ${getTileName(tileId)} でロン。`);
 
     statusMain.textContent = `${winner.name} ロン`;
     subInfo.textContent = `${discarder.name} から2点`;
     renderAll();
 
     await showRoundResult(
-      `${ROUNDS[roundIndex]}局終了`,
+      `${ROUNDS[roundIndex]}終了`,
       `${winner.seat}　${winner.name}　${WIN_LABEL.ron}`,
       `${discarder.seat}　${discarder.name} から2点`
     );
@@ -1426,13 +1431,13 @@
     await wait(WAIT_LONG);
     hideGirl();
 
-    addHistory(`${ROUNDS[roundIndex]}局：流局。点数変動なし。`);
+    addHistory(`${ROUNDS[roundIndex]}：流局。点数変動なし。`);
     statusMain.textContent = "流局";
     subInfo.textContent = "点数変動なし";
     renderAll();
 
     await showRoundResult(
-      `${ROUNDS[roundIndex]}局終了`,
+      `${ROUNDS[roundIndex]}終了`,
       WIN_LABEL.draw,
       "点数変動なし"
     );
@@ -1440,8 +1445,7 @@
     await nextRoundOrFinish();
   }
 
-  async function playRoundBestWin(winnerIndex){
-    const winner = players[winnerIndex];
+  async function playRoundBestWin(winner){
     const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
     const g = girls[girlIndex];
 
@@ -1449,15 +1453,15 @@
     await wait(WAIT_LONG);
     hideGirl();
 
-    players[winnerIndex].point += 1;
-    addHistory(`${ROUNDS[roundIndex]}局：山札終了。${winner.name} が判定勝ち。`);
+    winner.point += 1;
+    addHistory(`${ROUNDS[roundIndex]}：山札終了。${winner.seat} ${winner.name} が判定勝ち。`);
 
     statusMain.textContent = "山札終了";
     subInfo.textContent = `${winner.name} +1`;
     renderAll();
 
     await showRoundResult(
-      `${ROUNDS[roundIndex]}局終了`,
+      `${ROUNDS[roundIndex]}終了`,
       `${winner.seat}　${winner.name}　${WIN_LABEL.judge}`,
       "山札終了 / 判定で +1点"
     );
@@ -1506,14 +1510,28 @@
     await startRound();
   }
 
-  function getRonCandidateAfterDiscard(discarderIndex, tileId){
-    for(let offset = 1; offset < players.length; offset++){
-      const idx = (discarderIndex + offset) % players.length;
-      if(canRonWithTile(players[idx].hand, tileId)){
-        return idx;
+  function getRonCandidateAfterDiscard(discarder, tileId){
+    const order = getTurnOrder();
+    const startIdx = order.findIndex(p => p.id === discarder.id);
+
+    for(let offset = 1; offset < order.length; offset++){
+      const candidate = order[(startIdx + offset) % order.length];
+      if(canRonWithTile(candidate.hand, tileId)){
+        return candidate;
       }
     }
-    return -1;
+    return null;
+  }
+
+  async function showEastStartCutin(){
+    const eastPlayer = getEastPlayer();
+    const girlIndex = eastPlayer.type === "human" ? getSupportGirlIndex() : eastPlayer.girlIndex;
+    const lines = girls[girlIndex].eastBonus || ["東からいくよ。"];
+
+    showGirl(girlIndex, rand(lines));
+    await wait(1200);
+    hideGirl();
+    await wait(160);
   }
 
   async function startRound(){
@@ -1529,14 +1547,18 @@
       players.forEach(p => drawTile(p));
     }
 
-    statusMain.textContent = `${ROUNDS[roundIndex]}局開始`;
+    statusMain.textContent = `${ROUNDS[roundIndex]}開始`;
     subInfo.textContent = "通常手札5枚";
     renderAll();
-    addHistory(`${ROUNDS[roundIndex]}局開始。`);
+    addHistory(`${ROUNDS[roundIndex]}開始。`);
 
+    if(roundIndex === 0){
+      await showEastStartCutin();
+    }
     await showRoundIntro();
     await wait(240);
-    turnIndex = 0;
+
+    turnIndex = 0; // 東から
     await introTurn();
   }
 
@@ -1562,7 +1584,7 @@
       statusMain.textContent = `${player.seat}　${player.name}の番`;
       subInfo.textContent = "相手が考え中";
       await wait(WAIT_LONG);
-      await cpuTurn(turnIndex, girlIndex);
+      await cpuTurn(player, girlIndex);
     }
   }
 
@@ -1590,7 +1612,7 @@
       statusMain.textContent = `3枚×2セット完成`;
       subInfo.textContent = "ツモ";
       renderAll();
-      await playRoundEndByTsumo(0);
+      await playRoundEndByTsumo(me);
       setBusy(false);
       return;
     }
@@ -1635,9 +1657,9 @@
 
     await wait(WAIT_RON_CHECK);
 
-    const ronWinner = getRonCandidateAfterDiscard(0, removed);
-    if(ronWinner >= 0){
-      await playRoundEndByRon(ronWinner, 0, removed);
+    const ronWinner = getRonCandidateAfterDiscard(me, removed);
+    if(ronWinner){
+      await playRoundEndByRon(ronWinner, me, removed);
       setBusy(false);
       return;
     }
@@ -1648,7 +1670,7 @@
     await introTurn();
   }
 
-  async function cpuTurn(playerIndex, girlIndex){
+  async function cpuTurn(player, girlIndex){
     if(gameEnded) return;
 
     setBusy(true);
@@ -1660,7 +1682,6 @@
       return;
     }
 
-    const player = players[playerIndex];
     const tileId = drawTile(player);
     renderAll();
 
@@ -1671,7 +1692,7 @@
       statusMain.textContent = `${player.name} が3枚×2セット完成`;
       subInfo.textContent = "ツモ";
       renderAll();
-      await playRoundEndByTsumo(playerIndex);
+      await playRoundEndByTsumo(player);
       setBusy(false);
       return;
     }
@@ -1713,9 +1734,9 @@
 
     await wait(WAIT_RON_CHECK);
 
-    const ronWinner = getRonCandidateAfterDiscard(playerIndex, removed);
-    if(ronWinner >= 0){
-      await playRoundEndByRon(ronWinner, playerIndex, removed);
+    const ronWinner = getRonCandidateAfterDiscard(player, removed);
+    if(ronWinner){
+      await playRoundEndByRon(ronWinner, player, removed);
       setBusy(false);
       return;
     }
@@ -1738,8 +1759,7 @@
     if(result.reason === "draw"){
       await playRoundDraw();
     } else {
-      const winnerIndex = players.findIndex(p => p.id === result.winner.id);
-      await playRoundBestWin(winnerIndex);
+      await playRoundBestWin(result.winner);
     }
   }
 
@@ -1754,7 +1774,7 @@
       p.hand = [];
     });
 
-    seatPlayers();
+    assignSeats();
 
     deck = [];
     discardPile = [];
@@ -1767,11 +1787,11 @@
     historyLogs = [];
 
     statusMain.textContent = "ゲーム開始";
-    subInfo.textContent = "東南西北の半チャン";
+    subInfo.textContent = "東スタート / 半チャン開始時に席シャッフル";
     renderHistory();
     renderAll();
     addHistory("ゲーム開始。全員5点スタート。");
-    addHistory(`席順：${players.map(p => `${p.seat} ${p.name}`).join(" / ")}`);
+    addHistory(`席順：${sortBySeat(players).map(p => `${p.seat} ${p.name}`).join(" / ")}`);
 
     await wait(450);
     await startRound();
@@ -1797,7 +1817,7 @@
   });
 
   renderHistory();
-  seatPlayers();
+  assignSeats();
   renderAll();
 </script>
 </body>
