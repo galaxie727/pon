@@ -59,9 +59,9 @@
   }
   .statusMain{
     text-align:center;
-    font-size:16px;
+    font-size:18px;
     font-weight:900;
-    min-height:24px;
+    min-height:26px;
     margin-bottom:8px;
   }
   .subInfo{
@@ -201,41 +201,6 @@
     opacity:.65;
   }
 
-  .cpuWrap{
-    padding:12px;
-    margin-bottom:12px;
-  }
-  .cpuTitle{
-    font-size:14px;
-    font-weight:900;
-    margin-bottom:10px;
-  }
-  .cpuGrid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-  }
-  .cpuBox{
-    background:rgba(255,255,255,.05);
-    border-radius:16px;
-    padding:10px 8px;
-    text-align:center;
-    border:1px solid rgba(255,255,255,.06);
-  }
-  .cpuBox.active{
-    outline:2px solid rgba(255,255,255,.12);
-  }
-  .cpuName{
-    font-size:13px;
-    font-weight:900;
-    margin-bottom:6px;
-  }
-  .cpuMeta{
-    font-size:12px;
-    opacity:.8;
-    line-height:1.6;
-  }
-
   .handWrap{
     padding:12px;
     margin-bottom:12px;
@@ -351,7 +316,8 @@
   .girlOverlay,
   .resultOverlay,
   .roundOverlay,
-  .titleOverlay{
+  .titleOverlay,
+  .roundResultOverlay{
     position:fixed;
     inset:0;
     z-index:100;
@@ -362,7 +328,8 @@
   .girlOverlay.show,
   .resultOverlay.show,
   .roundOverlay.show,
-  .titleOverlay.show{
+  .titleOverlay.show,
+  .roundResultOverlay.show{
     opacity:1;
     pointer-events:auto;
   }
@@ -501,6 +468,60 @@
     opacity:.9;
   }
 
+  .roundResultOverlay{
+    z-index:125;
+    background:rgba(5,7,12,.88);
+  }
+  .roundResultBox{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(90vw,420px);
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-radius:28px;
+    padding:24px 18px 18px;
+    box-shadow:0 14px 36px rgba(0,0,0,.22);
+    text-align:center;
+  }
+  .roundResultRound{
+    font-size:18px;
+    font-weight:900;
+    opacity:.9;
+    margin-bottom:12px;
+  }
+  .roundResultWin{
+    font-size:30px;
+    font-weight:900;
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  .roundResultDesc{
+    font-size:15px;
+    line-height:1.6;
+    opacity:.92;
+    margin-bottom:14px;
+  }
+  .roundResultScore{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:10px;
+  }
+  .roundResultScoreLine{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 12px;
+    background:rgba(255,255,255,.05);
+    border-radius:12px;
+    font-size:14px;
+    font-weight:800;
+  }
+
   .titleOverlay{
     z-index:140;
     background:
@@ -632,6 +653,9 @@
     .titleLogo{
       font-size:29px;
     }
+    .roundResultWin{
+      font-size:25px;
+    }
   }
 </style>
 </head>
@@ -672,11 +696,6 @@
           <div class="riverEmpty" id="riverEmpty">まだ捨て牌はありません</div>
         </div>
       </div>
-    </div>
-
-    <div class="panel cpuWrap">
-      <div class="cpuTitle">相手</div>
-      <div class="cpuGrid" id="cpuGrid"></div>
     </div>
 
     <div class="panel handWrap">
@@ -732,6 +751,15 @@
     </div>
   </div>
 
+  <div class="roundResultOverlay" id="roundResultOverlay">
+    <div class="roundResultBox">
+      <div class="roundResultRound" id="roundResultRound">東局終了</div>
+      <div class="roundResultWin" id="roundResultWin">チー娘A ロン</div>
+      <div class="roundResultDesc" id="roundResultDesc">チー娘Cから2点</div>
+      <div class="roundResultScore" id="roundResultScore"></div>
+    </div>
+  </div>
+
   <div class="resultOverlay" id="resultOverlay">
     <div class="resultBox">
       <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
@@ -753,7 +781,14 @@
   const WAIT_RON_CHECK = 900;
   const WAIT_NEXT_ROUND = 1100;
   const WAIT_DISCARD_PREVIEW = 900;
+  const WAIT_ROUND_RESULT = 2200;
   const ROUNDS = ["東","南","西","北"];
+  const WIN_LABEL = {
+    tsumo:"ツモ",
+    ron:"ロン",
+    draw:"流局",
+    judge:"判定勝ち"
+  };
 
   const TILES = [
     { id:"dekabusa", name:"デカブサ", short:"デ", color:"#e74c3c", image:"tile_dekabusa.png" },
@@ -768,10 +803,10 @@
   ];
 
   const players = [
-    { id:"you", name:"あなた", short:"自", type:"human", point:START_POINT, hand:[] },
-    { id:"a", name:"チー娘A", short:"A", type:"cpu", girlIndex:0, point:START_POINT, hand:[] },
-    { id:"b", name:"チー娘B", short:"B", type:"cpu", girlIndex:1, point:START_POINT, hand:[] },
-    { id:"c", name:"チー娘C", short:"C", type:"cpu", girlIndex:2, point:START_POINT, hand:[] }
+    { id:"you", name:"あなた", short:"自", type:"human", girlIndex:null, point:START_POINT, hand:[], seat:"" },
+    { id:"a", name:"チー娘A", short:"A", type:"cpu", girlIndex:0, point:START_POINT, hand:[], seat:"" },
+    { id:"b", name:"チー娘B", short:"B", type:"cpu", girlIndex:1, point:START_POINT, hand:[], seat:"" },
+    { id:"c", name:"チー娘C", short:"C", type:"cpu", girlIndex:2, point:START_POINT, hand:[], seat:"" }
   ];
 
   const girls = [
@@ -851,7 +886,6 @@
   const subInfo = document.getElementById("subInfo");
   const scoreList = document.getElementById("scoreList");
   const deckCount = document.getElementById("deckCount");
-  const cpuGrid = document.getElementById("cpuGrid");
   const handEl = document.getElementById("hand");
   const historyBox = document.getElementById("historyBox");
   const resetBtn = document.getElementById("resetBtn");
@@ -877,6 +911,12 @@
   const roundOverlayMain = document.getElementById("roundOverlayMain");
   const roundOverlaySub = document.getElementById("roundOverlaySub");
 
+  const roundResultOverlay = document.getElementById("roundResultOverlay");
+  const roundResultRound = document.getElementById("roundResultRound");
+  const roundResultWin = document.getElementById("roundResultWin");
+  const roundResultDesc = document.getElementById("roundResultDesc");
+  const roundResultScore = document.getElementById("roundResultScore");
+
   const resultOverlay = document.getElementById("resultOverlay");
   const resultTitle = document.getElementById("resultTitle");
   const resultSub = document.getElementById("resultSub");
@@ -897,6 +937,13 @@
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+  }
+
+  function seatPlayers(){
+    const seats = shuffle(["東","南","西","北"]);
+    players.forEach((p, i) => {
+      p.seat = seats[i];
+    });
   }
 
   function setBusy(flag){
@@ -1111,7 +1158,7 @@
       const div = document.createElement("div");
       div.className = "riverTile" + (index === discardPile.length - 1 ? " last" : "");
       div.style.background = getTileColor(item.tileId);
-      div.title = getTileName(item.tileId);
+      div.title = `${item.owner}：${getTileName(item.tileId)}`;
       riverGrid.appendChild(div);
     });
 
@@ -1120,7 +1167,12 @@
 
   function renderScores(){
     scoreList.innerHTML = "";
-    players.forEach(player => {
+    const ordered = [...players].sort((a,b) => {
+      const rank = { "東":0, "南":1, "西":2, "北":3 };
+      return rank[a.seat] - rank[b.seat];
+    });
+
+    ordered.forEach(player => {
       const row = document.createElement("div");
       row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
 
@@ -1132,27 +1184,11 @@
       row.innerHTML = `
         <div class="scoreName">
           <span class="scoreBadge ${badgeClass}">${player.short}</span>
-          <span>${player.name}</span>
+          <span>${player.seat}　${player.name}</span>
         </div>
         <div>${player.point}点</div>
       `;
       scoreList.appendChild(row);
-    });
-  }
-
-  function renderCpuBoxes(){
-    cpuGrid.innerHTML = "";
-    players.filter(p => p.type === "cpu").forEach(cpu => {
-      const div = document.createElement("div");
-      div.className = "cpuBox" + (getCurrentPlayer().id === cpu.id && !gameEnded ? " active" : "");
-      div.innerHTML = `
-        <div class="cpuName">${cpu.name}</div>
-        <div class="cpuMeta">
-          手牌 ${cpu.hand.length}枚<br>
-          3枚組 ${getCompletedTriples(cpu.hand)}
-        </div>
-      `;
-      cpuGrid.appendChild(div);
     });
   }
 
@@ -1171,12 +1207,12 @@
   }
 
   function renderAll(){
-    turnLabel.textContent = `現在の番：${getCurrentPlayer().name}`;
+    const current = getCurrentPlayer();
+    turnLabel.textContent = `${current.seat}　${current.name}の番`;
     roundLabel.textContent = `${ROUNDS[roundIndex]}局`;
     deckCount.textContent = deck.length;
     renderDiscardPile();
     renderScores();
-    renderCpuBoxes();
     renderHand();
   }
 
@@ -1187,7 +1223,7 @@
     sorted.forEach((p, i) => {
       const row = document.createElement("div");
       row.className = "resultLine";
-      row.innerHTML = `<span>${i + 1}位　${p.name}</span><span>${p.point}点</span>`;
+      row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${p.point}点</span>`;
       resultList.appendChild(row);
     });
 
@@ -1198,7 +1234,7 @@
         : "相手がトップで終了しました。";
     } else {
       resultTitle.textContent = "同点優勝！";
-      resultSub.textContent = winners.map(w => w.name).join(" / ") + " が同点トップでした。";
+      resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
     }
 
     resultOverlay.classList.add("show");
@@ -1289,6 +1325,28 @@
     };
   }
 
+  function renderRoundResultScores(){
+    roundResultScore.innerHTML = "";
+    const sorted = [...players].sort((a,b) => b.point - a.point);
+    sorted.forEach(p => {
+      const row = document.createElement("div");
+      row.className = "roundResultScoreLine";
+      row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${p.point}点</span>`;
+      roundResultScore.appendChild(row);
+    });
+  }
+
+  async function showRoundResult(roundText, winText, descText){
+    roundResultRound.textContent = roundText;
+    roundResultWin.textContent = winText;
+    roundResultDesc.textContent = descText;
+    renderRoundResultScores();
+    roundResultOverlay.classList.add("show");
+    await wait(WAIT_ROUND_RESULT);
+    roundResultOverlay.classList.remove("show");
+    await wait(180);
+  }
+
   async function playRoundEndByTsumo(winnerIndex){
     const winner = players[winnerIndex];
     const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
@@ -1306,7 +1364,11 @@
     subInfo.textContent = `他3人から各1点`;
     renderAll();
 
-    await wait(WAIT_MID);
+    await showRoundResult(
+      `${ROUNDS[roundIndex]}局終了`,
+      `${winner.seat}　${winner.name}　${WIN_LABEL.tsumo}`,
+      "他の3人から各1点"
+    );
 
     if(hasHako()){
       showGirl(girlIndex, rand(g.hako));
@@ -1338,7 +1400,11 @@
     subInfo.textContent = `${discarder.name} から2点`;
     renderAll();
 
-    await wait(WAIT_MID);
+    await showRoundResult(
+      `${ROUNDS[roundIndex]}局終了`,
+      `${winner.seat}　${winner.name}　${WIN_LABEL.ron}`,
+      `${discarder.seat}　${discarder.name} から2点`
+    );
 
     if(hasHako()){
       showGirl(girlIndex, rand(g.hako));
@@ -1365,6 +1431,12 @@
     subInfo.textContent = "点数変動なし";
     renderAll();
 
+    await showRoundResult(
+      `${ROUNDS[roundIndex]}局終了`,
+      WIN_LABEL.draw,
+      "点数変動なし"
+    );
+
     await nextRoundOrFinish();
   }
 
@@ -1384,7 +1456,11 @@
     subInfo.textContent = `${winner.name} +1`;
     renderAll();
 
-    await wait(WAIT_MID);
+    await showRoundResult(
+      `${ROUNDS[roundIndex]}局終了`,
+      `${winner.seat}　${winner.name}　${WIN_LABEL.judge}`,
+      "山札終了 / 判定で +1点"
+    );
 
     if(hasHako()){
       showGirl(girlIndex, rand(g.hako));
@@ -1472,7 +1548,7 @@
     if(player.type === "human"){
       const girlIndex = getSupportGirlIndex();
       showGirl(girlIndex, rand(girls[girlIndex].introHuman));
-      statusMain.textContent = "あなたの番";
+      statusMain.textContent = `${player.seat}　あなたの番`;
       subInfo.textContent = "1枚引いて6枚→1枚捨てる";
       await wait(WAIT_LONG);
       updateGirlText(rand(girls[girlIndex].thinkHuman));
@@ -1483,7 +1559,7 @@
     } else {
       const girlIndex = player.girlIndex;
       showGirl(girlIndex, rand(girls[girlIndex].introCpu));
-      statusMain.textContent = `${player.name}の番`;
+      statusMain.textContent = `${player.seat}　${player.name}の番`;
       subInfo.textContent = "相手が考え中";
       await wait(WAIT_LONG);
       await cpuTurn(turnIndex, girlIndex);
@@ -1550,11 +1626,11 @@
     await wait(WAIT_DISCARD_PREVIEW);
     hideGirl();
 
-    discardPile.push({ tileId: removed, owner: me.name });
+    discardPile.push({ tileId: removed, owner: `${me.seat}　${me.name}` });
 
     statusMain.textContent = `${getTileName(removed)} を捨てた`;
     subInfo.textContent = "ロン判定中";
-    addHistory(`あなた が ${getTileName(removed)} を捨てた。`);
+    addHistory(`${me.seat}　${me.name} が ${getTileName(removed)} を捨てた。`);
     renderAll();
 
     await wait(WAIT_RON_CHECK);
@@ -1628,11 +1704,11 @@
     await wait(WAIT_DISCARD_PREVIEW);
     hideGirl();
 
-    discardPile.push({ tileId: removed, owner: player.name });
+    discardPile.push({ tileId: removed, owner: `${player.seat}　${player.name}` });
 
     statusMain.textContent = `${player.name} が ${getTileName(removed)} を捨てた`;
     subInfo.textContent = "ロン判定中";
-    addHistory(`${player.name} が ${getTileName(removed)} を捨てた。`);
+    addHistory(`${player.seat}　${player.name} が ${getTileName(removed)} を捨てた。`);
     renderAll();
 
     await wait(WAIT_RON_CHECK);
@@ -1671,11 +1747,14 @@
     hideGirl();
     hideResultScreen();
     roundOverlay.classList.remove("show");
+    roundResultOverlay.classList.remove("show");
 
     players.forEach(p => {
       p.point = START_POINT;
       p.hand = [];
     });
+
+    seatPlayers();
 
     deck = [];
     discardPile = [];
@@ -1692,6 +1771,7 @@
     renderHistory();
     renderAll();
     addHistory("ゲーム開始。全員5点スタート。");
+    addHistory(`席順：${players.map(p => `${p.seat} ${p.name}`).join(" / ")}`);
 
     await wait(450);
     await startRound();
@@ -1717,6 +1797,7 @@
   });
 
   renderHistory();
+  seatPlayers();
   renderAll();
 </script>
 </body>
