@@ -44,7 +44,6 @@
     border-radius:22px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
   }
-
   .statusBox{
     padding:14px 14px 10px;
     margin-bottom:12px;
@@ -313,7 +312,6 @@
     opacity:1;
     pointer-events:auto;
   }
-
   .girlOverlay{
     background:#000;
   }
@@ -451,10 +449,10 @@
     <div class="panel statusBox">
       <div class="statusTop">
         <span id="turnLabel">現在の番：あなた</span>
-        <span>3点スタート / 5点先取</span>
+        <span id="roundLabel">東局</span>
       </div>
       <div class="statusMain" id="statusMain">ゲーム開始</div>
-      <div class="subInfo" id="subInfo">チー娘が代わりに話してくれるよ</div>
+      <div class="subInfo" id="subInfo">東南西北の半チャン / ツモ・ロンあり</div>
     </div>
 
     <div class="panel scoreWrap">
@@ -510,7 +508,7 @@
   <div class="resultOverlay" id="resultOverlay">
     <div class="resultBox">
       <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
-      <div class="resultSub" id="resultSub">5点に到達しました。</div>
+      <div class="resultSub" id="resultSub">トップで終了しました。</div>
       <div class="resultList" id="resultList"></div>
       <div class="resultButtons">
         <button class="resultBtn resultRetry" id="retryBtn" type="button">もう一回</button>
@@ -519,13 +517,13 @@
   </div>
 
 <script>
-  const START_POINT = 3;
-  const WIN_POINT = 5;
+  const START_POINT = 5;
   const HAND_SIZE = 5;
-  const COPIES_PER_TILE = 4;
+  const COPIES_PER_TILE = 6;
   const WAIT_SHORT = 380;
   const WAIT_MID = 700;
   const WAIT_LONG = 1150;
+  const ROUNDS = ["東","南","西","北"];
 
   const TILES = [
     { id:"dekabusa", name:"デカブサ", image:"tile_dekabusa.png" },
@@ -550,64 +548,70 @@
     {
       name:"チー娘A",
       image:"girl1.png",
-      introHuman:["あなたの番だよ。","どれ切る？","準備できたら選んで。"],
-      drawHumanGood:["それ良さそう！","来たかも！","ギュウ…？"],
-      drawHumanNormal:["どうかな。","まだこれからだね。","考えどころ。"],
-      introCpu:["いくよ。","見てて。","引くね。"],
-      drawCpuGood:["いい感じ。","来たかも。","そろいそう！"],
-      drawCpuNormal:["うーん。","まだかな。","悪くないかも。"],
-      discard:["これかな。","これを切るね。","いったんこれで。"],
-      roundWin:["ギュウ！！","やった！","勝ち！"],
-      roundLose:["惜しかったね。","あと少しだった。","次いこう。"],
-      score:["点数が動いたよ。","これで差がついたね。","まだまだこれから。"],
-      finalWinYou:["やった、あなたの勝ち。","先に5点だね。","優勝、おめでとう。"],
-      finalWinCpu:["やった、私が勝ち。","先に決めたよ。","優勝した。"]
+      introHuman:["あなたの番だよ。","どれ切る？","いけそうだね。","1枚選んでね。"],
+      drawHumanGood:["それ良さそう！","来たかも！","ギュウ…？","かなりいいね。"],
+      drawHumanNormal:["どうかな。","まだこれからだね。","悪くないかも。","考えどころだね。"],
+      introCpu:["いくよ。","見てて。","引くね。","私の番だよ。"],
+      drawCpuGood:["来たかも！","いい感じ。","揃いそう！","これ欲しかったかも。"],
+      drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
+      discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
+      tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
+      ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"],
+      drawRound:["流局だね。","今回は誰もそろわなかった。","引き分けだよ。","次の局いこ。"],
+      hako:["飛んじゃったね。","ここで終了だよ。","ハコテンだね。","決まったかも。"],
+      finalWinYou:["やった、あなたの勝ち。","優勝おめでとう。","先にトップだね。","いい感じで終われたね。"],
+      finalWinCpu:["やった、私が勝ち。","先に決めたよ。","勝っちゃった。","これで1位だね。"]
     },
     {
       name:"チー娘B",
       image:"girl2.png",
-      introHuman:["ほら、あなたの番。","どれ切るの？","ちゃんと選んで。"],
-      drawHumanGood:["悪くないじゃん。","来たかもね。","その牌、残す？"],
-      drawHumanNormal:["まあ普通。","まだ何とも。","考えるところね。"],
-      introCpu:["始めるよ。","見てなさい。","引く。"],
-      drawCpuGood:["来るね。","悪くない。","そろうんじゃない？"],
-      drawCpuNormal:["普通。","まだかな。","まあいい。"],
-      discard:["これで。","切るよ。","はい次。"],
-      roundWin:["勝ち。","当然かな。","悪くない結果。"],
-      roundLose:["惜しかったんじゃない？","まあ次かな。","はい次。"],
-      score:["点数更新。","動いたね。","差はまだある。"],
-      finalWinYou:["あなたの勝ちか。まあいいけど。","先に5点ね。","はいはい、おめでとう。"],
-      finalWinCpu:["私の勝ち。","ほらね。","先に決めたけど？"]
+      introHuman:["ほら、あなたの番。","どれ切るの？","ちゃんと見て選んで。","さて、どうするの。"],
+      drawHumanGood:["悪くないじゃん。","来たかもね。","それ残す？","かなりいい形。"],
+      drawHumanNormal:["まあ普通。","まだ何とも。","急がなくていいでしょ。","考えるところね。"],
+      introCpu:["始めるよ。","見てなさい。","引く。","私の番ね。"],
+      drawCpuGood:["来るね。","悪くない。","揃うんじゃない？","だいぶ近い。"],
+      drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
+      discard:["これで。","切るよ。","はい次。","これを捨てる。"],
+      tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
+      ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"],
+      drawRound:["流局ね。","誰も上がれなかったか。","今局はなし。","次で決める。"],
+      hako:["飛んだね。","ここで終了。","もう持たないか。","決着ね。"],
+      finalWinYou:["あなたの勝ちか。まあいいけど。","先にトップね。","はいはい、おめでとう。","最後はあなたか。"],
+      finalWinCpu:["私の勝ち。","まあ当然かな。","トップで終了。","予定通り。"]
     },
     {
       name:"チー娘C",
       image:"girl3.png",
-      introHuman:["あなたの番。","どれでもいいけど選んで。","……切って。"],
-      drawHumanGood:["揃うかもね。","来たっぽい。","まあ良さそう。"],
-      drawHumanNormal:["どうだろ。","まだ分からない。","……普通。"],
-      introCpu:["……いく。","引く。","始める。"],
-      drawCpuGood:["来た。","揃うかも。","悪くない。"],
-      drawCpuNormal:["……まだ。","ふつう。","別に。"],
-      discard:["これで。","切る。","……次。"],
-      roundWin:["勝った。","終わり。","まあいいか。"],
-      roundLose:["負けた。","惜しい。","……次。"],
-      score:["点数が動いた。","変わった。","まだ終わらない。"],
-      finalWinYou:["ゴールじゃないけど勝ち。","あなたが優勝。","……おめでとう。"],
-      finalWinCpu:["私が優勝。","終わり。","……勝った。"]
+      introHuman:["あなたの番。","どれでもいいけど選んで。","……切って。","好きにして。"],
+      drawHumanGood:["揃うかもね。","来たっぽい。","まあ良さそう。","悪くない。"],
+      drawHumanNormal:["どうだろ。","まだ分からない。","……普通。","別に。"],
+      introCpu:["……いく。","引く。","始める。","私の番。"],
+      drawCpuGood:["来た。","揃うかも。","悪くない。","たぶんこれ。"],
+      drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
+      discard:["これで。","切る。","……次。","いらない。"],
+      tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
+      ron:["それロン。","その牌でいい。","待ってた。","完成。"],
+      drawRound:["流局。","誰も上がらない。","……終わり。","次。"],
+      hako:["飛んだ。","ここで終わり。","ハコテン。","……決まり。"],
+      finalWinYou:["あなたが優勝。","……おめでとう。","トップだね。","終わり。あなたの勝ち。"],
+      finalWinCpu:["私が優勝。","……終わり。","勝った。","これで終わり。"]
     }
   ];
 
   let deck = [];
   let turnIndex = 0;
+  let roundIndex = 0;
   let gameEnded = false;
   let busy = false;
   let waitingPlayerDiscard = false;
   let justDrawnIndex = -1;
   let lastDiscard = null;
   let lastDiscardOwner = "---";
+  let lastDiscardFromIndex = -1;
   let historyLogs = [];
 
   const turnLabel = document.getElementById("turnLabel");
+  const roundLabel = document.getElementById("roundLabel");
   const statusMain = document.getElementById("statusMain");
   const subInfo = document.getElementById("subInfo");
   const scoreList = document.getElementById("scoreList");
@@ -726,6 +730,11 @@
     return null;
   }
 
+  function canRonWithTile(hand, tileId){
+    const map = countMap(hand);
+    return (map[tileId] || 0) >= 2;
+  }
+
   function drawTile(player){
     if(deck.length <= 0) return null;
     const tileId = deck.pop();
@@ -834,6 +843,7 @@
 
   function renderAll(){
     turnLabel.textContent = `現在の番：${getCurrentPlayer().name}`;
+    roundLabel.textContent = `${ROUNDS[roundIndex]}局`;
     deckCount.textContent = deck.length;
     lastOwner.textContent = lastDiscardOwner;
     renderLastDiscard();
@@ -856,8 +866,8 @@
     if(winners.length === 1){
       resultTitle.textContent = `${winners[0].name}の優勝！`;
       resultSub.textContent = winners[0].id === "you"
-        ? "5点到達、または終了時トップでした。"
-        : "相手が5点到達、または終了時トップでした。";
+        ? "トップで終了しました。"
+        : "相手がトップで終了しました。";
     } else {
       resultTitle.textContent = "同点優勝！";
       resultSub.textContent = winners.map(w => w.name).join(" / ") + " が同点トップでした。";
@@ -891,25 +901,8 @@
   function judgeRoundRanking(){
     const ranking = players.map(player => ({
       player,
-      winTile:getWinningTile(player.hand),
       best:getBestCount(player.hand)
     }));
-
-    const instantWinners = ranking.filter(r => r.winTile);
-    if(instantWinners.length === 1){
-      return {
-        winner: instantWinners[0].player,
-        loser: null,
-        reason:"instant"
-      };
-    }
-    if(instantWinners.length >= 2){
-      return {
-        winner: null,
-        loser: null,
-        reason:"draw"
-      };
-    }
 
     const sorted = [...ranking].sort((a,b) => b.best - a.best);
     const topBest = sorted[0].best;
@@ -923,20 +916,26 @@
       };
     }
 
-    const bottomBest = sorted[sorted.length - 1].best;
-    const bottomPlayers = sorted.filter(r => r.best === bottomBest);
-
     return {
       winner: sorted[0].player,
-      loser: bottomPlayers.length === 1 ? bottomPlayers[0].player : null,
+      loser: null,
       reason:"best"
     };
   }
 
-  function applyRoundPoints(winner, loser){
-    if(winner) winner.point += 1;
-    if(loser) loser.point -= 1;
-    if(loser && loser.point < 0) loser.point = 0;
+  function applyTsumoPoints(winnerIndex){
+    players.forEach((p, idx) => {
+      if(idx === winnerIndex){
+        p.point += 3;
+      } else {
+        p.point -= 1;
+      }
+    });
+  }
+
+  function applyRonPoints(winnerIndex, discarderIndex){
+    players[winnerIndex].point += 2;
+    players[discarderIndex].point -= 2;
   }
 
   function getFinalWinnersByPoints(){
@@ -944,55 +943,115 @@
     return players.filter(p => p.point === max);
   }
 
-  function checkMatchEnd(){
-    const reached = players.filter(p => p.point >= WIN_POINT);
-    if(reached.length){
-      const max = Math.max(...reached.map(p => p.point));
-      return players.filter(p => p.point === max);
-    }
-
-    const zeroExists = players.some(p => p.point <= 0);
-    if(zeroExists){
-      return getFinalWinnersByPoints();
-    }
-
-    return null;
+  function hasHako(){
+    return players.some(p => p.point <= 0);
   }
 
-  async function playRoundEnd(result){
-    if(result.reason === "draw"){
-      const girlIndex = getSupportGirlIndex();
-      showGirl(girlIndex, "引き分けだね。点数はそのまま。");
+  async function playRoundEndByTsumo(winnerIndex, winTile){
+    const winner = players[winnerIndex];
+    const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
+    const g = girls[girlIndex];
+
+    showGirl(girlIndex, rand(g.tsumo));
+    await wait(WAIT_LONG);
+    hideGirl();
+
+    applyTsumoPoints(winnerIndex);
+    addHistory(`${ROUNDS[roundIndex]}局：${winner.name} が ${getTileName(winTile)} をツモ。`);
+
+    statusMain.textContent = `${winner.name} ツモ`;
+    subInfo.textContent = `他3人から各1点`;
+    renderAll();
+
+    await wait(WAIT_SHORT);
+
+    if(hasHako()){
+      showGirl(girlIndex, rand(g.hako));
       await wait(WAIT_LONG);
       hideGirl();
-      addHistory("この局は引き分け。点数変動なし。");
+      gameEnded = true;
+      await showMatchFinal(getFinalWinnersByPoints());
       return;
     }
 
-    const winner = result.winner;
-    const loser = result.loser;
-    const girlIndex = winner.id === "you" ? getSupportGirlIndex() : winner.girlIndex;
+    await nextRoundOrFinish();
+  }
 
-    if(winner.id === "you"){
-      showGirl(girlIndex, rand(girls[girlIndex].roundWin));
-    } else {
-      showGirl(girlIndex, rand(girls[girlIndex].roundWin));
+  async function playRoundEndByRon(winnerIndex, discarderIndex, tileId){
+    const winner = players[winnerIndex];
+    const discarder = players[discarderIndex];
+    const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
+    const g = girls[girlIndex];
+
+    showGirl(girlIndex, rand(g.ron));
+    await wait(WAIT_LONG);
+    hideGirl();
+
+    applyRonPoints(winnerIndex, discarderIndex);
+    addHistory(`${ROUNDS[roundIndex]}局：${winner.name} が ${discarder.name} の ${getTileName(tileId)} でロン。`);
+
+    statusMain.textContent = `${winner.name} ロン`;
+    subInfo.textContent = `${discarder.name} から2点`;
+    renderAll();
+
+    await wait(WAIT_SHORT);
+
+    if(hasHako()){
+      showGirl(girlIndex, rand(g.hako));
+      await wait(WAIT_LONG);
+      hideGirl();
+      gameEnded = true;
+      await showMatchFinal(getFinalWinnersByPoints());
+      return;
     }
+
+    await nextRoundOrFinish();
+  }
+
+  async function playRoundDraw(){
+    const girlIndex = getSupportGirlIndex();
+    const g = girls[girlIndex];
+
+    showGirl(girlIndex, rand(g.drawRound));
     await wait(WAIT_LONG);
     hideGirl();
 
-    applyRoundPoints(winner, loser);
+    addHistory(`${ROUNDS[roundIndex]}局：流局。点数変動なし。`);
+    statusMain.textContent = "流局";
+    subInfo.textContent = "点数変動なし";
+    renderAll();
 
-    const scoreGirl = winner.id === "you" ? getSupportGirlIndex() : winner.girlIndex;
-    let text = `${winner.name} +1`;
-    if(loser) text += ` / ${loser.name} -1`;
-    else text += ` / 最下位同点で減点なし`;
+    await nextRoundOrFinish();
+  }
 
-    showGirl(scoreGirl, text);
+  async function playRoundBestWin(winnerIndex){
+    const winner = players[winnerIndex];
+    const girlIndex = winner.type === "human" ? getSupportGirlIndex() : winner.girlIndex;
+    const g = girls[girlIndex];
+
+    showGirl(girlIndex, winner.type === "human" ? rand(g.tsumo) : rand(g.tsumo));
     await wait(WAIT_LONG);
     hideGirl();
 
-    addHistory(`${winner.name} がこの局の勝ち。${text}`);
+    players[winnerIndex].point += 1;
+    addHistory(`${ROUNDS[roundIndex]}局：山札終了。${winner.name} が最大一致で勝ち。`);
+
+    statusMain.textContent = "山札終了";
+    subInfo.textContent = `${winner.name} +1`;
+    renderAll();
+
+    await wait(WAIT_SHORT);
+
+    if(hasHako()){
+      showGirl(girlIndex, rand(g.hako));
+      await wait(WAIT_LONG);
+      hideGirl();
+      gameEnded = true;
+      await showMatchFinal(getFinalWinnersByPoints());
+      return;
+    }
+
+    await nextRoundOrFinish();
   }
 
   async function showMatchFinal(winners){
@@ -1016,6 +1075,27 @@
     showResultScreen(winners);
   }
 
+  async function nextRoundOrFinish(){
+    roundIndex += 1;
+    if(roundIndex >= ROUNDS.length){
+      gameEnded = true;
+      await showMatchFinal(getFinalWinnersByPoints());
+      return;
+    }
+    await wait(500);
+    await startRound();
+  }
+
+  function getRonCandidateAfterDiscard(discarderIndex, tileId){
+    for(let offset = 1; offset < players.length; offset++){
+      const idx = (discarderIndex + offset) % players.length;
+      if(canRonWithTile(players[idx].hand, tileId)){
+        return idx;
+      }
+    }
+    return -1;
+  }
+
   async function startRound(){
     if(gameEnded) return;
 
@@ -1023,6 +1103,7 @@
     players.forEach(p => p.hand = []);
     lastDiscard = null;
     lastDiscardOwner = "---";
+    lastDiscardFromIndex = -1;
     justDrawnIndex = -1;
     waitingPlayerDiscard = false;
 
@@ -1030,11 +1111,10 @@
       players.forEach(p => drawTile(p));
     }
 
-    statusMain.textContent = "新しい局を開始";
-    subInfo.textContent = "同じ牌を3枚そろえたら勝ち";
+    statusMain.textContent = `${ROUNDS[roundIndex]}局開始`;
+    subInfo.textContent = "同じ牌3枚で上がり";
     renderAll();
-
-    addHistory("新しい局を開始。");
+    addHistory(`${ROUNDS[roundIndex]}局開始。`);
 
     await wait(500);
     turnIndex = 0;
@@ -1063,7 +1143,7 @@
       await wait(WAIT_LONG);
       hideGirl();
       await wait(220);
-      await cpuTurn(player);
+      await cpuTurn(turnIndex);
     }
   }
 
@@ -1085,24 +1165,10 @@
 
     const winTile = getWinningTile(me.hand);
     if(winTile){
-      showGirl(girlIndex, rand(girls[girlIndex].roundWin));
       statusMain.textContent = `${getTileName(winTile)} が3枚そろった`;
-      subInfo.textContent = "この局の勝ち";
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      await playRoundEnd({ winner:me, loser:getRoundLoserExcluding(me), reason:"instant" });
-      const finals = checkMatchEnd();
+      subInfo.textContent = "ツモ";
       renderAll();
-
-      if(finals){
-        gameEnded = true;
-        await showMatchFinal(finals);
-      } else {
-        await wait(500);
-        await startRound();
-      }
-
+      await playRoundEndByTsumo(0, winTile);
       setBusy(false);
       return;
     }
@@ -1122,14 +1188,6 @@
     renderAll();
   }
 
-  function getRoundLoserExcluding(winner){
-    const others = players.filter(p => p.id !== winner.id);
-    const minBest = Math.min(...others.map(p => getBestCount(p.hand)));
-    const losers = others.filter(p => getBestCount(p.hand) === minBest);
-    if(losers.length === 1) return losers[0];
-    return null;
-  }
-
   async function onPlayerDiscard(index){
     if(gameEnded || busy || !waitingPlayerDiscard) return;
 
@@ -1140,21 +1198,29 @@
     const removed = me.hand.splice(index, 1)[0];
     lastDiscard = removed;
     lastDiscardOwner = me.name;
+    lastDiscardFromIndex = 0;
     justDrawnIndex = -1;
 
     statusMain.textContent = `${getTileName(removed)} を捨てた`;
-    subInfo.textContent = "相手の番へ";
+    subInfo.textContent = "ロン判定中";
     addHistory(`あなた が ${getTileName(removed)} を捨てた。`);
     renderAll();
 
     await wait(WAIT_SHORT);
+
+    const ronWinner = getRonCandidateAfterDiscard(0, removed);
+    if(ronWinner >= 0){
+      await playRoundEndByRon(ronWinner, 0, removed);
+      setBusy(false);
+      return;
+    }
 
     turnIndex = (turnIndex + 1) % players.length;
     setBusy(false);
     await introTurn();
   }
 
-  async function cpuTurn(player){
+  async function cpuTurn(playerIndex){
     if(gameEnded) return;
 
     setBusy(true);
@@ -1165,29 +1231,16 @@
       return;
     }
 
+    const player = players[playerIndex];
+    const girlIndex = player.girlIndex;
     const tileId = drawTile(player);
     renderAll();
 
-    const girlIndex = player.girlIndex;
     if(getWinningTile(player.hand)){
-      showGirl(girlIndex, rand(girls[girlIndex].roundWin));
       statusMain.textContent = `${player.name} が ${getTileName(getWinningTile(player.hand))} をそろえた`;
-      subInfo.textContent = "この局の勝ち";
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      await playRoundEnd({ winner:player, loser:getRoundLoserExcluding(player), reason:"instant" });
-      const finals = checkMatchEnd();
+      subInfo.textContent = "ツモ";
       renderAll();
-
-      if(finals){
-        gameEnded = true;
-        await showMatchFinal(finals);
-      } else {
-        await wait(500);
-        await startRound();
-      }
-
+      await playRoundEndByTsumo(playerIndex, getWinningTile(player.hand));
       setBusy(false);
       return;
     }
@@ -1210,13 +1263,21 @@
     const removed = player.hand.splice(discardIndex, 1)[0];
     lastDiscard = removed;
     lastDiscardOwner = player.name;
+    lastDiscardFromIndex = playerIndex;
 
     statusMain.textContent = `${player.name} が ${getTileName(removed)} を捨てた`;
-    subInfo.textContent = "次の番へ";
+    subInfo.textContent = "ロン判定中";
     addHistory(`${player.name} が ${getTileName(removed)} を捨てた。`);
     renderAll();
 
     await wait(WAIT_SHORT);
+
+    const ronWinner = getRonCandidateAfterDiscard(playerIndex, removed);
+    if(ronWinner >= 0){
+      await playRoundEndByRon(ronWinner, playerIndex, removed);
+      setBusy(false);
+      return;
+    }
 
     turnIndex = (turnIndex + 1) % players.length;
     setBusy(false);
@@ -1230,16 +1291,11 @@
     subInfo.textContent = "一致数で判定";
     renderAll();
 
-    await playRoundEnd(result);
-    const finals = checkMatchEnd();
-    renderAll();
-
-    if(finals){
-      gameEnded = true;
-      await showMatchFinal(finals);
+    if(result.reason === "draw"){
+      await playRoundDraw();
     } else {
-      await wait(500);
-      await startRound();
+      const winnerIndex = players.findIndex(p => p.id === result.winner.id);
+      await playRoundBestWin(winnerIndex);
     }
   }
 
@@ -1254,19 +1310,21 @@
 
     deck = [];
     turnIndex = 0;
+    roundIndex = 0;
     gameEnded = false;
     busy = false;
     waitingPlayerDiscard = false;
     justDrawnIndex = -1;
     lastDiscard = null;
     lastDiscardOwner = "---";
+    lastDiscardFromIndex = -1;
     historyLogs = [];
 
     statusMain.textContent = "ゲーム開始";
-    subInfo.textContent = "3点スタート / 5点先取";
+    subInfo.textContent = "東南西北の半チャン";
     renderHistory();
     renderAll();
-    addHistory("ゲーム開始。全員3点スタート。");
+    addHistory("ゲーム開始。全員5点スタート。");
 
     await wait(350);
     await startRound();
