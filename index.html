@@ -13,13 +13,7 @@
   --line:rgba(255,255,255,.10);
   --text:#fff;
   --sub:rgba(255,255,255,.72);
-  --accent:#7aa2ff;
   --good:#ffd45c;
-  --danger:#ff8b8b;
-  --cpu1:#7ab8ff;
-  --cpu2:#ff9ac8;
-  --cpu3:#9fe3a1;
-  --me:#ffd45c;
 }
 html,body{
   margin:0;
@@ -27,9 +21,7 @@ html,body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
 }
-body{
-  min-height:100svh;
-}
+body{min-height:100svh}
 .app{
   width:100%;
   max-width:560px;
@@ -47,9 +39,7 @@ body{
   padding:12px;
   box-shadow:0 6px 20px rgba(0,0,0,.18);
 }
-.header{
-  text-align:center;
-}
+.header{text-align:center}
 .title{
   font-size:22px;
   font-weight:900;
@@ -119,7 +109,6 @@ body{
 .cpu1{box-shadow:inset 0 0 0 1px rgba(122,184,255,.15)}
 .cpu2{box-shadow:inset 0 0 0 1px rgba(255,154,200,.15)}
 .cpu3{box-shadow:inset 0 0 0 1px rgba(159,227,161,.15)}
-.meBox{box-shadow:inset 0 0 0 1px rgba(255,212,92,.15)}
 
 .centerArea{
   display:grid;
@@ -185,19 +174,22 @@ body{
   gap:8px;
 }
 .tile{
-  min-width:84px;
-  height:64px;
+  width:88px;
+  height:88px;
   border:none;
-  border-radius:14px;
+  border-radius:16px;
   color:#fff;
-  font-size:14px;
+  font-size:13px;
   font-weight:900;
-  padding:8px 10px;
-  background:#3d4757;
+  padding:6px;
+  background:linear-gradient(180deg,#4f5d73,#414b5d);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
-}
-.tile.me{
-  background:linear-gradient(180deg,#526178,#424d60);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  overflow:hidden;
+  position:relative;
 }
 .tile.drawn{
   outline:2px solid var(--good);
@@ -205,6 +197,17 @@ body{
 }
 .tile:disabled{
   opacity:.55;
+}
+.tile img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:12px;
+  display:block;
+}
+.tileText{
+  line-height:1.2;
+  padding:4px;
 }
 .controls{
   display:flex;
@@ -266,7 +269,6 @@ body{
   font-weight:900;
   background:rgba(255,255,255,.16);
   border:1px solid rgba(255,255,255,.22);
-  backdrop-filter:blur(2px);
 }
 .cutinTop{
   display:flex;
@@ -287,7 +289,6 @@ body{
   font-size:24px;
   line-height:1.35;
   font-weight:900;
-  text-shadow:0 2px 12px rgba(0,0,0,.25);
 }
 .cutinSub{
   margin-top:8px;
@@ -298,7 +299,6 @@ body{
 .theme-cpu2{background:linear-gradient(135deg,#d85f97,#7d2c53)}
 .theme-cpu3{background:linear-gradient(135deg,#52aa65,#2e6540)}
 .theme-me{background:linear-gradient(135deg,#dfab32,#8d6620)}
-.theme-neutral{background:linear-gradient(135deg,#5f6773,#2f3640)}
 
 .footerNote{
   font-size:11px;
@@ -306,9 +306,8 @@ body{
   text-align:center;
   padding-bottom:4px;
 }
-
 @media (max-width:390px){
-  .tile{min-width:72px;height:60px;font-size:13px}
+  .tile{width:78px;height:78px}
   .title{font-size:20px}
 }
 </style>
@@ -317,7 +316,7 @@ body{
 <div class="app">
   <div class="panel header">
     <div class="title">チー娘ドンジャラ試作</div>
-    <div class="sub">4人ゆる対戦 / 同じ牌3枚を2セットで勝ち</div>
+    <div class="sub">デカブサ牌 / 4人ゆる対戦 / 同じ牌3枚で勝ち</div>
   </div>
 
   <div class="panel">
@@ -350,11 +349,11 @@ body{
     <button class="btn subbtn" id="restartBtn">やり直し</button>
   </div>
 
-  <div class="footerNote">文字牌版。あとで画像牌に差し替え可能。</div>
+  <div class="footerNote">画像が無い牌は文字表示になります</div>
 </div>
 
 <div class="cutin" id="cutin">
-  <div class="cutinCard theme-neutral" id="cutinCard">
+  <div class="cutinCard theme-me" id="cutinCard">
     <div class="cutinTop">
       <div class="cutinFace" id="cutinFace">A</div>
       <div>
@@ -370,15 +369,19 @@ body{
 <script>
 (() => {
   const HAND_SIZE = 5;
-  const COPIES_PER_TILE = 6;
+  const COPIES_PER_TILE = 4; // 9種×4枚=36枚、かなり回りやすくなる
+  const WIN_SET_COUNT = 1;   // 1セットできたら勝ち
 
-  const TILE_NAMES = [
-    "チー娘A",
-    "チー娘B",
-    "チー娘C",
-    "デカブサ",
-    "カバオ",
-    "ペンペン"
+  const TILES = [
+    { id:"dekabusa", name:"デカブサ",  image:"tile_dekabusa.png" },
+    { id:"kabao",    name:"カバオ",    image:"tile_kabao.png" },
+    { id:"penpen",   name:"ペンペン",  image:"tile_penpen.png" },
+    { id:"quochan",  name:"クオちゃん",image:"tile_quochan.png" },
+    { id:"namaken",  name:"ナマケン",  image:"tile_namaken.png" },
+    { id:"hachibou", name:"ハチボウ",  image:"tile_hachibou.png" },
+    { id:"yumeo",    name:"ユメオ",    image:"tile_yumeo.png" },
+    { id:"juuzou",   name:"ジュウゾウ",image:"tile_juuzou.png" },
+    { id:"bird",     name:"バード",    image:"tile_bird.png" }
   ];
 
   const PLAYERS = [
@@ -388,7 +391,7 @@ body{
       role:"プレイヤー",
       face:"YOU",
       theme:"theme-me",
-      miniClass:"meBox",
+      miniClass:"cpu1",
       isHuman:true,
       hand:[]
     },
@@ -426,35 +429,28 @@ body{
 
   const LINES = {
     p1: {
-      turn: ["わたしの番！","見るだけでも楽しいね","そろうといいな","いくよ！"],
-      drawGood: ["あ、来たかも","これ欲しかった","ギュウ…？","揃いそう！"],
-      drawNormal: ["うーん","どうかな","まだこれから","悪くないかも"],
-      win: ["ギュウ！！","やった！","できた！","勝っちゃった！"],
-      lose: ["あ…","そっか…","残念…","負けたかあ"],
-      danger: ["ちょっと来てる…！","あと少しかも","これは熱い！"]
+      turn: ["わたしの番！","いくよ！","そろうといいな"],
+      drawGood: ["あ、来たかも","これ欲しかった","ギュウ…？"],
+      drawNormal: ["どうかな","まだこれから","悪くないかも"],
+      win: ["ギュウ！！","やった！","できた！"]
     },
     p2: {
-      turn: ["わたしの番","まあ普通","見せてあげる","悪くない流れ"],
-      drawGood: ["来るね","揃う","悪くない","予定通り"],
-      drawNormal: ["まだかな","普通","急がなくていい","まあいい"],
-      win: ["勝ち","当然かな","悪くなかった","決まり"],
-      lose: ["外したか","まあいい","そういうこともある","次でいい"],
-      danger: ["かなり近い","もう見えてる","悪くない形"]
+      turn: ["わたしの番","まあ普通","見せてあげる"],
+      drawGood: ["来るね","揃う","悪くない"],
+      drawNormal: ["まだかな","普通","まあいい"],
+      win: ["勝ち","当然かな","決まり"]
     },
     p3: {
-      turn: ["わたしの番らしい","ふーん","やるだけやる","今じゃないけどやる"],
-      drawGood: ["揃うかもね","知らんけど","来たっぽい","まあ悪くない"],
-      drawNormal: ["どうでもいい","ふーん","まあね","別に"],
-      win: ["勝ったらしい","まあいいか","終わった？","いちおう勝ち"],
-      lose: ["負けた","どうでもいい","そっか","まあいいか"],
-      danger: ["わりと来てる","あと少しっぽい","たぶん熱い"]
+      turn: ["わたしの番らしい","ふーん","やるだけやる"],
+      drawGood: ["揃うかもね","知らんけど","来たっぽい"],
+      drawNormal: ["どうでもいい","ふーん","別に"],
+      win: ["勝ったらしい","まあいいか","終わった？"]
     },
     p0: {
-      turn: ["あなたの番","1枚選んで捨ててね","どれを切る？"],
+      turn: ["あなたの番","1枚選んで捨ててね"],
       drawGood: ["いい牌を引いたかも","これは来たかも","揃いそう"],
       drawNormal: ["1枚引いた","さてどうする？"],
-      win: ["ギュウ！！","あなたの勝ち！","やった！"],
-      lose: ["……","今回は負け","また次"]
+      win: ["ギュウ！！","あなたの勝ち！","やった！"]
     }
   };
 
@@ -502,11 +498,20 @@ body{
     return arr;
   }
 
+  function getTileById(id){
+    return TILES.find(t => t.id === id);
+  }
+
+  function getTileName(id){
+    const t = getTileById(id);
+    return t ? t.name : id;
+  }
+
   function createDeck(){
     const arr = [];
-    for(const name of TILE_NAMES){
+    for(const tile of TILES){
       for(let i = 0; i < COPIES_PER_TILE; i++){
-        arr.push(name);
+        arr.push(tile.id);
       }
     }
     return shuffle(arr);
@@ -530,7 +535,7 @@ body{
   }
 
   function isWin(hand){
-    return getCompletedSets(hand) >= 2;
+    return getCompletedSets(hand) >= WIN_SET_COUNT;
   }
 
   function getBestCount(hand){
@@ -585,22 +590,65 @@ body{
     }
   }
 
+  function createTileContent(tileId){
+    const tile = getTileById(tileId);
+    const wrap = document.createElement("div");
+    wrap.style.width = "100%";
+    wrap.style.height = "100%";
+    wrap.style.display = "flex";
+    wrap.style.alignItems = "center";
+    wrap.style.justifyContent = "center";
+
+    if(tile && tile.image){
+      const img = document.createElement("img");
+      img.src = tile.image;
+      img.alt = tile.name;
+      img.onerror = () => {
+        wrap.innerHTML = `<div class="tileText">${tile.name}</div>`;
+      };
+      wrap.appendChild(img);
+    } else {
+      wrap.innerHTML = `<div class="tileText">${tile ? tile.name : tileId}</div>`;
+    }
+
+    return wrap;
+  }
+
   function renderPlayerHand(){
     const me = PLAYERS[0];
     elPlayerHand.innerHTML = "";
-    me.hand.forEach((tile, i) => {
+    me.hand.forEach((tileId, i) => {
       const btn = document.createElement("button");
-      btn.className = "tile me" + (i === justDrawnIndex ? " drawn" : "");
-      btn.textContent = tile;
+      btn.className = "tile" + (i === justDrawnIndex ? " drawn" : "");
       btn.disabled = gameOver || !waitingPlayerDiscard || actionLock;
       btn.onclick = () => playerDiscard(i);
+      btn.appendChild(createTileContent(tileId));
       elPlayerHand.appendChild(btn);
     });
   }
 
+  function renderLastDiscard(){
+    if(lastDiscard === "---"){
+      elLastDiscard.textContent = "---";
+      return;
+    }
+    elLastDiscard.innerHTML = "";
+    const box = document.createElement("div");
+    box.style.width = "88px";
+    box.style.height = "88px";
+    box.style.borderRadius = "14px";
+    box.style.overflow = "hidden";
+    box.style.display = "flex";
+    box.style.alignItems = "center";
+    box.style.justifyContent = "center";
+    box.style.background = "linear-gradient(180deg,#4f5d73,#414b5d)";
+    box.appendChild(createTileContent(lastDiscard));
+    elLastDiscard.appendChild(box);
+  }
+
   function render(){
     elDeckCount.textContent = `${deck.length}`;
-    elLastDiscard.textContent = lastDiscard;
+    renderLastDiscard();
     elDiscardOwner.textContent = lastDiscardOwner;
     updateMiniBoxes();
     renderPlayerHand();
@@ -623,71 +671,65 @@ body{
     await sleep(180);
   }
 
-  function judgeBySets(){
+  function judgeByBest(){
     const ranking = PLAYERS.map(p => ({
       name:p.name,
-      sets:getCompletedSets(p.hand),
       best:getBestCount(p.hand),
       isHuman:p.isHuman
     }));
 
-    ranking.sort((a,b) => {
-      if(b.sets !== a.sets) return b.sets - a.sets;
-      if(b.best !== a.best) return b.best - a.best;
-      return 0;
-    });
-
+    ranking.sort((a,b) => b.best - a.best);
     const top = ranking[0];
-    const sameTop = ranking.filter(r => r.sets === top.sets && r.best === top.best);
+    const sameTop = ranking.filter(r => r.best === top.best);
 
-    if(sameTop.length >= 2){
-      gameOver = true;
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      elResult.textContent = "引き分け";
-      setStatus("山札がなくなった\n同点。まあいいか");
-      render();
-      return;
-    }
-
-    const winner = top;
     gameOver = true;
     waitingPlayerDiscard = false;
     justDrawnIndex = -1;
 
-    if(winner.isHuman){
+    if(sameTop.length >= 2){
+      elResult.textContent = "引き分け";
+      setStatus("山札がなくなった\n同点。まあいいか");
+    } else if(top.isHuman){
       elResult.textContent = "あなたの勝ち";
-      setStatus("山札終了\nセット数判定であなたの勝ち。ギュウ！");
-    }else{
-      elResult.textContent = `${winner.name}の勝ち`;
-      setStatus(`山札終了\nセット数判定で${winner.name}の勝ち……`);
+      setStatus("山札終了\n一番そろっていたのであなたの勝ち。ギュウ！");
+    } else {
+      elResult.textContent = `${top.name}の勝ち`;
+      setStatus(`山札終了\n一番そろっていたので${top.name}の勝ち……`);
     }
     render();
   }
 
-  function finishGame(player, winByDraw = false){
+  function finishGame(player, winTileId){
     gameOver = true;
     waitingPlayerDiscard = false;
     justDrawnIndex = -1;
 
     if(player.isHuman){
       elResult.textContent = "あなたの勝ち";
-      setStatus(winByDraw ? "引いた牌で2セット完成。ギュウ！！" : "2セット完成。ギュウ！！");
+      setStatus(`${getTileName(winTileId)}が3枚そろった。ギュウ！！`);
     }else{
       elResult.textContent = `${player.name}の勝ち`;
-      setStatus(winByDraw ? `${player.name}が引いた牌で2セット完成……` : `${player.name}が2セット完成……`);
+      setStatus(`${player.name}が${getTileName(winTileId)}を3枚そろえた……`);
     }
     render();
+  }
+
+  function getWinningTile(hand){
+    const map = countMap(hand);
+    for(const key in map){
+      if(map[key] >= 3) return key;
+    }
+    return null;
   }
 
   function cpuChooseDiscardIndex(player){
     const map = countMap(player.hand);
 
-    let minCount = Infinity;
     let candidateIndexes = [];
+    let minCount = Infinity;
 
-    player.hand.forEach((tile, i) => {
-      const c = map[tile];
+    player.hand.forEach((tileId, i) => {
+      const c = map[tileId];
       if(c < minCount){
         minCount = c;
         candidateIndexes = [i];
@@ -705,30 +747,33 @@ body{
     currentPlayerIndex = 0;
     render();
 
-    await showCutin(me, rand(LINES.p0.turn), "あなたのターン", 700);
+    await showCutin(me, rand(LINES.p0.turn), "あなたのターン", 650);
 
     if(deck.length <= 0){
-      judgeBySets();
+      judgeByBest();
       return;
     }
 
-    const tile = drawTile(me);
+    const tileId = drawTile(me);
     justDrawnIndex = me.hand.length - 1;
     render();
 
-    const best = getBestCount(me.hand);
-    if(isWin(me.hand)){
-      await showCutin(me, rand(LINES.p0.win), `引いた牌: ${tile}`, 900);
-      finishGame(me, true);
+    const winTile = getWinningTile(me.hand);
+    if(winTile){
+      await showCutin(me, rand(LINES.p0.win), `${getTileName(tileId)}を引いた`, 900);
+      finishGame(me, winTile);
       return;
-    }else if(best >= 3){
-      await showCutin(me, rand(LINES.p0.drawGood), `引いた牌: ${tile}`, 760);
+    }
+
+    const best = getBestCount(me.hand);
+    if(best >= 2){
+      await showCutin(me, rand(LINES.p0.drawGood), `${getTileName(tileId)}を引いた`, 700);
     }else{
-      await showCutin(me, rand(LINES.p0.drawNormal), `引いた牌: ${tile}`, 640);
+      await showCutin(me, rand(LINES.p0.drawNormal), `${getTileName(tileId)}を引いた`, 560);
     }
 
     waitingPlayerDiscard = true;
-    setStatus(`あなたの番\n「${tile}」を引いた。1枚タップして捨ててね`);
+    setStatus(`あなたの番\n「${getTileName(tileId)}」を引いた。1枚タップして捨ててね`);
     render();
   }
 
@@ -743,10 +788,10 @@ body{
     waitingPlayerDiscard = false;
     justDrawnIndex = -1;
 
-    setStatus(`あなたは「${removed}」を捨てた`);
+    setStatus(`あなたは「${getTileName(removed)}」を捨てた`);
     render();
 
-    await sleep(420);
+    await sleep(360);
     actionLock = false;
     nextTurn();
   }
@@ -757,39 +802,36 @@ body{
     currentPlayerIndex = playerIndex;
     render();
 
-    await showCutin(p, rand(LINES[p.id].turn), `${p.name}のターン`, 720);
+    await showCutin(p, rand(LINES[p.id].turn), `${p.name}のターン`, 620);
 
     if(deck.length <= 0){
-      judgeBySets();
+      judgeByBest();
       return;
     }
 
-    const tile = drawTile(p);
+    const tileId = drawTile(p);
     render();
 
-    if(isWin(p.hand)){
-      await showCutin(p, rand(LINES[p.id].win), `引いた牌: ${tile}`, 900);
-      finishGame(p, true);
+    const winTile = getWinningTile(p.hand);
+    if(winTile){
+      await showCutin(p, rand(LINES[p.id].win), `${getTileName(tileId)}を引いた`, 880);
+      finishGame(p, winTile);
       return;
     }
 
     const best = getBestCount(p.hand);
-    if(best >= 3){
-      await showCutin(p, rand(LINES[p.id].drawGood), `引いた牌: ${tile}`, 700);
-    }else if(best >= 2){
-      if(Math.random() < 0.35){
-        await showCutin(p, rand(LINES[p.id].danger), `引いた牌: ${tile}`, 640);
-      }
+    if(best >= 2){
+      await showCutin(p, rand(LINES[p.id].drawGood), `${getTileName(tileId)}を引いた`, 620);
     }
 
     const discardIndex = cpuChooseDiscardIndex(p);
     const removed = p.hand.splice(discardIndex, 1)[0];
     lastDiscard = removed;
     lastDiscardOwner = p.name;
-    setStatus(`${p.name}は「${removed}」を捨てた`);
+    setStatus(`${p.name}は「${getTileName(removed)}」を捨てた`);
     render();
 
-    await sleep(480);
+    await sleep(380);
     nextTurn();
   }
 
@@ -797,7 +839,7 @@ body{
     if(gameOver) return;
 
     if(deck.length <= 0){
-      judgeBySets();
+      judgeByBest();
       return;
     }
 
@@ -834,14 +876,15 @@ body{
     render();
 
     for(const p of PLAYERS){
-      if(isWin(p.hand)){
-        finishGame(p, false);
+      const winTile = getWinningTile(p.hand);
+      if(winTile){
+        finishGame(p, winTile);
         return;
       }
     }
 
     setStatus("開始するよ");
-    await sleep(250);
+    await sleep(220);
     await playerTurn();
   }
 
