@@ -172,6 +172,22 @@
     opacity:.82;
     text-align:right;
   }
+  .riverColumnHeads{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-bottom:8px;
+  }
+  .riverColHead{
+    text-align:center;
+    font-size:11px;
+    font-weight:900;
+    opacity:.82;
+    padding:2px 0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
   .riverGrid{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -555,6 +571,9 @@
     font-size:14px;
     font-weight:800;
   }
+  .nextRoundWrap{
+    margin-top:14px;
+  }
 
   .titleOverlay{
     z-index:140;
@@ -726,6 +745,7 @@
             <div class="topTitle">捨て牌</div>
             <div class="riverOwner" id="lastOwner">---</div>
           </div>
+          <div class="riverColumnHeads" id="riverColumnHeads"></div>
           <div class="riverGrid" id="riverGrid"></div>
           <div class="riverEmpty" id="riverEmpty">まだ捨て牌はありません</div>
         </div>
@@ -797,6 +817,9 @@
       <div class="roundResultWin" id="roundResultWin">チー娘A ロン</div>
       <div class="roundResultDesc" id="roundResultDesc">チー娘Cから2点</div>
       <div class="roundResultScore" id="roundResultScore"></div>
+      <div class="nextRoundWrap">
+        <button id="nextRoundBtn" class="resultBtn resultRetry" type="button">次の局へ</button>
+      </div>
     </div>
   </div>
 
@@ -820,7 +843,6 @@
     const WAIT_LONG = 1450;
     const WAIT_RON_CHECK = 900;
     const WAIT_DISCARD_PREVIEW = 900;
-    const WAIT_ROUND_RESULT = 2200;
     const WAIT_ROUND_START_GAP = 700;
 
     const PARENT_ORDER = ["東","南","西","北"];
@@ -938,6 +960,7 @@
     let lastDiscardInfo = null;
     let pendingTsumo = false;
     let pendingRon = false;
+    let pendingNextRoundAction = null;
 
     const lastGirlImageIndex = { 0:-1, 1:-1, 2:-1 };
 
@@ -957,10 +980,12 @@
     const tsumoBtn = document.getElementById("tsumoBtn");
     const ronBtn = document.getElementById("ronBtn");
     const passBtn = document.getElementById("passBtn");
+    const nextRoundBtn = document.getElementById("nextRoundBtn");
 
     const riverGrid = document.getElementById("riverGrid");
     const riverEmpty = document.getElementById("riverEmpty");
     const lastOwner = document.getElementById("lastOwner");
+    const riverColumnHeads = document.getElementById("riverColumnHeads");
 
     const girlOverlay = document.getElementById("girlOverlay");
     const girlBg = document.getElementById("girlBg");
@@ -1252,8 +1277,20 @@
       parent.appendChild(inner);
     }
 
+    function renderRiverColumnHeads(){
+      riverColumnHeads.innerHTML = "";
+      const order = getTurnOrder();
+      order.forEach(player => {
+        const div = document.createElement("div");
+        div.className = "riverColHead";
+        div.textContent = `${player.seat} ${player.name}`;
+        riverColumnHeads.appendChild(div);
+      });
+    }
+
     function renderDiscardPile(){
       riverGrid.innerHTML = "";
+      renderRiverColumnHeads();
 
       if(!discardPile.length){
         riverEmpty.style.display = "flex";
@@ -1263,13 +1300,44 @@
 
       riverEmpty.style.display = "none";
 
-      discardPile.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "riverTile" + (index === discardPile.length - 1 ? " last" : "");
-        div.style.background = getTileColor(item.tileId);
-        div.title = `${item.owner}：${getTileName(item.tileId)}`;
-        riverGrid.appendChild(div);
+      const order = getTurnOrder();
+      const playerIndexMap = {};
+      order.forEach((player, index) => {
+        playerIndexMap[player.id] = index;
       });
+
+      const columnStacks = [[], [], [], []];
+
+      discardPile.forEach((item, index) => {
+        const col = playerIndexMap[item.playerId];
+        if(col !== undefined){
+          columnStacks[col].push({
+            ...item,
+            isLast: index === discardPile.length - 1
+          });
+        }
+      });
+
+      const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
+
+      for(let row = 0; row < maxRows; row++){
+        for(let col = 0; col < 4; col++){
+          const item = columnStacks[col][row];
+          const div = document.createElement("div");
+
+          if(item){
+            div.className = "riverTile" + (item.isLast ? " last" : "");
+            div.style.background = getTileColor(item.tileId);
+            div.title = `${item.owner}：${getTileName(item.tileId)}`;
+          } else {
+            div.className = "riverTile";
+            div.style.opacity = "0";
+            div.style.pointerEvents = "none";
+          }
+
+          riverGrid.appendChild(div);
+        }
+      }
 
       lastOwner.textContent = discardPile[discardPile.length - 1].owner;
     }
@@ -1443,15 +1511,16 @@
       });
     }
 
-    async function showRoundResult(roundText, winText, descText){
-      roundResultRound.textContent = roundText;
-      roundResultWin.textContent = winText;
-      roundResultDesc.textContent = descText;
-      renderRoundResultScores();
-      roundResultOverlay.classList.add("show");
-      await wait(WAIT_ROUND_RESULT);
-      roundResultOverlay.classList.remove("show");
-      await wait(180);
+    function showRoundResult(roundText, winText, descText){
+      return new Promise((resolve) => {
+        roundResultRound.textContent = roundText;
+        roundResultWin.textContent = winText;
+        roundResultDesc.textContent = descText;
+        renderRoundResultScores();
+
+        pendingNextRoundAction = resolve;
+        roundResultOverlay.classList.add("show");
+      });
     }
 
     async function showParentFlowCutin(type, targetPlayer){
@@ -1798,7 +1867,11 @@
       await wait(WAIT_DISCARD_PREVIEW);
       hideGirl();
 
-      discardPile.push({ tileId: removed, owner: `${me.seat}　${me.name}` });
+      discardPile.push({
+        tileId: removed,
+        owner: `${me.seat}　${me.name}`,
+        playerId: me.id
+      });
 
       statusMain.textContent = `${getTileName(removed)} を捨てた`;
       subInfo.textContent = "ロン判定中";
@@ -1884,7 +1957,11 @@
       await wait(WAIT_DISCARD_PREVIEW);
       hideGirl();
 
-      discardPile.push({ tileId: removed, owner: `${player.seat}　${player.name}` });
+      discardPile.push({
+        tileId: removed,
+        owner: `${player.seat}　${player.name}`,
+        playerId: player.id
+      });
 
       statusMain.textContent = `${player.name} が ${getTileName(removed)} を捨てた`;
       subInfo.textContent = "ロン判定中";
@@ -1977,6 +2054,7 @@
       hideResultScreen();
       roundOverlay.classList.remove("show");
       roundResultOverlay.classList.remove("show");
+      pendingNextRoundAction = null;
 
       players.forEach(p => {
         p.point = START_POINT;
@@ -2016,6 +2094,14 @@
     tsumoBtn.addEventListener("click", handleTsumoButton);
     ronBtn.addEventListener("click", handleRonButton);
     passBtn.addEventListener("click", handlePassButton);
+
+    nextRoundBtn.addEventListener("click", () => {
+      if(!pendingNextRoundAction) return;
+      roundResultOverlay.classList.remove("show");
+      const fn = pendingNextRoundAction;
+      pendingNextRoundAction = null;
+      fn();
+    });
 
     resetBtn.addEventListener("click", () => {
       if(busy) return;
