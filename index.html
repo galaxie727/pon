@@ -76,10 +76,27 @@
     padding:12px;
     margin-bottom:12px;
   }
+  .scoreHead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
   .scoreTitle{
     font-size:14px;
     font-weight:900;
-    margin-bottom:10px;
+  }
+  .miniBtn{
+    appearance:none;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);
+    color:#fff;
+    border-radius:999px;
+    padding:8px 12px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
   }
   .scoreList{
     display:flex;
@@ -214,11 +231,13 @@
     height:100%;
     object-fit:cover;
     display:block;
+    position:relative;
+    z-index:1;
   }
   .riverTint{
     position:absolute;
     inset:0;
-    opacity:.20;
+    opacity:.18;
     z-index:0;
   }
   .riverEmpty{
@@ -281,6 +300,7 @@
     position:absolute;
     inset:0;
     opacity:.22;
+    z-index:0;
   }
   .tileImg{
     width:100%;
@@ -379,7 +399,8 @@
   .resultOverlay,
   .roundOverlay,
   .titleOverlay,
-  .roundResultOverlay{
+  .roundResultOverlay,
+  .customOverlay{
     position:fixed;
     inset:0;
     z-index:100;
@@ -391,7 +412,8 @@
   .resultOverlay.show,
   .roundOverlay.show,
   .titleOverlay.show,
-  .roundResultOverlay.show{
+  .roundResultOverlay.show,
+  .customOverlay.show{
     opacity:1;
     pointer-events:auto;
   }
@@ -587,6 +609,108 @@
     margin-top:14px;
   }
 
+  .customOverlay{
+    z-index:145;
+    background:rgba(5,7,12,.94);
+  }
+  .customBox{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(92vw,430px);
+    max-height:86vh;
+    overflow:auto;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-radius:28px;
+    padding:20px 16px 16px;
+    box-shadow:0 14px 36px rgba(0,0,0,.22);
+  }
+  .customTitle{
+    font-size:22px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .customSub{
+    text-align:center;
+    font-size:13px;
+    opacity:.84;
+    line-height:1.6;
+    margin-bottom:14px;
+  }
+  .customGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .customCard{
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.04);
+    border-radius:16px;
+    padding:8px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .customCard.selected{
+    outline:2px solid rgba(255,230,120,.95);
+  }
+  .customThumb{
+    width:100%;
+    aspect-ratio:1 / 1;
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+    background:#1b2130;
+    margin-bottom:6px;
+  }
+  .customThumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    position:relative;
+    z-index:1;
+  }
+  .customThumbTint{
+    position:absolute;
+    inset:0;
+    opacity:.18;
+    z-index:0;
+  }
+  .customName{
+    font-size:12px;
+    font-weight:900;
+    line-height:1.35;
+  }
+  .colorRow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .colorRow label{
+    font-size:13px;
+    font-weight:900;
+  }
+  .colorRow input[type="color"]{
+    width:44px;
+    height:36px;
+    border:none;
+    background:none;
+    padding:0;
+  }
+  .customButtons{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
   .titleOverlay{
     z-index:140;
     background:
@@ -738,7 +862,10 @@
     </div>
 
     <div class="panel scoreWrap">
-      <div class="scoreTitle">点数</div>
+      <div class="scoreHead">
+        <div class="scoreTitle">点数</div>
+        <button class="miniBtn" id="openCustomBtn" type="button">牌カスタム</button>
+      </div>
       <div class="scoreList" id="scoreList"></div>
     </div>
 
@@ -793,7 +920,7 @@
         ツモ・ロンあり、東南西北の親回し。
       </div>
       <button class="startBtn" id="startBtn" type="button">START</button>
-      <div class="titleNote">img フォルダにチー娘通常画像3枚ずつ配置</div>
+      <div class="titleNote">img フォルダに牌画像とチー娘画像を配置</div>
     </div>
   </div>
 
@@ -835,6 +962,28 @@
     </div>
   </div>
 
+  <div class="customOverlay" id="customOverlay">
+    <div class="customBox">
+      <div class="customTitle">牌カスタム</div>
+      <div class="customSub">
+        使う9種を選んで、発光色を決める。<br>
+        保存すると次局から反映。
+      </div>
+
+      <div class="customGrid" id="customGrid"></div>
+
+      <div class="colorRow">
+        <label for="colorPicker">発光色</label>
+        <input type="color" id="colorPicker" value="#ffffff">
+      </div>
+
+      <div class="customButtons">
+        <button class="resultBtn resultRetry" id="saveCustomBtn" type="button">保存</button>
+        <button class="resultBtn" id="closeCustomBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">閉じる</button>
+      </div>
+    </div>
+  </div>
+
   <div class="resultOverlay" id="resultOverlay">
     <div class="resultBox">
       <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
@@ -851,6 +1000,8 @@
        const START_POINT = 5;
     const BASE_HAND_SIZE = 5;
     const COPIES_PER_TILE = 6;
+    const CUSTOM_MIN = 9;
+    const CUSTOM_MAX = 9;
 
     const WAIT_LONG = 1450;
     const WAIT_RON_CHECK = 900;
@@ -859,7 +1010,7 @@
 
     const PARENT_ORDER = ["東","南","西","北"];
 
-    const TILES = [
+    const ALL_TILE_POOL = [
       { id:"dekabusa", name:"デカブサ", color:"#e74c3c", image:"img/tile_dekabusa.png" },
       { id:"ani", name:"デカブサ兄", color:"#f1c40f", image:"img/tile_aniki.png" },
       { id:"namaken", name:"ナマケン", color:"#3498db", image:"img/tile_namaken.png" },
@@ -868,8 +1019,52 @@
       { id:"gori", name:"ゴリさん", color:"#8e5c2c", image:"img/tile_gorisan.png" },
       { id:"kabao", name:"カバオ", color:"#e67e22", image:"img/tile_kabao.png" },
       { id:"kan", name:"カンえもん", color:"#666666", image:"img/tile_kanemon.png" },
-      { id:"pan", name:"パンパン", color:"#ff77cc", image:"img/tile_panpan.png" }
+      { id:"pan", name:"パンパン", color:"#ff77cc", image:"img/tile_panpan.png" },
+      { id:"quokka", name:"クオちゃん", color:"#16a085", image:"img/tile_quokka.png" },
+      { id:"penguin", name:"ペンペン", color:"#2980b9", image:"img/tile_penguin.png" },
+      { id:"hachibo", name:"ハチボウ", color:"#d35400", image:"img/tile_hachibo.png" },
+      { id:"yumeo", name:"ユメオ", color:"#95a5a6", image:"img/tile_yumeo.png" },
+      { id:"juuzo", name:"ジュウゾウ", color:"#7f8c8d", image:"img/tile_juuzo.png" }
     ];
+
+    const DEFAULT_CUSTOM = {
+      selectedIds:["dekabusa","ani","namaken","tora","king","gori","kabao","kan","pan"],
+      glowColor:"#ffffff"
+    };
+
+    function loadCustomSettings(){
+      try{
+        const raw = JSON.parse(localStorage.getItem("jarapon_custom") || "null");
+        if(!raw) return { ...DEFAULT_CUSTOM };
+        const ids = Array.isArray(raw.selectedIds) ? raw.selectedIds.filter(id => ALL_TILE_POOL.some(t => t.id === id)) : [...DEFAULT_CUSTOM.selectedIds];
+        const glow = typeof raw.glowColor === "string" ? raw.glowColor : "#ffffff";
+        return {
+          selectedIds: ids.length ? ids.slice(0, CUSTOM_MAX) : [...DEFAULT_CUSTOM.selectedIds],
+          glowColor: glow
+        };
+      }catch{
+        return { ...DEFAULT_CUSTOM };
+      }
+    }
+
+    function saveCustomSettings(){
+      localStorage.setItem("jarapon_custom", JSON.stringify(customSettings));
+    }
+
+    let customSettings = loadCustomSettings();
+    let TILES = [];
+
+    function rebuildActiveTiles(){
+      const ids = customSettings.selectedIds.length === CUSTOM_MAX
+        ? customSettings.selectedIds
+        : DEFAULT_CUSTOM.selectedIds;
+
+      TILES = ids
+        .map(id => ALL_TILE_POOL.find(t => t.id === id))
+        .filter(Boolean);
+    }
+
+    rebuildActiveTiles();
 
     const players = [
       { id:"you", name:"あなた", short:"自", type:"human", girlIndex:null, point:START_POINT, hand:[], seat:"" },
@@ -974,6 +1169,9 @@
     let pendingRon = false;
     let pendingNextRoundAction = null;
 
+    let customTempSelected = [];
+    let customTempGlow = "#ffffff";
+
     const lastGirlImageIndex = { 0:-1, 1:-1, 2:-1 };
 
     const turnLabel = document.getElementById("turnLabel");
@@ -987,6 +1185,7 @@
     const resetBtn = document.getElementById("resetBtn");
     const retryBtn = document.getElementById("retryBtn");
     const startBtn = document.getElementById("startBtn");
+    const openCustomBtn = document.getElementById("openCustomBtn");
     const titleOverlay = document.getElementById("titleOverlay");
 
     const tsumoBtn = document.getElementById("tsumoBtn");
@@ -1018,6 +1217,12 @@
     const roundResultWin = document.getElementById("roundResultWin");
     const roundResultDesc = document.getElementById("roundResultDesc");
     const roundResultScore = document.getElementById("roundResultScore");
+
+    const customOverlay = document.getElementById("customOverlay");
+    const customGrid = document.getElementById("customGrid");
+    const colorPicker = document.getElementById("colorPicker");
+    const saveCustomBtn = document.getElementById("saveCustomBtn");
+    const closeCustomBtn = document.getElementById("closeCustomBtn");
 
     const resultOverlay = document.getElementById("resultOverlay");
     const resultTitle = document.getElementById("resultTitle");
@@ -1064,6 +1269,7 @@
     function setBusy(flag){
       busy = flag;
       resetBtn.disabled = flag;
+      openCustomBtn.disabled = flag;
     }
 
     function updateActionButtons(){
@@ -1130,6 +1336,10 @@
     function getTileColor(id){
       const tile = getTileById(id);
       return tile ? tile.color : "#888";
+    }
+
+    function getGlowColor(){
+      return customSettings.glowColor || "#ffffff";
     }
 
     function getRandomGirlImage(girlIndex){
@@ -1277,6 +1487,7 @@
       img.className = "tileImg";
       img.src = tile.image;
       img.alt = tile.name;
+      img.style.filter = `drop-shadow(0 0 4px ${getGlowColor()})`;
       img.onerror = () => {
         inner.innerHTML = "";
         inner.appendChild(tint);
@@ -1315,6 +1526,7 @@
         img.className = "riverImg";
         img.src = tile.image;
         img.alt = tile.name;
+        img.style.filter = `drop-shadow(0 0 3px ${getGlowColor()})`;
         img.onerror = () => {
           div.innerHTML = "";
           const fallbackTint = document.createElement("div");
@@ -1559,6 +1771,68 @@
         pendingNextRoundAction = resolve;
         roundResultOverlay.classList.add("show");
       });
+    }
+
+    function renderCustomGrid(){
+      customGrid.innerHTML = "";
+      ALL_TILE_POOL.forEach(tile => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "customCard" + (customTempSelected.includes(tile.id) ? " selected" : "");
+        card.addEventListener("click", () => toggleCustomTile(tile.id));
+
+        card.innerHTML = `
+          <div class="customThumb">
+            <div class="customThumbTint" style="background:${tile.color}"></div>
+            <img src="${tile.image}" alt="${tile.name}">
+          </div>
+          <div class="customName">${tile.name}</div>
+        `;
+        customGrid.appendChild(card);
+      });
+      colorPicker.value = customTempGlow;
+    }
+
+    function openCustom(){
+      if(busy) return;
+      customTempSelected = [...customSettings.selectedIds];
+      customTempGlow = customSettings.glowColor || "#ffffff";
+      renderCustomGrid();
+      customOverlay.classList.add("show");
+    }
+
+    function closeCustom(){
+      customOverlay.classList.remove("show");
+    }
+
+    function toggleCustomTile(tileId){
+      const exists = customTempSelected.includes(tileId);
+
+      if(exists){
+        if(customTempSelected.length <= CUSTOM_MIN) return;
+        customTempSelected = customTempSelected.filter(id => id !== tileId);
+      }else{
+        if(customTempSelected.length >= CUSTOM_MAX) return;
+        customTempSelected.push(tileId);
+      }
+
+      renderCustomGrid();
+    }
+
+    function applyCustomSettings(){
+      if(customTempSelected.length !== CUSTOM_MAX){
+        alert("9種ちょうど選んでね。");
+        return;
+      }
+      customSettings = {
+        selectedIds:[...customTempSelected],
+        glowColor: colorPicker.value || "#ffffff"
+      };
+      saveCustomSettings();
+      rebuildActiveTiles();
+      renderAll();
+      closeCustom();
+      addHistory("牌カスタムを保存。次局から反映。");
     }
 
     async function showParentFlowCutin(type, targetPlayer){
@@ -2073,6 +2347,7 @@
       hideResultScreen();
       roundOverlay.classList.remove("show");
       roundResultOverlay.classList.remove("show");
+      customOverlay.classList.remove("show");
       pendingNextRoundAction = null;
 
       players.forEach(p => {
@@ -2081,6 +2356,7 @@
       });
 
       assignSeats();
+      rebuildActiveTiles();
 
       deck = [];
       discardPile = [];
@@ -2120,6 +2396,13 @@
       const fn = pendingNextRoundAction;
       pendingNextRoundAction = null;
       fn();
+    });
+
+    openCustomBtn.addEventListener("click", openCustom);
+    saveCustomBtn.addEventListener("click", applyCustomSettings);
+    closeCustomBtn.addEventListener("click", closeCustom);
+    colorPicker.addEventListener("input", (e) => {
+      customTempGlow = e.target.value;
     });
 
     resetBtn.addEventListener("click", () => {
