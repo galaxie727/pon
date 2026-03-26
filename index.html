@@ -190,7 +190,7 @@
   }
   .riverGrid{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:6px;
     min-height:124px;
     align-content:start;
@@ -208,6 +208,18 @@
   }
   .riverTile.last{
     outline:2px solid rgba(255,230,120,.95);
+  }
+  .riverImg{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .riverTint{
+    position:absolute;
+    inset:0;
+    opacity:.20;
+    z-index:0;
   }
   .riverEmpty{
     min-height:124px;
@@ -1288,6 +1300,35 @@
       });
     }
 
+    function createRiverTile(tileId, isLast){
+      const div = document.createElement("div");
+      div.className = "riverTile" + (isLast ? " last" : "");
+
+      const tile = getTileById(tileId);
+      const tint = document.createElement("div");
+      tint.className = "riverTint";
+      tint.style.background = getTileColor(tileId);
+      div.appendChild(tint);
+
+      if(tile && tile.image){
+        const img = document.createElement("img");
+        img.className = "riverImg";
+        img.src = tile.image;
+        img.alt = tile.name;
+        img.onerror = () => {
+          div.innerHTML = "";
+          const fallbackTint = document.createElement("div");
+          fallbackTint.className = "riverTint";
+          fallbackTint.style.background = getTileColor(tileId);
+          fallbackTint.style.opacity = ".75";
+          div.appendChild(fallbackTint);
+        };
+        div.appendChild(img);
+      }
+
+      return div;
+    }
+
     function renderDiscardPile(){
       riverGrid.innerHTML = "";
       renderRiverColumnHeads();
@@ -1323,19 +1364,17 @@
       for(let row = 0; row < maxRows; row++){
         for(let col = 0; col < 4; col++){
           const item = columnStacks[col][row];
-          const div = document.createElement("div");
-
           if(item){
-            div.className = "riverTile" + (item.isLast ? " last" : "");
-            div.style.background = getTileColor(item.tileId);
-            div.title = `${item.owner}：${getTileName(item.tileId)}`;
+            const tileEl = createRiverTile(item.tileId, item.isLast);
+            tileEl.title = `${item.owner}：${getTileName(item.tileId)}`;
+            riverGrid.appendChild(tileEl);
           } else {
-            div.className = "riverTile";
-            div.style.opacity = "0";
-            div.style.pointerEvents = "none";
+            const empty = document.createElement("div");
+            empty.className = "riverTile";
+            empty.style.opacity = "0";
+            empty.style.pointerEvents = "none";
+            riverGrid.appendChild(empty);
           }
-
-          riverGrid.appendChild(div);
         }
       }
 
@@ -1374,7 +1413,6 @@
         btn.className = "tileBtn" + (index === justDrawnIndex ? " drawn" : "");
         btn.disabled = !(waitingPlayerDiscard && !busy && !gameEnded && !pendingRon && !pendingTsumo);
         btn.addEventListener("click", () => onPlayerDiscard(index));
-
         renderTileContent(btn, tileId);
         handEl.appendChild(btn);
       });
@@ -1572,12 +1610,7 @@
         await showParentFlowCutin("stay", parent);
       } else {
         await showParentFlowCutin("move", parent);
-        if(parentSeatIndex === 3){
-          gameEnded = true;
-          await showMatchFinal(getFinalWinnersByPoints());
-          return;
-        }
-        parentSeatIndex += 1;
+        parentSeatIndex = (parentSeatIndex + 1) % 4;
       }
 
       await wait(WAIT_ROUND_START_GAP);
@@ -1623,12 +1656,7 @@
         await showParentFlowCutin("stay", parent);
       } else {
         await showParentFlowCutin("move", parent);
-        if(parentSeatIndex === 3){
-          gameEnded = true;
-          await showMatchFinal(getFinalWinnersByPoints());
-          return;
-        }
-        parentSeatIndex += 1;
+        parentSeatIndex = (parentSeatIndex + 1) % 4;
       }
 
       await wait(WAIT_ROUND_START_GAP);
@@ -1658,14 +1686,8 @@
       );
 
       await showParentFlowCutin("move", parent);
+      parentSeatIndex = (parentSeatIndex + 1) % 4;
 
-      if(parentSeatIndex === 3){
-        gameEnded = true;
-        await showMatchFinal(getFinalWinnersByPoints());
-        return;
-      }
-
-      parentSeatIndex += 1;
       await wait(WAIT_ROUND_START_GAP);
       await startRound();
     }
@@ -1708,12 +1730,7 @@
         await showParentFlowCutin("stay", parent);
       } else {
         await showParentFlowCutin("move", parent);
-        if(parentSeatIndex === 3){
-          gameEnded = true;
-          await showMatchFinal(getFinalWinnersByPoints());
-          return;
-        }
-        parentSeatIndex += 1;
+        parentSeatIndex = (parentSeatIndex + 1) % 4;
       }
 
       await wait(WAIT_ROUND_START_GAP);
@@ -1782,7 +1799,9 @@
       await showRoundIntro();
       await wait(220);
 
-      turnIndex = 0;
+      const order = getTurnOrder();
+      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
+
       await introTurn();
     }
 
@@ -2075,7 +2094,7 @@
       clearPendingActions();
 
       statusMain.textContent = "ゲーム開始";
-      subInfo.textContent = "東スタート / 親が勝てば連荘 / 北親が流れたら終了";
+      subInfo.textContent = "東スタート / 親から開始 / 親が勝てば連荘";
       renderHistory();
       renderAll();
       addHistory("ゲーム開始。全員5点スタート。");
