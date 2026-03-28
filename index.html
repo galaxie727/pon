@@ -416,7 +416,7 @@
     z-index:100;
     opacity:0;
     pointer-events:none;
-    transition:opacity .26s ease;
+    transition:opacity .22s ease;
   }
   .overlay.show{
     opacity:1;
@@ -618,6 +618,38 @@
     font-size:12px;
     font-weight:900;
     line-height:1.35;
+  }
+
+  .cpuPickList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .cpuPickRow{
+    background:rgba(255,255,255,.05);
+    border-radius:14px;
+    padding:10px;
+  }
+  .cpuPickLabel{
+    font-size:13px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+  .cpuPickChoices{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+  }
+  .cpuChoice{
+    border:none;
+    background:rgba(255,255,255,.04);
+    border-radius:14px;
+    padding:6px;
+    color:#fff;
+    cursor:pointer;
+  }
+  .cpuChoice.selected{
+    outline:2px solid rgba(255,230,120,.95);
   }
 
   .colorList{
@@ -951,15 +983,6 @@
     color:#111;
   }
 
-  .tsumoGlow{
-    animation:tsumoFlash .6s ease;
-  }
-  @keyframes tsumoFlash{
-    0%{ box-shadow:0 0 0 rgba(255,255,255,0); }
-    50%{ box-shadow:0 0 18px rgba(255,255,255,.9); }
-    100%{ box-shadow:0 0 0 rgba(255,255,255,0); }
-  }
-
   @media (max-width:390px){
     .tileBtn{
       width:78px;
@@ -1048,24 +1071,22 @@
     </div>
   </div>
 
-  <!-- タイトル -->
   <div class="overlay titleOverlay show" id="titleOverlay">
     <div class="titleScreen">
       <div class="titleLogo">デカブサジャラジャラ<br>× チー娘</div>
       <div class="titleSub">
-        チー娘を選んで、デカブサ牌を9種選んで、<br>
-        自分だけのジャラジャラで遊ぼう。
+        パートナーを1人選んで、CPU3人を決めて、<br>
+        デカブサ牌を9種選んで遊ぼう。
       </div>
       <button class="startBtn" id="startBtn" type="button">START</button>
-      <div class="titleNote">チー娘透過PNG + 背景画像対応</div>
+      <div class="titleNote">プレイヤーだけ ロン / ツモ 手動</div>
     </div>
   </div>
 
-  <!-- チー娘選択 -->
   <div class="overlay stepOverlay" id="girlSelectOverlay">
     <div class="stepBox">
-      <div class="stepTitle">チー娘を選ぶ</div>
-      <div class="stepSub">ゲーム中のあなた担当チー娘を選択</div>
+      <div class="stepTitle">パートナーを選ぶ</div>
+      <div class="stepSub">あなた担当のチー娘を1人選択</div>
       <div class="girlSelectGrid" id="girlSelectGrid"></div>
       <div class="stepButtons">
         <button class="resultBtn resultRetry" id="girlSelectNextBtn" type="button">次へ</button>
@@ -1073,7 +1094,19 @@
     </div>
   </div>
 
-  <!-- キャラ選択 -->
+  <div class="overlay stepOverlay" id="cpuSelectOverlay">
+    <div class="stepBox">
+      <div class="stepTitle">CPUを選ぶ</div>
+      <div class="stepSub">パートナー以外から3人選択</div>
+      <div class="selectCount" id="cpuSelectCount">0/3 選択中</div>
+      <div class="girlSelectGrid" id="cpuSelectGrid"></div>
+      <div class="stepButtons">
+        <button class="resultBtn" id="cpuSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
+        <button class="resultBtn resultRetry" id="cpuSelectNextBtn" type="button">次へ</button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay stepOverlay" id="tileSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">牌に使うキャラを選ぶ</div>
@@ -1087,7 +1120,6 @@
     </div>
   </div>
 
-  <!-- 色選択 -->
   <div class="overlay stepOverlay" id="colorSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">色を選ぶ</div>
@@ -1100,7 +1132,6 @@
     </div>
   </div>
 
-  <!-- ゲーム中の牌カスタム -->
   <div class="overlay stepOverlay" id="customOverlay">
     <div class="stepBox">
       <div class="stepTitle">牌カスタム</div>
@@ -1114,7 +1145,6 @@
     </div>
   </div>
 
-  <!-- チー娘カットイン -->
   <div class="overlay girlOverlay" id="girlOverlay">
     <div class="girlBgWrap">
       <img class="girlBgScene" id="girlBgScene" alt="">
@@ -1138,7 +1168,6 @@
     </div>
   </div>
 
-  <!-- 局開始 -->
   <div class="overlay roundOverlay" id="roundOverlay">
     <div class="roundStage">
       <div class="roundMain" id="roundOverlayMain">東局</div>
@@ -1146,7 +1175,6 @@
     </div>
   </div>
 
-  <!-- 局終了 -->
   <div class="overlay roundResultOverlay" id="roundResultOverlay">
     <div class="roundResultBox">
       <div class="roundResultRound" id="roundResultRound">東局終了</div>
@@ -1159,7 +1187,6 @@
     </div>
   </div>
 
-  <!-- 最終結果 -->
   <div class="overlay resultOverlay" id="resultOverlay">
     <div class="resultBox">
       <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
@@ -1172,7 +1199,8 @@
   </div>
 
   <script>
-      const START_POINT = 5;
+
+       const START_POINT = 5;
     const BASE_HAND_SIZE = 5;
     const COPIES_PER_TILE = 6;
     const PICK_COUNT = 9;
@@ -1213,14 +1241,7 @@
         drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
         discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
         tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
-        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"],
-        drawRound:["流局だね。","今回は誰もそろわなかった。","引き分けだよ。","次の親へいこ。"],
-        hako:["飛んじゃったね。","ここで終了だよ。","ハコテンだね。","決まったかも。"],
-        finalWinYou:["やった、あなたの勝ち。","優勝おめでとう。","先にトップだね。","いい感じで終われたね。"],
-        finalWinCpu:["やった、私が勝ち。","先に決めたよ。","勝っちゃった。","これで1位だね。"],
-        parentStart:["親番スタートだよ。","東からいくよ。","最初の親だね。"],
-        parentStay:["親キープだよ。","まだ親番続行。","連荘だね。"],
-        parentMove:["親が流れるね。","次の親へ。","親交代だよ。"]
+        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"]
       },
       {
         id:"girlB",
@@ -1237,14 +1258,7 @@
         drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
         discard:["これで。","切るよ。","はい次。","これを捨てる。"],
         tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
-        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"],
-        drawRound:["流局ね。","誰も上がれなかったか。","今局はなし。","次の親へ。"],
-        hako:["飛んだね。","ここで終了。","もう持たないか。","決着ね。"],
-        finalWinYou:["あなたの勝ちか。まあいいけど。","先にトップね。","はいはい、おめでとう。","最後はあなたか。"],
-        finalWinCpu:["私の勝ち。","まあ当然かな。","トップで終了。","予定通り。"],
-        parentStart:["親番スタートね。","最初は東から。","東、悪くない。"],
-        parentStay:["親継続。","まだ私の番ね。","連荘ね。"],
-        parentMove:["親流れ。","次に行くわ。","親交代ね。"]
+        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"]
       },
       {
         id:"girlC",
@@ -1261,14 +1275,7 @@
         drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
         discard:["これで。","切る。","……次。","いらない。"],
         tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
-        ron:["それロン。","その牌でいい。","待ってた。","完成。"],
-        drawRound:["流局。","誰も上がらない。","……終わり。","次の親。"],
-        hako:["飛んだ。","ここで終わり。","ハコテン。","……決まり。"],
-        finalWinYou:["あなたが優勝。","……おめでとう。","トップだね。","終わり。あなたの勝ち。"],
-        finalWinCpu:["私が優勝。","……終わり。","勝った。","これで終わり。"],
-        parentStart:["東。","最初は親。","……親番。"],
-        parentStay:["まだ親。","……連荘。","続行。"],
-        parentMove:["親が移る。","……次。","交代。"]
+        ron:["それロン。","その牌でいい。","待ってた。","完成。"]
       },
       {
         id:"girlD",
@@ -1285,28 +1292,22 @@
         drawCpuNormal:["まだかな。","普通だね。","もう少し。","そんな感じ。"],
         discard:["これにする。","じゃあこれで。","切るね。","これかな。"],
         tsumo:["ツモ！","やった、引いた。","これで完成。","決まったね。"],
-        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"],
-        drawRound:["流局だね。","今回は流れたね。","次にいこう。","まだ続くよ。"],
-        hako:["ここで終わりだね。","飛んじゃった。","決着かな。","終わったね。"],
-        finalWinYou:["あなたの優勝。","勝ち、おめでとう。","トップだね。","よかった。"],
-        finalWinCpu:["私の勝ち。","トップで終了。","やった。","決めたよ。"],
-        parentStart:["親スタート。","最初の番だね。","親からいこう。"],
-        parentStay:["親続行。","まだ親だね。","連荘だよ。"],
-        parentMove:["親が変わるよ。","次の親へ。","移動だね。"]
+        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"]
       }
     ];
 
     const DEFAULT_SETUP = {
       supportGirlId:"girlA",
+      cpuGirlIds:["girlB","girlC","girlD"],
       selectedTileIds:[],
       tileColors:{}
     };
 
     const players = [
-      { id:"you", name:"あなた", short:"自", type:"human", girlIndex:null, point:START_POINT, hand:[], seat:"" },
-      { id:"a", name:"チー娘A", short:"A", type:"cpu", girlIndex:0, point:START_POINT, hand:[], seat:"" },
-      { id:"b", name:"チー娘B", short:"B", type:"cpu", girlIndex:1, point:START_POINT, hand:[], seat:"" },
-      { id:"c", name:"チー娘C", short:"C", type:"cpu", girlIndex:2, point:START_POINT, hand:[], seat:"" }
+      { id:"you", name:"あなた", short:"自", type:"human", girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu1", name:"CPU1", short:"A", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu2", name:"CPU2", short:"B", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu3", name:"CPU3", short:"C", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" }
     ];
 
     let gameSetup = structuredCloneSafe(DEFAULT_SETUP);
@@ -1320,14 +1321,17 @@
     let historyLogs = [];
     let parentSeatIndex = 0;
     let turnIndex = 0;
-    let lastDiscardInfo = null;
     let pendingTsumo = false;
     let pendingRon = false;
-    let pendingNextRoundAction = null;
+    let lastDiscardInfo = null;
 
     let tempGirlId = null;
+    let tempCpuGirlIds = [];
     let tempTileIds = [];
     let tempTileColors = {};
+
+    let humanTurnTimer1 = null;
+    let humanTurnTimer2 = null;
 
     const turnLabel = document.getElementById("turnLabel");
     const roundLabel = document.getElementById("roundLabel");
@@ -1355,18 +1359,23 @@
 
     const titleOverlay = document.getElementById("titleOverlay");
     const girlSelectOverlay = document.getElementById("girlSelectOverlay");
+    const cpuSelectOverlay = document.getElementById("cpuSelectOverlay");
     const tileSelectOverlay = document.getElementById("tileSelectOverlay");
     const colorSelectOverlay = document.getElementById("colorSelectOverlay");
     const customOverlay = document.getElementById("customOverlay");
 
     const girlSelectGrid = document.getElementById("girlSelectGrid");
+    const cpuSelectGrid = document.getElementById("cpuSelectGrid");
     const tileSelectGrid = document.getElementById("tileSelectGrid");
     const customGrid = document.getElementById("customGrid");
     const colorList = document.getElementById("colorList");
+    const cpuSelectCount = document.getElementById("cpuSelectCount");
     const tileSelectCount = document.getElementById("tileSelectCount");
     const customSelectCount = document.getElementById("customSelectCount");
 
     const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
+    const cpuSelectBackBtn = document.getElementById("cpuSelectBackBtn");
+    const cpuSelectNextBtn = document.getElementById("cpuSelectNextBtn");
     const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
     const tileSelectNextBtn = document.getElementById("tileSelectNextBtn");
     const colorSelectBackBtn = document.getElementById("colorSelectBackBtn");
@@ -1399,9 +1408,6 @@
     const resultTitle = document.getElementById("resultTitle");
     const resultSub = document.getElementById("resultSub");
     const resultList = document.getElementById("resultList");
-
-    let humanTurnTimer1 = null;
-    let humanTurnTimer2 = null;
 
     function structuredCloneSafe(obj){
       return JSON.parse(JSON.stringify(obj));
@@ -1467,12 +1473,30 @@
       return players.find(p => p.seat === getCurrentParentSeat());
     }
 
-    function getSupportGirl(){
-      return GIRLS.find(g => g.id === gameSetup.supportGirlId) || GIRLS[0];
+    function getGirlById(id){
+      return GIRLS.find(g => g.id === id) || GIRLS[0];
     }
 
-    function getCpuGirlByIndex(idx){
-      return GIRLS[idx] || GIRLS[0];
+    function getSupportGirl(){
+      return getGirlById(gameSetup.supportGirlId);
+    }
+
+    function getGirlForPlayer(player){
+      if(player.id === "you"){
+        return getSupportGirl();
+      }
+      return getGirlById(player.girlId);
+    }
+
+    function syncCpuPlayersFromSetup(){
+      const ids = [...gameSetup.cpuGirlIds];
+      players[1].girlId = ids[0] || null;
+      players[2].girlId = ids[1] || null;
+      players[3].girlId = ids[2] || null;
+
+      players[1].name = getGirlById(players[1].girlId).name;
+      players[2].name = getGirlById(players[2].girlId).name;
+      players[3].name = getGirlById(players[3].girlId).name;
     }
 
     function getTileDef(id){
@@ -1502,7 +1526,7 @@
       const enabled = !busy && !gameEnded;
       tsumoBtn.disabled = !(enabled && pendingTsumo);
       ronBtn.disabled = !(enabled && pendingRon);
-      passBtn.disabled = !(enabled && (pendingTsumo || pendingRon));
+      passBtn.disabled = !(enabled && pendingRon);
     }
 
     function clearPendingActions(){
@@ -1699,28 +1723,19 @@
       const div = document.createElement("div");
       div.className = "riverTile" + (isLast ? " last" : "");
 
-      const tile = getTileDef(tileId);
       const tint = document.createElement("div");
       tint.className = "riverTint";
       tint.style.background = getTileColor(tileId);
       div.appendChild(tint);
 
+      const tile = getTileDef(tileId);
       if(tile && tile.image){
         const img = document.createElement("img");
         img.className = "riverImg";
         img.src = tile.image;
         img.alt = tile.name;
-        img.onerror = () => {
-          div.innerHTML = "";
-          const fallbackTint = document.createElement("div");
-          fallbackTint.className = "riverTint";
-          fallbackTint.style.background = getTileColor(tileId);
-          fallbackTint.style.opacity = ".75";
-          div.appendChild(fallbackTint);
-        };
         div.appendChild(img);
       }
-
       return div;
     }
 
@@ -1746,7 +1761,6 @@
       }
 
       riverEmpty.style.display = "none";
-
       const order = getTurnOrder();
       const playerIndexMap = {};
       order.forEach((player, index) => {
@@ -1754,7 +1768,6 @@
       });
 
       const columnStacks = [[], [], [], []];
-
       discardPile.forEach((item, index) => {
         const col = playerIndexMap[item.playerId];
         if(col !== undefined){
@@ -1766,14 +1779,11 @@
       });
 
       const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
-
       for(let row = 0; row < maxRows; row++){
         for(let col = 0; col < 4; col++){
           const item = columnStacks[col][row];
           if(item){
-            const tileEl = createRiverTile(item.tileId, item.isLast);
-            tileEl.title = `${item.owner}：${getTileName(item.tileId)}`;
-            riverGrid.appendChild(tileEl);
+            riverGrid.appendChild(createRiverTile(item.tileId, item.isLast));
           } else {
             const empty = document.createElement("div");
             empty.className = "riverTile";
@@ -1796,9 +1806,9 @@
         row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
 
         let badgeClass = "badge-you";
-        if(player.id === "a") badgeClass = "badge-a";
-        if(player.id === "b") badgeClass = "badge-b";
-        if(player.id === "c") badgeClass = "badge-c";
+        if(player.id === "cpu1") badgeClass = "badge-a";
+        if(player.id === "cpu2") badgeClass = "badge-b";
+        if(player.id === "cpu3") badgeClass = "badge-c";
 
         row.innerHTML = `
           <div class="scoreName">
@@ -1833,6 +1843,520 @@
       renderScores();
       renderHand();
       updateActionButtons();
+    }
+
+    function renderGirlSelect(){
+      girlSelectGrid.innerHTML = "";
+      GIRLS.forEach(girl => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
+        card.addEventListener("click", () => {
+          tempGirlId = girl.id;
+          renderGirlSelect();
+        });
+        card.innerHTML = `
+          <div class="girlPreview">
+            <img class="girlPreviewBg" src="${girl.bg}" alt="">
+            <div class="girlPreviewShade"></div>
+            <img class="girlPreviewChara" src="${girl.chara}" alt="${girl.name}">
+          </div>
+          <div class="girlCardName">${girl.name}</div>
+        `;
+        girlSelectGrid.appendChild(card);
+      });
+    }
+
+    function renderCpuSelect(){
+      cpuSelectGrid.innerHTML = "";
+      const selectable = GIRLS.filter(g => g.id !== tempGirlId);
+      cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
+
+      selectable.forEach(girl => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "girlCard" + (tempCpuGirlIds.includes(girl.id) ? " selected" : "");
+        card.addEventListener("click", () => {
+          const exists = tempCpuGirlIds.includes(girl.id);
+          if(exists){
+            tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== girl.id);
+          } else {
+            if(tempCpuGirlIds.length >= 3){
+              alert("CPUは3人選んでね。");
+              return;
+            }
+            tempCpuGirlIds.push(girl.id);
+          }
+          renderCpuSelect();
+        });
+        card.innerHTML = `
+          <div class="girlPreview">
+            <img class="girlPreviewBg" src="${girl.bg}" alt="">
+            <div class="girlPreviewShade"></div>
+            <img class="girlPreviewChara" src="${girl.chara}" alt="${girl.name}">
+          </div>
+          <div class="girlCardName">${girl.name}</div>
+        `;
+        cpuSelectGrid.appendChild(card);
+      });
+    }
+
+    function renderTilePickGrid(targetEl, selectedIds, countEl){
+      targetEl.innerHTML = "";
+      if(countEl){
+        countEl.textContent = `${selectedIds.length}/9 選択中`;
+      }
+
+      ALL_TILE_POOL.forEach(tile => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
+        card.addEventListener("click", () => {
+          const exists = selectedIds.includes(tile.id);
+
+          if(exists){
+            selectedIds.splice(selectedIds.indexOf(tile.id), 1);
+          } else {
+            if(selectedIds.length >= PICK_COUNT){
+              alert("9体選択中です。先に1体外してね。");
+              return;
+            }
+            selectedIds.push(tile.id);
+            if(!tempTileColors[tile.id]){
+              tempTileColors[tile.id] = tile.defaultColor;
+            }
+          }
+
+          renderTilePickGrid(targetEl, selectedIds, countEl);
+        });
+
+        const bgColor = selectedIds.includes(tile.id)
+          ? (tempTileColors[tile.id] || tile.defaultColor)
+          : tile.defaultColor;
+
+        card.innerHTML = `
+          <div class="customThumb">
+            <div class="customThumbTint" style="background:${bgColor}"></div>
+            <img src="${tile.image}" alt="${tile.name}">
+          </div>
+          <div class="customName">${tile.name}</div>
+        `;
+        targetEl.appendChild(card);
+      });
+    }
+
+    function renderColorList(){
+      colorList.innerHTML = "";
+      tempTileIds.forEach(id => {
+        const tile = ALL_TILE_POOL.find(t => t.id === id);
+        const row = document.createElement("div");
+        row.className = "colorLine";
+        row.innerHTML = `
+          <div class="colorThumb">
+            <div class="colorThumbTint" style="background:${tempTileColors[id] || tile.defaultColor}"></div>
+            <img src="${tile.image}" alt="${tile.name}">
+          </div>
+          <div class="colorName">${tile.name}</div>
+        `;
+        const picker = document.createElement("input");
+        picker.type = "color";
+        picker.className = "colorPicker";
+        picker.value = tempTileColors[id] || tile.defaultColor;
+        picker.addEventListener("input", (e) => {
+          tempTileColors[id] = e.target.value;
+          renderColorList();
+        });
+        row.appendChild(picker);
+        colorList.appendChild(row);
+      });
+    }
+
+    function beginSetupFlow(){
+      tempGirlId = gameSetup.supportGirlId;
+      tempCpuGirlIds = [...gameSetup.cpuGirlIds];
+      tempTileIds = [...gameSetup.selectedTileIds];
+      tempTileColors = structuredCloneSafe(gameSetup.tileColors);
+      hideOverlay(titleOverlay);
+      renderGirlSelect();
+      showOverlay(girlSelectOverlay);
+    }
+
+    function proceedToCpuSelect(){
+      if(!tempGirlId){
+        alert("パートナーを選んでね。");
+        return;
+      }
+      tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
+      hideOverlay(girlSelectOverlay);
+      renderCpuSelect();
+      showOverlay(cpuSelectOverlay);
+    }
+
+    function proceedToTileSelect(){
+      if(tempCpuGirlIds.length !== 3){
+        alert("CPUを3人選んでね。");
+        return;
+      }
+      hideOverlay(cpuSelectOverlay);
+      renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
+      showOverlay(tileSelectOverlay);
+    }
+
+    function proceedToColorSelect(){
+      if(tempTileIds.length !== PICK_COUNT){
+        alert("9体ちょうど選んでね。");
+        return;
+      }
+      tempTileIds.forEach(id => {
+        const base = ALL_TILE_POOL.find(t => t.id === id);
+        if(!tempTileColors[id]) tempTileColors[id] = base.defaultColor;
+      });
+      hideOverlay(tileSelectOverlay);
+      renderColorList();
+      showOverlay(colorSelectOverlay);
+    }
+       async function finalizeSetupAndStart(){
+      gameSetup = {
+        supportGirlId: tempGirlId,
+        cpuGirlIds: [...tempCpuGirlIds],
+        selectedTileIds: [...tempTileIds],
+        tileColors: structuredCloneSafe(tempTileColors)
+      };
+      syncCpuPlayersFromSetup();
+      rebuildActiveTiles();
+      hideOverlay(colorSelectOverlay);
+      await resetGame();
+    }
+
+    function openCustom(){
+      if(busy) return;
+      tempTileIds = [...gameSetup.selectedTileIds];
+      tempTileColors = structuredCloneSafe(gameSetup.tileColors);
+      renderTilePickGrid(customGrid, tempTileIds, customSelectCount);
+      showOverlay(customOverlay);
+    }
+
+    function closeCustom(){
+      hideOverlay(customOverlay);
+    }
+
+    function saveCustomInGame(){
+      if(tempTileIds.length !== PICK_COUNT){
+        alert("9体ちょうど選んでね。");
+        return;
+      }
+      gameSetup.selectedTileIds = [...tempTileIds];
+      gameSetup.tileColors = structuredCloneSafe(tempTileColors);
+      rebuildActiveTiles();
+      closeCustom();
+      renderAll();
+      addHistory("牌カスタムを保存。次回リセット後に反映。");
+    }
+
+    async function resetGame(){
+      clearHumanTimers();
+      hideGirl();
+      hideOverlay(roundResultOverlay);
+      hideResultScreen();
+
+      setBusy(true);
+      gameEnded = false;
+      historyLogs = [];
+      discardPile = [];
+      deck = [];
+      lastDiscardInfo = null;
+      justDrawnIndex = -1;
+      waitingPlayerDiscard = false;
+      clearPendingActions();
+
+      syncCpuPlayersFromSetup();
+
+      players.forEach(p => {
+        p.point = START_POINT;
+        p.hand = [];
+      });
+
+      players[0].girlId = gameSetup.supportGirlId;
+
+      assignSeats();
+      parentSeatIndex = 0;
+      rebuildActiveTiles();
+
+      renderHistory();
+      renderAll();
+
+      await startRound(true);
+      setBusy(false);
+    }
+
+    async function startRound(isFirst){
+      clearHumanTimers();
+      hideGirl();
+      hideOverlay(roundResultOverlay);
+
+      setBusy(true);
+      discardPile = [];
+      clearPendingActions();
+      waitingPlayerDiscard = false;
+      justDrawnIndex = -1;
+      players.forEach(p => p.hand = []);
+
+      deck = createDeck();
+
+      for(let i=0;i<BASE_HAND_SIZE;i++){
+        players.forEach(p => drawTile(p));
+      }
+
+      const order = getTurnOrder();
+      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
+
+      addHistory(`${getRoundName()} 開始 / 親：${getParentPlayer().seat} ${getParentPlayer().name}`);
+      renderAll();
+
+      if(!isFirst){
+        await wait(WAIT_ROUND_START_GAP);
+      }
+
+      await showRoundIntro();
+      setBusy(false);
+
+      if(getCurrentPlayer().id === "you"){
+        startHumanTurn();
+      } else {
+        await startCpuTurn(getCurrentPlayer());
+      }
+    }
+
+    function startHumanTurn(){
+      clearHumanTimers();
+      const girl = getSupportGirl();
+      waitingPlayerDiscard = false;
+      justDrawnIndex = -1;
+      pendingRon = false;
+      pendingTsumo = false;
+      renderAll();
+
+      showGirl(girl, rand(girl.introHuman));
+
+      humanTurnTimer1 = setTimeout(() => {
+        updateGirlText(rand(girl.thinkHuman));
+      }, 520);
+
+      humanTurnTimer2 = setTimeout(() => {
+        drawTile(players[0]);
+        justDrawnIndex = players[0].hand.length - 1;
+        pendingTsumo = isWinningHand(players[0].hand);
+        pendingRon = false;
+        waitingPlayerDiscard = true;
+        renderAll();
+
+        updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+
+        setTimeout(() => {
+          hideGirl();
+          renderAll();
+        }, 520);
+
+      }, WAIT_LONG);
+    }
+
+    async function startCpuTurn(player){
+      clearHumanTimers();
+      setBusy(true);
+      const girl = getGirlForPlayer(player);
+
+      showGirl(girl, rand(girl.introCpu));
+      await wait(500);
+
+      updateGirlText(rand(girl.thinkCpu));
+      await wait(520);
+
+      drawTile(player);
+      const tsumo = isWinningHand(player.hand);
+
+      updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
+      await wait(520);
+
+      if(tsumo){
+        await finishRound({ type:"tsumo", winner:player });
+        return;
+      }
+
+      const discardIndex = cpuChooseDiscardIndex(player);
+      const discardTile = player.hand[discardIndex];
+
+      showBigTile(discardTile, `${player.name}：${getTileName(discardTile)}を捨てる`);
+      updateGirlText(rand(girl.discard));
+      await wait(WAIT_DISCARD_PREVIEW);
+
+      player.hand.splice(discardIndex,1);
+      discardPile.push({
+        tileId: discardTile,
+        owner: `${player.seat} ${player.name}`,
+        playerId: player.id
+      });
+      addHistory(`${player.seat} ${player.name}：${getTileName(discardTile)}を捨てた`);
+      renderAll();
+
+      if(canRonWithTile(players[0].hand, discardTile)){
+        pendingRon = true;
+        pendingTsumo = false;
+        lastDiscardInfo = { tileId: discardTile, discarder: player };
+        waitingPlayerDiscard = false;
+        setBusy(false);
+        hideGirl();
+        statusMain.textContent = "ロンできます";
+        subInfo.textContent = `${player.name}の捨て牌：${getTileName(discardTile)}`;
+        updateActionButtons();
+        return;
+      }
+
+      const ronCpu = getCpuRonCandidateAfterDiscard(player, discardTile);
+      if(ronCpu){
+        const ronGirl = getGirlForPlayer(ronCpu);
+        showGirl(ronGirl, rand(ronGirl.ron));
+        await wait(WAIT_RON_CHECK);
+        await finishRound({ type:"ron", winner:ronCpu, loser:player });
+        return;
+      }
+
+      hideGirl();
+      await wait(120);
+      advanceTurn();
+      setBusy(false);
+
+      if(getCurrentPlayer().id === "you"){
+        startHumanTurn();
+      } else {
+        await startCpuTurn(getCurrentPlayer());
+      }
+    }
+
+    function onPlayerDiscard(index){
+      if(!waitingPlayerDiscard || busy || gameEnded || pendingRon) return;
+
+      clearHumanTimers();
+
+      const me = players[0];
+      const tileId = me.hand[index];
+      const girl = getSupportGirl();
+
+      setBusy(true);
+      waitingPlayerDiscard = false;
+
+      showGirl(girl, rand(girl.discard));
+      showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
+
+      setTimeout(async () => {
+        me.hand.splice(index,1);
+        discardPile.push({
+          tileId,
+          owner:`${me.seat} あなた`,
+          playerId:me.id
+        });
+        addHistory(`${me.seat} あなた：${getTileName(tileId)}を捨てた`);
+
+        justDrawnIndex = -1;
+        pendingTsumo = false;
+        renderAll();
+
+        const ronCpu = getCpuRonCandidateAfterDiscard(me, tileId);
+        if(ronCpu){
+          const ronGirl = getGirlForPlayer(ronCpu);
+          showGirl(ronGirl, rand(ronGirl.ron));
+          await wait(WAIT_RON_CHECK);
+          await finishRound({ type:"ron", winner:ronCpu, loser:me });
+          return;
+        }
+
+        hideGirl();
+        advanceTurn();
+        setBusy(false);
+
+        if(getCurrentPlayer().id === "you"){
+          startHumanTurn();
+        } else {
+          await startCpuTurn(getCurrentPlayer());
+        }
+      }, WAIT_DISCARD_PREVIEW);
+    }
+
+    function getCpuRonCandidateAfterDiscard(discarder, tileId){
+      const order = getTurnOrder();
+      const startIdx = order.findIndex(p => p.id === discarder.id);
+
+      for(let offset = 1; offset < order.length; offset++){
+        const candidate = order[(startIdx + offset) % order.length];
+        if(candidate.id === "you") continue;
+        if(canRonWithTile(candidate.hand, tileId)){
+          return candidate;
+        }
+      }
+      return null;
+    }
+
+    async function finishRound(result){
+      clearHumanTimers();
+      setBusy(true);
+      clearPendingActions();
+      waitingPlayerDiscard = false;
+
+      let desc = "";
+      let winText = "";
+      const roundText = `${getRoundName()}終了`;
+
+      if(result.type === "tsumo"){
+        applyTsumoPoints(result.winner);
+        desc = `${result.winner.name}がツモ`;
+        winText = `${result.winner.seat} ${result.winner.name} ツモ`;
+        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
+      } else if(result.type === "ron"){
+        applyRonPoints(result.winner, result.loser);
+        desc = `${result.loser.name}から2点`;
+        winText = `${result.winner.seat} ${result.winner.name} ロン`;
+        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
+      } else {
+        const judged = judgeRoundRanking();
+        if(judged.reason === "draw"){
+          desc = "流局";
+          winText = "引き分け";
+          addHistory(`${getRoundName()}：流局`);
+        } else {
+          applyTsumoPoints(judged.winner);
+          desc = "流局判定勝ち";
+          winText = `${judged.winner.name} 勝ち`;
+          result.winner = judged.winner;
+          addHistory(`${getRoundName()}：流局判定で ${judged.winner.seat} ${judged.winner.name} 勝ち`);
+        }
+      }
+
+      renderAll();
+      hideGirl();
+      await showRoundResult(roundText, winText, desc);
+
+      await new Promise(resolve => {
+        nextRoundBtn.onclick = () => {
+          hideOverlay(roundResultOverlay);
+          resolve();
+        };
+      });
+
+      if(hasHako()){
+        const winners = getFinalWinnersByPoints();
+        gameEnded = true;
+        showResultScreen(winners);
+        setBusy(false);
+        return;
+      }
+
+      if(result.winner && result.winner.seat === getCurrentParentSeat()){
+        addHistory(`親継続：${result.winner.seat} ${result.winner.name}`);
+      } else {
+        parentSeatIndex = (parentSeatIndex + 1) % 4;
+        addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
+      }
+
+      await startRound(false);
     }
 
     function showResultScreen(winners){
@@ -1880,8 +2404,8 @@
         roundResultWin.textContent = winText;
         roundResultDesc.textContent = descText;
         renderRoundResultScores();
-        pendingNextRoundAction = resolve;
         showOverlay(roundResultOverlay);
+        resolve();
       });
     }
 
@@ -1959,461 +2483,6 @@
       return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
-    function getRonCandidateAfterDiscard(discarder, tileId){
-      const order = getTurnOrder();
-      const startIdx = order.findIndex(p => p.id === discarder.id);
-
-      for(let offset = 1; offset < order.length; offset++){
-        const candidate = order[(startIdx + offset) % order.length];
-        if(canRonWithTile(candidate.hand, tileId)){
-          return candidate;
-        }
-      }
-      return null;
-    }
-
-    function renderGirlSelect(){
-      girlSelectGrid.innerHTML = "";
-      GIRLS.forEach(girl => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
-        card.addEventListener("click", () => {
-          tempGirlId = girl.id;
-          renderGirlSelect();
-        });
-        card.innerHTML = `
-          <div class="girlPreview">
-            <img class="girlPreviewBg" src="${girl.bg}" alt="">
-            <div class="girlPreviewShade"></div>
-            <img class="girlPreviewChara" src="${girl.chara}" alt="${girl.name}">
-          </div>
-          <div class="girlCardName">${girl.name}</div>
-        `;
-        girlSelectGrid.appendChild(card);
-      });
-    }
-
-    function renderTilePickGrid(targetEl, selectedIds, countEl){
-      targetEl.innerHTML = "";
-      if(countEl){
-        countEl.textContent = `${selectedIds.length}/9 選択中`;
-      }
-
-      ALL_TILE_POOL.forEach(tile => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
-        card.addEventListener("click", () => {
-          const exists = selectedIds.includes(tile.id);
-
-          if(exists){
-            const idx = selectedIds.indexOf(tile.id);
-            selectedIds.splice(idx,1);
-          } else {
-            if(selectedIds.length >= PICK_COUNT){
-              alert("9体選択中です。先に1体外してね。");
-              return;
-            }
-            selectedIds.push(tile.id);
-            if(!tempTileColors[tile.id]){
-              tempTileColors[tile.id] = tile.defaultColor;
-            }
-          }
-
-          renderTilePickGrid(targetEl, selectedIds, countEl);
-        });
-
-        const bgColor = selectedIds.includes(tile.id)
-          ? (tempTileColors[tile.id] || tile.defaultColor)
-          : tile.defaultColor;
-
-        card.innerHTML = `
-          <div class="customThumb">
-            <div class="customThumbTint" style="background:${bgColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="customName">${tile.name}</div>
-        `;
-        targetEl.appendChild(card);
-      });
-    }
-
-    function renderColorList(){
-      colorList.innerHTML = "";
-      tempTileIds.forEach(id => {
-        const tile = ALL_TILE_POOL.find(t => t.id === id);
-        const row = document.createElement("div");
-        row.className = "colorLine";
-        row.innerHTML = `
-          <div class="colorThumb">
-            <div class="colorThumbTint" style="background:${tempTileColors[id] || tile.defaultColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="colorName">${tile.name}</div>
-        `;
-        const picker = document.createElement("input");
-        picker.type = "color";
-        picker.className = "colorPicker";
-        picker.value = tempTileColors[id] || tile.defaultColor;
-        picker.addEventListener("input", (e) => {
-          tempTileColors[id] = e.target.value;
-          renderColorList();
-        });
-        row.appendChild(picker);
-        colorList.appendChild(row);
-      });
-    }
-
-    function beginSetupFlow(){
-      tempGirlId = gameSetup.supportGirlId;
-      tempTileIds = [...gameSetup.selectedTileIds];
-      tempTileColors = structuredCloneSafe(gameSetup.tileColors);
-      hideOverlay(titleOverlay);
-      renderGirlSelect();
-      showOverlay(girlSelectOverlay);
-    }
-
-    function proceedToTileSelect(){
-      if(!tempGirlId){
-        alert("チー娘を選んでね。");
-        return;
-      }
-      hideOverlay(girlSelectOverlay);
-      renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
-      showOverlay(tileSelectOverlay);
-    }
-
-    function proceedToColorSelect(){
-      if(tempTileIds.length !== PICK_COUNT){
-        alert("9体ちょうど選んでね。");
-        return;
-      }
-      tempTileIds.forEach(id => {
-        const base = ALL_TILE_POOL.find(t => t.id === id);
-        if(!tempTileColors[id]) tempTileColors[id] = base.defaultColor;
-      });
-      hideOverlay(tileSelectOverlay);
-      renderColorList();
-      showOverlay(colorSelectOverlay);
-    }
-        async function finalizeSetupAndStart(){
-      gameSetup = {
-        supportGirlId: tempGirlId,
-        selectedTileIds: [...tempTileIds],
-        tileColors: structuredCloneSafe(tempTileColors)
-      };
-      rebuildActiveTiles();
-      hideOverlay(colorSelectOverlay);
-      await resetGame();
-    }
-
-    function openCustom(){
-      if(busy) return;
-      tempTileIds = [...gameSetup.selectedTileIds];
-      tempTileColors = structuredCloneSafe(gameSetup.tileColors);
-      renderTilePickGrid(customGrid, tempTileIds, customSelectCount);
-      showOverlay(customOverlay);
-    }
-
-    function closeCustom(){
-      hideOverlay(customOverlay);
-    }
-
-    function saveCustomInGame(){
-      if(tempTileIds.length !== PICK_COUNT){
-        alert("9体ちょうど選んでね。");
-        return;
-      }
-      gameSetup.selectedTileIds = [...tempTileIds];
-      gameSetup.tileColors = structuredCloneSafe(tempTileColors);
-      rebuildActiveTiles();
-      closeCustom();
-      renderAll();
-      addHistory("牌カスタムを保存。次回リセット後に反映。");
-    }
-
-    async function resetGame(){
-      clearHumanTimers();
-      hideGirl();
-      hideOverlay(roundResultOverlay);
-      hideResultScreen();
-
-      setBusy(true);
-      gameEnded = false;
-      historyLogs = [];
-      discardPile = [];
-      deck = [];
-      lastDiscardInfo = null;
-      justDrawnIndex = -1;
-      waitingPlayerDiscard = false;
-      clearPendingActions();
-
-      players.forEach(p => {
-        p.point = START_POINT;
-        p.hand = [];
-      });
-
-      assignSeats();
-
-      const cpuGirls = shuffle([0,1,2,3]);
-      let idx = 0;
-      players.forEach(p => {
-        if(p.id !== "you"){
-          p.girlIndex = cpuGirls[idx++];
-        }
-      });
-
-      parentSeatIndex = 0;
-      rebuildActiveTiles();
-
-      renderHistory();
-      renderAll();
-
-      await startRound(true);
-      setBusy(false);
-    }
-
-    async function startRound(isFirst){
-      clearHumanTimers();
-      hideGirl();
-      hideOverlay(roundResultOverlay);
-
-      setBusy(true);
-      discardPile = [];
-      clearPendingActions();
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      players.forEach(p => p.hand = []);
-
-      deck = createDeck();
-
-      for(let i=0;i<BASE_HAND_SIZE;i++){
-        players.forEach(p => drawTile(p));
-      }
-
-      const order = getTurnOrder();
-      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
-
-      addHistory(`${getRoundName()} 開始 / 親：${getParentPlayer().seat} ${getParentPlayer().name}`);
-      renderAll();
-
-      if(!isFirst){
-        await wait(WAIT_ROUND_START_GAP);
-      }
-
-      await showRoundIntro();
-      setBusy(false);
-
-      if(getCurrentPlayer().id === "you"){
-        startHumanTurn();
-      } else {
-        await startCpuTurn(getCurrentPlayer());
-      }
-    }
-
-    function startHumanTurn(){
-      clearHumanTimers();
-      const girl = getSupportGirl();
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      renderAll();
-
-      showGirl(girl, rand(girl.introHuman));
-
-      humanTurnTimer1 = setTimeout(() => {
-        updateGirlText(rand(girl.thinkHuman));
-      }, 520);
-
-      humanTurnTimer2 = setTimeout(() => {
-        drawTile(players[0]);
-        justDrawnIndex = players[0].hand.length - 1;
-        pendingTsumo = isWinningHand(players[0].hand);
-        pendingRon = false;
-        waitingPlayerDiscard = true;
-        renderAll();
-
-        updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
-
-        setTimeout(() => {
-          hideGirl();
-          renderAll();
-        }, 520);
-
-      }, WAIT_LONG);
-    }
-
-    async function startCpuTurn(player){
-      clearHumanTimers();
-      setBusy(true);
-      const girl = getCpuGirlByIndex(player.girlIndex);
-
-      showGirl(girl, rand(girl.introCpu));
-      await wait(500);
-
-      updateGirlText(rand(girl.thinkCpu));
-      await wait(520);
-
-      drawTile(player);
-      const tsumo = isWinningHand(player.hand);
-
-      updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
-      await wait(520);
-
-      if(tsumo){
-        await finishRound({ type:"tsumo", winner:player });
-        return;
-      }
-
-      const discardIndex = cpuChooseDiscardIndex(player);
-      const discardTile = player.hand[discardIndex];
-
-      showBigTile(discardTile, `${player.name}：${getTileName(discardTile)}を捨てる`);
-      updateGirlText(rand(girl.discard));
-      await wait(WAIT_DISCARD_PREVIEW);
-
-      player.hand.splice(discardIndex,1);
-      discardPile.push({
-        tileId: discardTile,
-        owner: `${player.seat} ${player.name}`,
-        playerId: player.id
-      });
-      addHistory(`${player.seat} ${player.name}：${getTileName(discardTile)}を捨てた`);
-      renderAll();
-
-      const ronPlayer = getRonCandidateAfterDiscard(player, discardTile);
-      if(ronPlayer){
-        const ronGirl = ronPlayer.id === "you" ? getSupportGirl() : getCpuGirlByIndex(ronPlayer.girlIndex);
-        showGirl(ronGirl, rand(ronGirl.ron));
-        await wait(WAIT_RON_CHECK);
-        await finishRound({ type:"ron", winner:ronPlayer, loser:player });
-        return;
-      }
-
-      hideGirl();
-      await wait(120);
-      advanceTurn();
-      setBusy(false);
-
-      if(getCurrentPlayer().id === "you"){
-        startHumanTurn();
-      } else {
-        await startCpuTurn(getCurrentPlayer());
-      }
-    }
-
-    function onPlayerDiscard(index){
-      if(!waitingPlayerDiscard || busy || gameEnded) return;
-
-      clearHumanTimers();
-
-      const me = players[0];
-      const tileId = me.hand[index];
-      const girl = getSupportGirl();
-
-      setBusy(true);
-      waitingPlayerDiscard = false;
-
-      showGirl(girl, rand(girl.discard));
-      showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
-
-      setTimeout(async () => {
-        me.hand.splice(index,1);
-        discardPile.push({
-          tileId,
-          owner:`${me.seat} あなた`,
-          playerId:me.id
-        });
-        addHistory(`${me.seat} あなた：${getTileName(tileId)}を捨てた`);
-
-        justDrawnIndex = -1;
-        renderAll();
-
-        const ronPlayer = getRonCandidateAfterDiscard(me, tileId);
-        if(ronPlayer){
-          const ronGirl = getCpuGirlByIndex(ronPlayer.girlIndex);
-          showGirl(ronGirl, rand(ronGirl.ron));
-          await wait(WAIT_RON_CHECK);
-          await finishRound({ type:"ron", winner:ronPlayer, loser:me });
-          return;
-        }
-
-        hideGirl();
-        advanceTurn();
-        setBusy(false);
-
-        if(getCurrentPlayer().id === "you"){
-          startHumanTurn();
-        } else {
-          await startCpuTurn(getCurrentPlayer());
-        }
-      }, WAIT_DISCARD_PREVIEW);
-    }
-
-    async function finishRound(result){
-      clearHumanTimers();
-      setBusy(true);
-      clearPendingActions();
-      waitingPlayerDiscard = false;
-
-      let desc = "";
-      let winText = "";
-      const roundText = `${getRoundName()}終了`;
-
-      if(result.type === "tsumo"){
-        applyTsumoPoints(result.winner);
-        desc = `${result.winner.name}がツモ`;
-        winText = `${result.winner.seat} ${result.winner.name} ツモ`;
-        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
-      } else if(result.type === "ron"){
-        applyRonPoints(result.winner, result.loser);
-        desc = `${result.loser.name}から2点`;
-        winText = `${result.winner.seat} ${result.winner.name} ロン`;
-        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
-      } else {
-        const judged = judgeRoundRanking();
-        if(judged.reason === "draw"){
-          desc = "流局";
-          winText = "引き分け";
-          addHistory(`${getRoundName()}：流局`);
-        } else {
-          applyTsumoPoints(judged.winner);
-          desc = "流局判定勝ち";
-          winText = `${judged.winner.name} 勝ち`;
-          result.winner = judged.winner;
-          addHistory(`${getRoundName()}：流局判定で ${judged.winner.seat} ${judged.winner.name} 勝ち`);
-        }
-      }
-
-      renderAll();
-      hideGirl();
-      await showRoundResult(roundText, winText, desc);
-
-      await new Promise(res => {
-        nextRoundBtn.onclick = () => {
-          hideOverlay(roundResultOverlay);
-          res();
-        };
-      });
-
-      if(hasHako()){
-        const winners = getFinalWinnersByPoints();
-        gameEnded = true;
-        showResultScreen(winners);
-        setBusy(false);
-        return;
-      }
-
-      if(result.winner && result.winner.seat === getCurrentParentSeat()){
-        addHistory(`親継続：${result.winner.seat} ${result.winner.name}`);
-      } else {
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-        addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
-      }
-
-      await startRound(false);
-    }
-
     function advanceTurn(){
       const order = getTurnOrder();
       turnIndex = (turnIndex + 1) % order.length;
@@ -2421,11 +2490,18 @@
 
     startBtn.addEventListener("click", beginSetupFlow);
 
-    girlSelectNextBtn.addEventListener("click", proceedToTileSelect);
+    girlSelectNextBtn.addEventListener("click", proceedToCpuSelect);
+
+    cpuSelectBackBtn.addEventListener("click", () => {
+      hideOverlay(cpuSelectOverlay);
+      showOverlay(girlSelectOverlay);
+    });
+
+    cpuSelectNextBtn.addEventListener("click", proceedToTileSelect);
 
     tileSelectBackBtn.addEventListener("click", () => {
       hideOverlay(tileSelectOverlay);
-      showOverlay(girlSelectOverlay);
+      showOverlay(cpuSelectOverlay);
     });
 
     tileSelectNextBtn.addEventListener("click", proceedToColorSelect);
@@ -2467,10 +2543,18 @@
     });
 
     passBtn.addEventListener("click", async () => {
-      if(busy || gameEnded) return;
+      if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
       pendingRon = false;
-      pendingTsumo = false;
-      updateActionButtons();
+      waitingPlayerDiscard = false;
+      hideGirl();
+      advanceTurn();
+      setBusy(false);
+
+      if(getCurrentPlayer().id === "you"){
+        startHumanTurn();
+      } else {
+        await startCpuTurn(getCurrentPlayer());
+      }
     });
 
     renderHistory();
