@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>デカブサジャラジャラ × チー娘</title>
 <style>
-   *{
+  *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
   }
@@ -25,6 +25,7 @@
   button,input{
     font-family:inherit;
   }
+
   .app{
     width:100%;
     max-width:430px;
@@ -34,6 +35,7 @@
       linear-gradient(180deg,#10131d 0%,#06080d 100%);
     padding:12px 10px 18px;
   }
+
   .title{
     text-align:center;
     font-size:24px;
@@ -41,6 +43,7 @@
     letter-spacing:.04em;
     margin:4px 0 12px;
   }
+
   .panel{
     background:rgba(255,255,255,.04);
     border:1px solid rgba(255,255,255,.07);
@@ -217,7 +220,7 @@
   }
   .riverTile{
     aspect-ratio:1 / 1;
-    border-radius:14px;
+    border-radius:16px;
     overflow:hidden;
     background:#1b2130;
     border:1px solid rgba(255,255,255,.08);
@@ -232,15 +235,16 @@
   .riverImg{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
     display:block;
     position:relative;
     z-index:1;
+    padding:3px;
   }
   .riverTint{
     position:absolute;
     inset:0;
-    opacity:.24;
+    opacity:.68;
     z-index:0;
   }
   .riverEmpty{
@@ -304,12 +308,12 @@
     align-items:center;
     justify-content:center;
     position:relative;
-    padding:6px;
+    padding:4px;
   }
   .tileTint{
     position:absolute;
     inset:0;
-    opacity:.32;
+    opacity:.64;
     z-index:0;
   }
   .tileImg{
@@ -319,6 +323,7 @@
     display:block;
     position:relative;
     z-index:1;
+    padding:2px;
   }
   .tileFallback{
     padding:6px;
@@ -500,6 +505,13 @@
     line-height:1.6;
     margin-bottom:14px;
   }
+  .selectCount{
+    text-align:center;
+    font-size:14px;
+    font-weight:900;
+    margin:0 0 12px;
+    color:#fff;
+  }
   .stepButtons{
     display:flex;
     flex-direction:column;
@@ -538,20 +550,20 @@
     height:100%;
     object-fit:cover;
     z-index:0;
-    filter:blur(6px) brightness(.92);
-    transform:scale(1.06);
+    filter:blur(4px) brightness(.98);
+    transform:scale(1.03);
   }
   .girlPreviewShade{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.12));
+    background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.10));
     z-index:1;
   }
   .girlPreviewChara{
     position:absolute;
     inset:auto 0 0 0;
     width:100%;
-    height:92%;
+    height:96%;
     object-fit:contain;
     z-index:2;
   }
@@ -594,12 +606,12 @@
     display:block;
     position:relative;
     z-index:1;
-    padding:6px;
+    padding:2px;
   }
   .customThumbTint{
     position:absolute;
     inset:0;
-    opacity:.45;
+    opacity:.72;
     z-index:0;
   }
   .customName{
@@ -637,12 +649,12 @@
     display:block;
     position:relative;
     z-index:1;
-    padding:4px;
+    padding:2px;
   }
   .colorThumbTint{
     position:absolute;
     inset:0;
-    opacity:.52;
+    opacity:.76;
     z-index:0;
   }
   .colorName{
@@ -673,22 +685,22 @@
     object-fit:cover;
     object-position:center center;
     z-index:0;
-    filter:blur(10px) brightness(.92);
-    transform:scale(1.08);
+    filter:blur(6px) brightness(.98);
+    transform:scale(1.03);
   }
   .girlBgShade{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.12) 100%);
+    background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 100%);
     z-index:1;
   }
   .girlChara{
     position:absolute;
     left:50%;
-    bottom:0;
+    bottom:-8px;
     transform:translateX(-50%);
-    width:min(104vw,520px);
-    height:92%;
+    width:min(118vw,600px);
+    height:100%;
     object-fit:contain;
     object-position:center bottom;
     z-index:2;
@@ -761,7 +773,7 @@
   .bigTileTint{
     position:absolute;
     inset:0;
-    opacity:.56;
+    opacity:.82;
     z-index:0;
   }
   .bigTileImg{
@@ -770,7 +782,7 @@
     object-fit:contain;
     position:relative;
     z-index:1;
-    padding:10px;
+    padding:4px;
   }
   .bigTileFallback{
     position:relative;
@@ -966,11 +978,11 @@
       font-size:25px;
     }
     .girlChara{
-      width:min(108vw,500px);
-      height:90%;
+      width:min(122vw,560px);
+      height:100%;
     }
   }
- </style>
+</style>
 </head>
 <body>
   <div class="app">
@@ -1053,9 +1065,7 @@
   <div class="overlay stepOverlay" id="girlSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">チー娘を選ぶ</div>
-      <div class="stepSub">
-        ゲーム中のあなた担当チー娘を選択
-      </div>
+      <div class="stepSub">ゲーム中のあなた担当チー娘を選択</div>
       <div class="girlSelectGrid" id="girlSelectGrid"></div>
       <div class="stepButtons">
         <button class="resultBtn resultRetry" id="girlSelectNextBtn" type="button">次へ</button>
@@ -1067,9 +1077,8 @@
   <div class="overlay stepOverlay" id="tileSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">牌に使うキャラを選ぶ</div>
-      <div class="stepSub">
-        12体の中から 9体ちょうど選択
-      </div>
+      <div class="stepSub">12体の中から 9体ちょうど選択</div>
+      <div class="selectCount" id="tileSelectCount">0/9 選択中</div>
       <div class="customGrid" id="tileSelectGrid"></div>
       <div class="stepButtons">
         <button class="resultBtn" id="tileSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
@@ -1082,9 +1091,7 @@
   <div class="overlay stepOverlay" id="colorSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">色を選ぶ</div>
-      <div class="stepSub">
-        選んだ9体それぞれの背景色を設定
-      </div>
+      <div class="stepSub">選んだ9体それぞれの背景色を設定</div>
       <div class="colorList" id="colorList"></div>
       <div class="stepButtons">
         <button class="resultBtn" id="colorSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
@@ -1097,9 +1104,8 @@
   <div class="overlay stepOverlay" id="customOverlay">
     <div class="stepBox">
       <div class="stepTitle">牌カスタム</div>
-      <div class="stepSub">
-        今の牌構成を変更して、次回リセット後に反映
-      </div>
+      <div class="stepSub">今の牌構成を変更して、次回リセット後に反映</div>
+      <div class="selectCount" id="customSelectCount">0/9 選択中</div>
       <div class="customGrid" id="customGrid"></div>
       <div class="stepButtons">
         <button class="resultBtn resultRetry" id="saveCustomBtn" type="button">保存</button>
@@ -1166,14 +1172,14 @@
   </div>
 
   <script>
-       const START_POINT = 5;
+      const START_POINT = 5;
     const BASE_HAND_SIZE = 5;
     const COPIES_PER_TILE = 6;
     const PICK_COUNT = 9;
-    const WAIT_LONG = 1350;
-    const WAIT_RON_CHECK = 900;
-    const WAIT_DISCARD_PREVIEW = 900;
-    const WAIT_ROUND_START_GAP = 700;
+    const WAIT_LONG = 1100;
+    const WAIT_RON_CHECK = 700;
+    const WAIT_DISCARD_PREVIEW = 700;
+    const WAIT_ROUND_START_GAP = 500;
     const PARENT_ORDER = ["東","南","西","北"];
 
     const ALL_TILE_POOL = [
@@ -1182,12 +1188,12 @@
       { id:"namaken", name:"ナマケン", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
       { id:"tora", name:"トラさん", defaultColor:"#6ee7a8", image:"img/tile_torasan.png" },
       { id:"king", name:"キング", defaultColor:"#c084fc", image:"img/tile_king.png" },
-      { id:"gori", name:"ゴリさん", defaultColor:"#b98b5f", image:"img/tile_gorisan.png" },
+      { id:"gori", name:"ゴリさん", defaultColor:"#d2a679", image:"img/tile_gorisan.png" },
       { id:"kabao", name:"カバオ", defaultColor:"#ffb86b", image:"img/tile_kabao.png" },
-      { id:"kan", name:"カンえもん", defaultColor:"#8b8fa3", image:"img/tile_kanemon.png" },
+      { id:"kan", name:"カンえもん", defaultColor:"#9aa4b8", image:"img/tile_kanemon.png" },
       { id:"pan", name:"パンパン", defaultColor:"#ff8fd1", image:"img/tile_panpan.png" },
-      { id:"latero", name:"ラテロウ", defaultColor:"#caa47d", image:"img/tile_latero.png" },
-      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#9aa4b2", image:"img/tile_juuzo.png" },
+      { id:"latero", name:"ラテロウ", defaultColor:"#d7b896", image:"img/tile_latero.png" },
+      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#c7d2e2", image:"img/tile_juuzo.png" },
       { id:"nisebusa", name:"ニセブサ", defaultColor:"#94a3ff", image:"img/tile_nisebusa.png" }
     ];
 
@@ -1292,18 +1298,8 @@
 
     const DEFAULT_SETUP = {
       supportGirlId:"girlA",
-      selectedTileIds:["dekabusa","ani","namaken","tora","king","gori","kabao","kan","pan"],
-      tileColors:{
-        dekabusa:"#ff6b6b",
-        ani:"#ffd93d",
-        namaken:"#6bcBff",
-        tora:"#6ee7a8",
-        king:"#c084fc",
-        gori:"#b98b5f",
-        kabao:"#ffb86b",
-        kan:"#8b8fa3",
-        pan:"#ff8fd1"
-      }
+      selectedTileIds:[],
+      tileColors:{}
     };
 
     const players = [
@@ -1367,6 +1363,8 @@
     const tileSelectGrid = document.getElementById("tileSelectGrid");
     const customGrid = document.getElementById("customGrid");
     const colorList = document.getElementById("colorList");
+    const tileSelectCount = document.getElementById("tileSelectCount");
+    const customSelectCount = document.getElementById("customSelectCount");
 
     const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
     const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
@@ -1402,6 +1400,9 @@
     const resultSub = document.getElementById("resultSub");
     const resultList = document.getElementById("resultList");
 
+    let humanTurnTimer1 = null;
+    let humanTurnTimer2 = null;
+
     function structuredCloneSafe(obj){
       return JSON.parse(JSON.stringify(obj));
     }
@@ -1412,6 +1413,17 @@
 
     function wait(ms){
       return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function clearHumanTimers(){
+      if(humanTurnTimer1){
+        clearTimeout(humanTurnTimer1);
+        humanTurnTimer1 = null;
+      }
+      if(humanTurnTimer2){
+        clearTimeout(humanTurnTimer2);
+        humanTurnTimer2 = null;
+      }
     }
 
     function shuffle(array){
@@ -1609,7 +1621,8 @@
       bigTileWrap.classList.remove("show");
       hideOverlay(girlOverlay);
     }
-       function showBigTile(tileId, caption){
+
+    function showBigTile(tileId, caption){
       const tile = getTileDef(tileId);
       bigTileTint.style.background = getTileColor(tileId);
       bigTileCard.innerHTML = "";
@@ -1640,9 +1653,9 @@
       roundOverlayMain.textContent = getRoundName();
       roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
       showOverlay(roundOverlay);
-      await wait(1050);
+      await wait(950);
       hideOverlay(roundOverlay);
-      await wait(240);
+      await wait(180);
     }
 
     function renderTileContent(parent, tileId){
@@ -1981,8 +1994,12 @@
       });
     }
 
-    function renderTilePickGrid(targetEl, selectedIds){
+    function renderTilePickGrid(targetEl, selectedIds, countEl){
       targetEl.innerHTML = "";
+      if(countEl){
+        countEl.textContent = `${selectedIds.length}/9 選択中`;
+      }
+
       ALL_TILE_POOL.forEach(tile => {
         const card = document.createElement("button");
         card.type = "button";
@@ -1991,20 +2008,29 @@
           const exists = selectedIds.includes(tile.id);
 
           if(exists){
-            if(selectedIds.length <= PICK_COUNT) return;
             const idx = selectedIds.indexOf(tile.id);
             selectedIds.splice(idx,1);
           } else {
-            if(selectedIds.length >= PICK_COUNT) return;
+            if(selectedIds.length >= PICK_COUNT){
+              alert("9体選択中です。先に1体外してね。");
+              return;
+            }
             selectedIds.push(tile.id);
+            if(!tempTileColors[tile.id]){
+              tempTileColors[tile.id] = tile.defaultColor;
+            }
           }
 
-          renderTilePickGrid(targetEl, selectedIds);
+          renderTilePickGrid(targetEl, selectedIds, countEl);
         });
+
+        const bgColor = selectedIds.includes(tile.id)
+          ? (tempTileColors[tile.id] || tile.defaultColor)
+          : tile.defaultColor;
 
         card.innerHTML = `
           <div class="customThumb">
-            <div class="customThumbTint" style="background:${selectedIds.includes(tile.id) ? (tempTileColors[tile.id] || tile.defaultColor) : tile.defaultColor}"></div>
+            <div class="customThumbTint" style="background:${bgColor}"></div>
             <img src="${tile.image}" alt="${tile.name}">
           </div>
           <div class="customName">${tile.name}</div>
@@ -2054,7 +2080,7 @@
         return;
       }
       hideOverlay(girlSelectOverlay);
-      renderTilePickGrid(tileSelectGrid, tempTileIds);
+      renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
       showOverlay(tileSelectOverlay);
     }
 
@@ -2071,8 +2097,7 @@
       renderColorList();
       showOverlay(colorSelectOverlay);
     }
-
-    async function finalizeSetupAndStart(){
+        async function finalizeSetupAndStart(){
       gameSetup = {
         supportGirlId: tempGirlId,
         selectedTileIds: [...tempTileIds],
@@ -2087,7 +2112,7 @@
       if(busy) return;
       tempTileIds = [...gameSetup.selectedTileIds];
       tempTileColors = structuredCloneSafe(gameSetup.tileColors);
-      renderTilePickGrid(customGrid, tempTileIds);
+      renderTilePickGrid(customGrid, tempTileIds, customSelectCount);
       showOverlay(customOverlay);
     }
 
@@ -2107,12 +2132,21 @@
       renderAll();
       addHistory("牌カスタムを保存。次回リセット後に反映。");
     }
-       async function resetGame(){
+
+    async function resetGame(){
+      clearHumanTimers();
+      hideGirl();
+      hideOverlay(roundResultOverlay);
+      hideResultScreen();
+
       setBusy(true);
       gameEnded = false;
       historyLogs = [];
       discardPile = [];
+      deck = [];
       lastDiscardInfo = null;
+      justDrawnIndex = -1;
+      waitingPlayerDiscard = false;
       clearPendingActions();
 
       players.forEach(p => {
@@ -2133,14 +2167,23 @@
       parentSeatIndex = 0;
       rebuildActiveTiles();
 
+      renderHistory();
+      renderAll();
+
       await startRound(true);
       setBusy(false);
     }
 
     async function startRound(isFirst){
+      clearHumanTimers();
+      hideGirl();
+      hideOverlay(roundResultOverlay);
+
       setBusy(true);
       discardPile = [];
       clearPendingActions();
+      waitingPlayerDiscard = false;
+      justDrawnIndex = -1;
       players.forEach(p => p.hand = []);
 
       deck = createDeck();
@@ -2152,6 +2195,7 @@
       const order = getTurnOrder();
       turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
 
+      addHistory(`${getRoundName()} 開始 / 親：${getParentPlayer().seat} ${getParentPlayer().name}`);
       renderAll();
 
       if(!isFirst){
@@ -2169,18 +2213,20 @@
     }
 
     function startHumanTurn(){
+      clearHumanTimers();
       const girl = getSupportGirl();
       waitingPlayerDiscard = false;
       justDrawnIndex = -1;
       renderAll();
 
       showGirl(girl, rand(girl.introHuman));
-      setTimeout(() => {
-        updateGirlText(rand(girl.thinkHuman));
-      }, 700);
 
-      setTimeout(() => {
-        const tileId = drawTile(players[0]);
+      humanTurnTimer1 = setTimeout(() => {
+        updateGirlText(rand(girl.thinkHuman));
+      }, 520);
+
+      humanTurnTimer2 = setTimeout(() => {
+        drawTile(players[0]);
         justDrawnIndex = players[0].hand.length - 1;
         pendingTsumo = isWinningHand(players[0].hand);
         pendingRon = false;
@@ -2188,24 +2234,31 @@
         renderAll();
 
         updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+
+        setTimeout(() => {
+          hideGirl();
+          renderAll();
+        }, 520);
+
       }, WAIT_LONG);
     }
 
     async function startCpuTurn(player){
+      clearHumanTimers();
       setBusy(true);
       const girl = getCpuGirlByIndex(player.girlIndex);
 
       showGirl(girl, rand(girl.introCpu));
-      await wait(700);
+      await wait(500);
 
       updateGirlText(rand(girl.thinkCpu));
-      await wait(700);
+      await wait(520);
 
-      const tileId = drawTile(player);
+      drawTile(player);
       const tsumo = isWinningHand(player.hand);
 
       updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
-      await wait(WAIT_LONG);
+      await wait(520);
 
       if(tsumo){
         await finishRound({ type:"tsumo", winner:player });
@@ -2237,7 +2290,8 @@
         return;
       }
 
-      await wait(200);
+      hideGirl();
+      await wait(120);
       advanceTurn();
       setBusy(false);
 
@@ -2251,6 +2305,8 @@
     function onPlayerDiscard(index){
       if(!waitingPlayerDiscard || busy || gameEnded) return;
 
+      clearHumanTimers();
+
       const me = players[0];
       const tileId = me.hand[index];
       const girl = getSupportGirl();
@@ -2258,8 +2314,8 @@
       setBusy(true);
       waitingPlayerDiscard = false;
 
+      showGirl(girl, rand(girl.discard));
       showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
-      updateGirlText(rand(girl.discard));
 
       setTimeout(async () => {
         me.hand.splice(index,1);
@@ -2282,6 +2338,7 @@
           return;
         }
 
+        hideGirl();
         advanceTurn();
         setBusy(false);
 
@@ -2294,8 +2351,10 @@
     }
 
     async function finishRound(result){
+      clearHumanTimers();
       setBusy(true);
       clearPendingActions();
+      waitingPlayerDiscard = false;
 
       let desc = "";
       let winText = "";
@@ -2305,24 +2364,29 @@
         applyTsumoPoints(result.winner);
         desc = `${result.winner.name}がツモ`;
         winText = `${result.winner.seat} ${result.winner.name} ツモ`;
+        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
       } else if(result.type === "ron"){
         applyRonPoints(result.winner, result.loser);
         desc = `${result.loser.name}から2点`;
         winText = `${result.winner.seat} ${result.winner.name} ロン`;
+        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
       } else {
         const judged = judgeRoundRanking();
         if(judged.reason === "draw"){
           desc = "流局";
           winText = "引き分け";
+          addHistory(`${getRoundName()}：流局`);
         } else {
           applyTsumoPoints(judged.winner);
           desc = "流局判定勝ち";
           winText = `${judged.winner.name} 勝ち`;
           result.winner = judged.winner;
+          addHistory(`${getRoundName()}：流局判定で ${judged.winner.seat} ${judged.winner.name} 勝ち`);
         }
       }
 
       renderAll();
+      hideGirl();
       await showRoundResult(roundText, winText, desc);
 
       await new Promise(res => {
@@ -2341,9 +2405,10 @@
       }
 
       if(result.winner && result.winner.seat === getCurrentParentSeat()){
-        // 親継続
+        addHistory(`親継続：${result.winner.seat} ${result.winner.name}`);
       } else {
         parentSeatIndex = (parentSeatIndex + 1) % 4;
+        addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
       }
 
       await startRound(false);
@@ -2355,16 +2420,21 @@
     }
 
     startBtn.addEventListener("click", beginSetupFlow);
+
     girlSelectNextBtn.addEventListener("click", proceedToTileSelect);
+
     tileSelectBackBtn.addEventListener("click", () => {
       hideOverlay(tileSelectOverlay);
       showOverlay(girlSelectOverlay);
     });
+
     tileSelectNextBtn.addEventListener("click", proceedToColorSelect);
+
     colorSelectBackBtn.addEventListener("click", () => {
       hideOverlay(colorSelectOverlay);
       showOverlay(tileSelectOverlay);
     });
+
     gameStartBtn.addEventListener("click", finalizeSetupAndStart);
 
     openCustomBtn.addEventListener("click", openCustom);
@@ -2381,7 +2451,30 @@
       resetGame();
     });
 
+    tsumoBtn.addEventListener("click", async () => {
+      if(!pendingTsumo || busy || gameEnded) return;
+      const me = players[0];
+      await finishRound({ type:"tsumo", winner:me });
+    });
+
+    ronBtn.addEventListener("click", async () => {
+      if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
+      await finishRound({
+        type:"ron",
+        winner:players[0],
+        loser:lastDiscardInfo.discarder
+      });
+    });
+
+    passBtn.addEventListener("click", async () => {
+      if(busy || gameEnded) return;
+      pendingRon = false;
+      pendingTsumo = false;
+      updateActionButtons();
+    });
+
+    renderHistory();
     renderAll();
-     </script>
+  </script>
 </body>
 </html>
