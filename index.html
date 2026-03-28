@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>デカブサジャラポン × チー娘</title>
+<title>デカブサジャラジャラ × チー娘</title>
 <style>
-  *{
+   *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
   }
@@ -22,7 +22,7 @@
     display:flex;
     justify-content:center;
   }
-  button{
+  button,input{
     font-family:inherit;
   }
   .app{
@@ -240,7 +240,7 @@
   .riverTint{
     position:absolute;
     inset:0;
-    opacity:.18;
+    opacity:.24;
     z-index:0;
   }
   .riverEmpty{
@@ -270,7 +270,7 @@
     width:86px;
     height:86px;
     border:none;
-    border-radius:18px;
+    border-radius:22px;
     overflow:hidden;
     border:1px solid rgba(255,255,255,.08);
     color:#fff;
@@ -284,9 +284,10 @@
     position:relative;
     background:#1c2230;
     transition:transform .15s ease, box-shadow .15s ease;
+    cursor:pointer;
   }
   .tileBtn:active{
-    transform:scale(.95);
+    transform:scale(.96);
   }
   .tileBtn.drawn{
     outline:2px solid rgba(255,230,120,.95);
@@ -294,6 +295,7 @@
   }
   .tileBtn:disabled{
     opacity:.55;
+    cursor:default;
   }
   .tileInner{
     width:100%;
@@ -302,17 +304,18 @@
     align-items:center;
     justify-content:center;
     position:relative;
+    padding:6px;
   }
   .tileTint{
     position:absolute;
     inset:0;
-    opacity:.22;
+    opacity:.32;
     z-index:0;
   }
   .tileImg{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
     display:block;
     position:relative;
     z-index:1;
@@ -535,18 +538,20 @@
     height:100%;
     object-fit:cover;
     z-index:0;
+    filter:blur(6px) brightness(.92);
+    transform:scale(1.06);
   }
   .girlPreviewShade{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.18));
+    background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.12));
     z-index:1;
   }
   .girlPreviewChara{
     position:absolute;
-    inset:0;
+    inset:auto 0 0 0;
     width:100%;
-    height:100%;
+    height:92%;
     object-fit:contain;
     z-index:2;
   }
@@ -576,7 +581,7 @@
   .customThumb{
     width:100%;
     aspect-ratio:1 / 1;
-    border-radius:12px;
+    border-radius:16px;
     overflow:hidden;
     position:relative;
     background:#1b2130;
@@ -585,15 +590,16 @@
   .customThumb img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
     display:block;
     position:relative;
     z-index:1;
+    padding:6px;
   }
   .customThumbTint{
     position:absolute;
     inset:0;
-    opacity:.18;
+    opacity:.45;
     z-index:0;
   }
   .customName{
@@ -627,15 +633,16 @@
   .colorThumb img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
     display:block;
     position:relative;
     z-index:1;
+    padding:4px;
   }
   .colorThumbTint{
     position:absolute;
     inset:0;
-    opacity:.18;
+    opacity:.52;
     z-index:0;
   }
   .colorName{
@@ -666,18 +673,22 @@
     object-fit:cover;
     object-position:center center;
     z-index:0;
+    filter:blur(10px) brightness(.92);
+    transform:scale(1.08);
   }
   .girlBgShade{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.16) 0%, rgba(0,0,0,.03) 28%, rgba(0,0,0,.20) 100%);
+    background:linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.12) 100%);
     z-index:1;
   }
   .girlChara{
     position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:min(104vw,520px);
+    height:92%;
     object-fit:contain;
     object-position:center bottom;
     z-index:2;
@@ -693,13 +704,13 @@
   }
   .girlSpeech{
     width:100%;
-    background:rgba(255,255,255,.10);
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    background:rgba(255,255,255,.14);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
     color:#fff;
     border-radius:28px;
     padding:16px 16px 18px;
-    border:1px solid rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.14);
     box-shadow:0 8px 24px rgba(0,0,0,.08);
   }
   .girlName{
@@ -735,7 +746,7 @@
   .bigTileCard{
     width:min(56vw,240px);
     aspect-ratio:1 / 1;
-    border-radius:18px;
+    border-radius:20px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -750,15 +761,16 @@
   .bigTileTint{
     position:absolute;
     inset:0;
-    opacity:.28;
+    opacity:.56;
     z-index:0;
   }
   .bigTileImg{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
     position:relative;
     z-index:1;
+    padding:10px;
   }
   .bigTileFallback{
     position:relative;
@@ -905,7 +917,9 @@
     font-size:14px;
     font-weight:800;
   }
-  .resultLine:last-child{ margin-bottom:0; }
+  .resultLine:last-child{
+    margin-bottom:0;
+  }
   .resultButtons{
     display:flex;
     flex-direction:column;
@@ -951,12 +965,16 @@
     .roundResultWin{
       font-size:25px;
     }
+    .girlChara{
+      width:min(108vw,500px);
+      height:90%;
+    }
   }
-</style>
+ </style>
 </head>
 <body>
   <div class="app">
-    <div class="title">デカブサジャラポン × チー娘</div>
+    <div class="title">デカブサジャラジャラ × チー娘</div>
 
     <div class="panel statusBox">
       <div class="statusTop">
@@ -1021,10 +1039,10 @@
   <!-- タイトル -->
   <div class="overlay titleOverlay show" id="titleOverlay">
     <div class="titleScreen">
-      <div class="titleLogo">デカブサジャラポン<br>× チー娘</div>
+      <div class="titleLogo">デカブサジャラジャラ<br>× チー娘</div>
       <div class="titleSub">
         チー娘を選んで、デカブサ牌を9種選んで、<br>
-        自分だけのジャラポンで遊ぼう。
+        自分だけのジャラジャラで遊ぼう。
       </div>
       <button class="startBtn" id="startBtn" type="button">START</button>
       <div class="titleNote">チー娘透過PNG + 背景画像対応</div>
@@ -1148,7 +1166,6 @@
   </div>
 
   <script>
-
        const START_POINT = 5;
     const BASE_HAND_SIZE = 5;
     const COPIES_PER_TILE = 6;
@@ -1160,18 +1177,18 @@
     const PARENT_ORDER = ["東","南","西","北"];
 
     const ALL_TILE_POOL = [
-      { id:"dekabusa", name:"デカブサ", defaultColor:"#e74c3c", image:"img/tile_dekabusa.png" },
-      { id:"ani", name:"デカブサ兄", defaultColor:"#f1c40f", image:"img/tile_aniki.png" },
-      { id:"namaken", name:"ナマケン", defaultColor:"#3498db", image:"img/tile_namaken.png" },
-      { id:"tora", name:"トラさん", defaultColor:"#2ecc71", image:"img/tile_torasan.png" },
-      { id:"king", name:"キング", defaultColor:"#9b59b6", image:"img/tile_king.png" },
-      { id:"gori", name:"ゴリさん", defaultColor:"#8e5c2c", image:"img/tile_gorisan.png" },
-      { id:"kabao", name:"カバオ", defaultColor:"#e67e22", image:"img/tile_kabao.png" },
-      { id:"kan", name:"カンえもん", defaultColor:"#666666", image:"img/tile_kanemon.png" },
-      { id:"pan", name:"パンパン", defaultColor:"#ff77cc", image:"img/tile_panpan.png" },
-      { id:"quokka", name:"クオちゃん", defaultColor:"#16a085", image:"img/tile_quokka.png" },
-      { id:"penguin", name:"ペンペン", defaultColor:"#2980b9", image:"img/tile_penguin.png" },
-      { id:"hachibo", name:"ハチボウ", defaultColor:"#d35400", image:"img/tile_hachibo.png" }
+      { id:"dekabusa", name:"デカブサ", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
+      { id:"ani", name:"デカブサ兄", defaultColor:"#ffd93d", image:"img/tile_aniki.png" },
+      { id:"namaken", name:"ナマケン", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
+      { id:"tora", name:"トラさん", defaultColor:"#6ee7a8", image:"img/tile_torasan.png" },
+      { id:"king", name:"キング", defaultColor:"#c084fc", image:"img/tile_king.png" },
+      { id:"gori", name:"ゴリさん", defaultColor:"#b98b5f", image:"img/tile_gorisan.png" },
+      { id:"kabao", name:"カバオ", defaultColor:"#ffb86b", image:"img/tile_kabao.png" },
+      { id:"kan", name:"カンえもん", defaultColor:"#8b8fa3", image:"img/tile_kanemon.png" },
+      { id:"pan", name:"パンパン", defaultColor:"#ff8fd1", image:"img/tile_panpan.png" },
+      { id:"latero", name:"ラテロウ", defaultColor:"#caa47d", image:"img/tile_latero.png" },
+      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#9aa4b2", image:"img/tile_juuzo.png" },
+      { id:"nisebusa", name:"ニセブサ", defaultColor:"#94a3ff", image:"img/tile_nisebusa.png" }
     ];
 
     const GIRLS = [
@@ -1277,15 +1294,15 @@
       supportGirlId:"girlA",
       selectedTileIds:["dekabusa","ani","namaken","tora","king","gori","kabao","kan","pan"],
       tileColors:{
-        dekabusa:"#e74c3c",
-        ani:"#f1c40f",
-        namaken:"#3498db",
-        tora:"#2ecc71",
-        king:"#9b59b6",
-        gori:"#8e5c2c",
-        kabao:"#e67e22",
-        kan:"#666666",
-        pan:"#ff77cc"
+        dekabusa:"#ff6b6b",
+        ani:"#ffd93d",
+        namaken:"#6bcBff",
+        tora:"#6ee7a8",
+        king:"#c084fc",
+        gori:"#b98b5f",
+        kabao:"#ffb86b",
+        kan:"#8b8fa3",
+        pan:"#ff8fd1"
       }
     };
 
@@ -1592,8 +1609,7 @@
       bigTileWrap.classList.remove("show");
       hideOverlay(girlOverlay);
     }
-
-    function showBigTile(tileId, caption){
+       function showBigTile(tileId, caption){
       const tile = getTileDef(tileId);
       bigTileTint.style.background = getTileColor(tileId);
       bigTileCard.innerHTML = "";
@@ -1973,6 +1989,7 @@
         card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
         card.addEventListener("click", () => {
           const exists = selectedIds.includes(tile.id);
+
           if(exists){
             if(selectedIds.length <= PICK_COUNT) return;
             const idx = selectedIds.indexOf(tile.id);
@@ -1981,12 +1998,13 @@
             if(selectedIds.length >= PICK_COUNT) return;
             selectedIds.push(tile.id);
           }
+
           renderTilePickGrid(targetEl, selectedIds);
         });
 
         card.innerHTML = `
           <div class="customThumb">
-            <div class="customThumbTint" style="background:${tile.defaultColor}"></div>
+            <div class="customThumbTint" style="background:${selectedIds.includes(tile.id) ? (tempTileColors[tile.id] || tile.defaultColor) : tile.defaultColor}"></div>
             <img src="${tile.image}" alt="${tile.name}">
           </div>
           <div class="customName">${tile.name}</div>
@@ -2089,501 +2107,13 @@
       renderAll();
       addHistory("牌カスタムを保存。次回リセット後に反映。");
     }
-
-    async function showParentFlowCutin(type, targetPlayer){
-      const girl = targetPlayer.type === "human" ? getSupportGirl() : getCpuGirlByIndex(targetPlayer.girlIndex);
-      const lines = type === "stay" ? girl.parentStay : type === "move" ? girl.parentMove : girl.parentStart;
-      showGirl(girl, rand(lines));
-      await wait(1150);
-      hideGirl();
-      await wait(120);
-    }
-
-    async function showMatchFinal(winners){
-      if(winners.length === 1){
-        const winner = winners[0];
-        const girl = winner.id === "you" ? getSupportGirl() : getCpuGirlByIndex(winner.girlIndex);
-        const lines = winner.id === "you" ? girl.finalWinYou : girl.finalWinCpu;
-        showGirl(girl, rand(lines));
-        await wait(1700);
-        hideGirl();
-      } else {
-        const girl = getSupportGirl();
-        showGirl(girl, "同点優勝だね。");
-        await wait(1700);
-        hideGirl();
-      }
-      showResultScreen(winners);
-    }
-
-    async function playRoundEndByTsumo(winner){
-      clearPendingActions();
-
-      const girl = winner.id === "you" ? getSupportGirl() : getCpuGirlByIndex(winner.girlIndex);
-      const parent = getParentPlayer();
-      const isParentWin = winner.id === parent.id;
-
-      await wait(420);
-      showGirl(girl, rand(girl.tsumo));
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      applyTsumoPoints(winner);
-      addHistory(`${getRoundName()}：${winner.seat} ${winner.name} がツモ。`);
-
-      statusMain.textContent = `${winner.name} ツモ`;
-      subInfo.textContent = `他3人から各1点`;
-      renderAll();
-
-      await showRoundResult(
-        `${getRoundName()}終了`,
-        `${winner.seat}　${winner.name}　ツモ`,
-        "他の3人から各1点"
-      );
-
-      if(hasHako()){
-        showGirl(girl, rand(girl.hako));
-        await wait(WAIT_LONG);
-        hideGirl();
-        gameEnded = true;
-        await showMatchFinal(getFinalWinnersByPoints());
-        return;
-      }
-
-      if(isParentWin){
-        await showParentFlowCutin("stay", parent);
-      } else {
-        await showParentFlowCutin("move", parent);
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-      }
-
-      await wait(WAIT_ROUND_START_GAP);
-      await startRound();
-    }
-
-    async function playRoundEndByRon(winner, discarder, tileId){
-      clearPendingActions();
-
-      const girl = winner.id === "you" ? getSupportGirl() : getCpuGirlByIndex(winner.girlIndex);
-      const parent = getParentPlayer();
-      const isParentWin = winner.id === parent.id;
-
-      await wait(420);
-      showGirl(girl, rand(girl.ron));
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      applyRonPoints(winner, discarder);
-      addHistory(`${getRoundName()}：${winner.seat} ${winner.name} が ${discarder.seat} ${discarder.name} の ${getTileName(tileId)} でロン。`);
-
-      statusMain.textContent = `${winner.name} ロン`;
-      subInfo.textContent = `${discarder.name} から2点`;
-      renderAll();
-
-      await showRoundResult(
-        `${getRoundName()}終了`,
-        `${winner.seat}　${winner.name}　ロン`,
-        `${discarder.seat}　${discarder.name} から2点`
-      );
-
-      if(hasHako()){
-        showGirl(girl, rand(girl.hako));
-        await wait(WAIT_LONG);
-        hideGirl();
-        gameEnded = true;
-        await showMatchFinal(getFinalWinnersByPoints());
-        return;
-      }
-
-      if(isParentWin){
-        await showParentFlowCutin("stay", parent);
-      } else {
-        await showParentFlowCutin("move", parent);
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-      }
-
-      await wait(WAIT_ROUND_START_GAP);
-      await startRound();
-    }
-
-    async function playRoundDraw(){
-      clearPendingActions();
-
-      const girl = getSupportGirl();
-      const parent = getParentPlayer();
-
-      showGirl(girl, rand(girl.drawRound));
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      addHistory(`${getRoundName()}：流局。点数変動なし。`);
-      statusMain.textContent = "流局";
-      subInfo.textContent = "点数変動なし";
-      renderAll();
-
-      await showRoundResult(
-        `${getRoundName()}終了`,
-        "流局",
-        "点数変動なし"
-      );
-
-      await showParentFlowCutin("move", parent);
-      parentSeatIndex = (parentSeatIndex + 1) % 4;
-
-      await wait(WAIT_ROUND_START_GAP);
-      await startRound();
-    }
-
-    async function playRoundBestWin(winner){
-      clearPendingActions();
-
-      const girl = winner.id === "you" ? getSupportGirl() : getCpuGirlByIndex(winner.girlIndex);
-      const parent = getParentPlayer();
-      const isParentWin = winner.id === parent.id;
-
-      showGirl(girl, rand(girl.tsumo));
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      winner.point += 1;
-      addHistory(`${getRoundName()}：山札終了。${winner.seat} ${winner.name} が判定勝ち。`);
-
-      statusMain.textContent = "山札終了";
-      subInfo.textContent = `${winner.name} +1`;
-      renderAll();
-
-      await showRoundResult(
-        `${getRoundName()}終了`,
-        `${winner.seat}　${winner.name}　判定勝ち`,
-        "山札終了 / 判定で +1点"
-      );
-
-      if(hasHako()){
-        showGirl(girl, rand(girl.hako));
-        await wait(WAIT_LONG);
-        hideGirl();
-        gameEnded = true;
-        await showMatchFinal(getFinalWinnersByPoints());
-        return;
-      }
-
-      if(isParentWin){
-        await showParentFlowCutin("stay", parent);
-      } else {
-        await showParentFlowCutin("move", parent);
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-      }
-
-      await wait(WAIT_ROUND_START_GAP);
-      await startRound();
-    }
-
-    async function startRound(){
-      if(gameEnded) return;
-
-      clearPendingActions();
-      deck = createDeck();
+       async function resetGame(){
+      setBusy(true);
+      gameEnded = false;
+      historyLogs = [];
       discardPile = [];
-      players.forEach(p => p.hand = []);
-      justDrawnIndex = -1;
-      waitingPlayerDiscard = false;
-
-      for(let i = 0; i < BASE_HAND_SIZE; i++){
-        players.forEach(p => drawTile(p));
-      }
-
-      statusMain.textContent = `${getRoundName()}開始`;
-      subInfo.textContent = `親：${getParentPlayer().seat} ${getParentPlayer().name}`;
-      renderAll();
-      addHistory(`${getRoundName()}開始。親：${getParentPlayer().seat} ${getParentPlayer().name}`);
-
-      await showParentStartCutin();
-      await showRoundIntro();
-      await wait(220);
-
-      const order = getTurnOrder();
-      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
-
-      await introTurn();
-    }
-
-    async function showParentStartCutin(){
-      const parent = getParentPlayer();
-      await showParentFlowCutin("start", parent);
-    }
-
-    async function introTurn(){
-      if(gameEnded) return;
+      lastDiscardInfo = null;
       clearPendingActions();
-
-      const player = getCurrentPlayer();
-      renderAll();
-
-      if(player.type === "human"){
-        const girl = getSupportGirl();
-        showGirl(girl, rand(girl.introHuman));
-        statusMain.textContent = `${player.seat}　あなたの番`;
-        subInfo.textContent = "1枚引いて6枚→上がるか捨てる";
-        await wait(WAIT_LONG);
-        updateGirlText(rand(girl.thinkHuman));
-        await wait(760);
-        hideGirl();
-        await wait(160);
-        await playerDrawPhase(girl);
-      } else {
-        const girl = getCpuGirlByIndex(player.girlIndex);
-        showGirl(girl, rand(girl.introCpu));
-        statusMain.textContent = `${player.seat}　${player.name}の番`;
-        subInfo.textContent = "相手が考え中";
-        await wait(WAIT_LONG);
-        await cpuTurn(player, girl);
-      }
-    }
-
-    async function playerDrawPhase(girl){
-      if(gameEnded) return;
-
-      setBusy(true);
-
-      if(deck.length <= 0){
-        hideGirl();
-        await endRoundByJudgement();
-        setBusy(false);
-        return;
-      }
-
-      const me = players[0];
-      const tileId = drawTile(me);
-      justDrawnIndex = me.hand.length - 1;
-      renderAll();
-
-      await wait(380);
-      document.querySelectorAll(".tileBtn")[justDrawnIndex]?.classList.add("tsumoGlow");
-
-      if(getCompletedTriples(me.hand) >= 1 || getBestCount(me.hand) >= 2){
-        updateGirlText(rand(girl.drawHumanGood));
-      } else {
-        updateGirlText(rand(girl.drawHumanNormal));
-      }
-
-      statusMain.textContent = `${getTileName(tileId)} を引いた`;
-      subInfo.textContent = "ツモするか、手札を1枚捨てよう";
-      await wait(WAIT_LONG);
-      hideGirl();
-
-      waitingPlayerDiscard = true;
-      pendingTsumo = isWinningHand(me.hand);
-      pendingRon = false;
-      setBusy(false);
-      renderAll();
-    }
-
-    async function cpuTurn(player, girl){
-      if(gameEnded) return;
-
-      setBusy(true);
-
-      if(deck.length <= 0){
-        hideGirl();
-        await endRoundByJudgement();
-        setBusy(false);
-        return;
-      }
-
-      drawTile(player);
-      renderAll();
-
-      await wait(380);
-
-      if(isWinningHand(player.hand)){
-        hideGirl();
-        statusMain.textContent = `${player.name} が3枚×2セット完成`;
-        subInfo.textContent = "ツモ";
-        renderAll();
-        await playRoundEndByTsumo(player);
-        setBusy(false);
-        return;
-      }
-
-      if(getCompletedTriples(player.hand) >= 1 || getBestCount(player.hand) >= 2){
-        updateGirlText(rand(girl.drawCpuGood));
-      } else {
-        updateGirlText(rand(girl.drawCpuNormal));
-      }
-
-      statusMain.textContent = `${player.name} が1枚引いた`;
-      subInfo.textContent = "相手が様子を見ている";
-      await wait(WAIT_LONG);
-
-      updateGirlText("……");
-      await wait(420);
-
-      updateGirlText(rand(girl.thinkCpu));
-      statusMain.textContent = `${player.name} が考えている`;
-      subInfo.textContent = "どの牌を切るか悩み中";
-      await wait(880);
-
-      updateGirlText(rand(girl.discard));
-      await wait(560);
-
-      const discardIndex = cpuChooseDiscardIndex(player);
-      const removed = player.hand.splice(discardIndex, 1)[0];
-
-      updateGirlText("……");
-      showBigTile(removed, `${getTileName(removed)}を捨てる`);
-      await wait(WAIT_DISCARD_PREVIEW);
-      hideGirl();
-
-      discardPile.push({
-        tileId: removed,
-        owner: `${player.seat}　${player.name}`,
-        playerId: player.id
-      });
-
-      statusMain.textContent = `${player.name} が ${getTileName(removed)} を捨てた`;
-      subInfo.textContent = "ロン判定中";
-      addHistory(`${player.seat}　${player.name} が ${getTileName(removed)} を捨てた。`);
-      renderAll();
-
-      await wait(WAIT_RON_CHECK);
-
-      const ronWinner = getRonCandidateAfterDiscard(player, removed);
-      if(ronWinner){
-        if(ronWinner.id === "you"){
-          pendingRon = true;
-          waitingPlayerDiscard = false;
-          lastDiscardInfo = { discarder: player, tileId: removed };
-          statusMain.textContent = "ロンできます";
-          subInfo.textContent = "ロンするか、スルーして続行";
-          setBusy(false);
-          renderAll();
-          return;
-        }
-        await playRoundEndByRon(ronWinner, player, removed);
-        setBusy(false);
-        return;
-      }
-
-      turnIndex = (turnIndex + 1) % players.length;
-      setBusy(false);
-      await wait(260);
-      await introTurn();
-    }
-
-    async function onPlayerDiscard(index){
-      if(gameEnded || busy || !waitingPlayerDiscard || pendingRon || pendingTsumo) return;
-
-      setBusy(true);
-      waitingPlayerDiscard = false;
-
-      const me = players[0];
-      const removed = me.hand.splice(index, 1)[0];
-      justDrawnIndex = -1;
-
-      const girl = getSupportGirl();
-      showGirl(girl, "……");
-      showBigTile(removed, `${getTileName(removed)}を捨てる`);
-      await wait(WAIT_DISCARD_PREVIEW);
-      hideGirl();
-
-      discardPile.push({
-        tileId: removed,
-        owner: `${me.seat}　${me.name}`,
-        playerId: me.id
-      });
-
-      statusMain.textContent = `${getTileName(removed)} を捨てた`;
-      subInfo.textContent = "ロン判定中";
-      addHistory(`${me.seat}　${me.name} が ${getTileName(removed)} を捨てた。`);
-      renderAll();
-
-      await wait(WAIT_RON_CHECK);
-
-      const ronWinner = getRonCandidateAfterDiscard(me, removed);
-      if(ronWinner){
-        if(ronWinner.id === "you"){
-          pendingRon = true;
-          lastDiscardInfo = { discarder: me, tileId: removed };
-          statusMain.textContent = "ロンできます";
-          subInfo.textContent = "ロンするか、スルーして続行";
-          setBusy(false);
-          renderAll();
-          return;
-        }
-        await playRoundEndByRon(ronWinner, me, removed);
-        setBusy(false);
-        return;
-      }
-
-      turnIndex = (turnIndex + 1) % players.length;
-      setBusy(false);
-      await wait(260);
-      await introTurn();
-    }
-
-    async function endRoundByJudgement(){
-      const result = judgeRoundRanking();
-
-      statusMain.textContent = "山札終了";
-      subInfo.textContent = "3枚組数で判定";
-      renderAll();
-
-      await wait(540);
-
-      if(result.reason === "draw"){
-        await playRoundDraw();
-      } else {
-        await playRoundBestWin(result.winner);
-      }
-    }
-
-    async function handleTsumoButton(){
-      if(!pendingTsumo || busy) return;
-      setBusy(true);
-      const me = players[0];
-      await playRoundEndByTsumo(me);
-      setBusy(false);
-    }
-
-    async function handleRonButton(){
-      if(!pendingRon || busy || !lastDiscardInfo) return;
-      setBusy(true);
-      const me = players[0];
-      await playRoundEndByRon(me, lastDiscardInfo.discarder, lastDiscardInfo.tileId);
-      setBusy(false);
-    }
-
-    async function handlePassButton(){
-      if((!pendingRon && !pendingTsumo) || busy) return;
-      setBusy(true);
-
-      if(pendingTsumo){
-        clearPendingActions();
-        waitingPlayerDiscard = true;
-        statusMain.textContent = "ツモを見送り";
-        subInfo.textContent = "手札を1枚選んで捨てる";
-        setBusy(false);
-        renderAll();
-        return;
-      }
-
-      if(pendingRon){
-        clearPendingActions();
-        turnIndex = (turnIndex + 1) % players.length;
-        setBusy(false);
-        renderAll();
-        await wait(260);
-        await introTurn();
-      }
-    }
-
-    async function resetGame(){
-      hideGirl();
-      hideResultScreen();
-      hideOverlay(roundOverlay);
-      hideOverlay(roundResultOverlay);
-      hideOverlay(customOverlay);
-      pendingNextRoundAction = null;
 
       players.forEach(p => {
         p.point = START_POINT;
@@ -2591,76 +2121,267 @@
       });
 
       assignSeats();
+
+      const cpuGirls = shuffle([0,1,2,3]);
+      let idx = 0;
+      players.forEach(p => {
+        if(p.id !== "you"){
+          p.girlIndex = cpuGirls[idx++];
+        }
+      });
+
+      parentSeatIndex = 0;
       rebuildActiveTiles();
 
-      deck = [];
-      discardPile = [];
-      gameEnded = false;
-      busy = false;
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      historyLogs = [];
-      parentSeatIndex = 0;
-      turnIndex = 0;
-      clearPendingActions();
+      await startRound(true);
+      setBusy(false);
+    }
 
-      statusMain.textContent = "ゲーム開始";
-      subInfo.textContent = "東スタート / 親から開始 / 親が勝てば連荘";
-      renderHistory();
+    async function startRound(isFirst){
+      setBusy(true);
+      discardPile = [];
+      clearPendingActions();
+      players.forEach(p => p.hand = []);
+
+      deck = createDeck();
+
+      for(let i=0;i<BASE_HAND_SIZE;i++){
+        players.forEach(p => drawTile(p));
+      }
+
+      const order = getTurnOrder();
+      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
+
       renderAll();
 
-      addHistory(`担当チー娘：${getSupportGirl().name}`);
-      addHistory(`牌9種：${gameSetup.selectedTileIds.map(id => getTileName(id)).join(" / ")}`);
-      addHistory(`席順：${sortBySeat(players).map(p => `${p.seat} ${p.name}`).join(" / ")}`);
+      if(!isFirst){
+        await wait(WAIT_ROUND_START_GAP);
+      }
 
-      await wait(420);
-      await startRound();
+      await showRoundIntro();
+      setBusy(false);
+
+      if(getCurrentPlayer().id === "you"){
+        startHumanTurn();
+      } else {
+        await startCpuTurn(getCurrentPlayer());
+      }
+    }
+
+    function startHumanTurn(){
+      const girl = getSupportGirl();
+      waitingPlayerDiscard = false;
+      justDrawnIndex = -1;
+      renderAll();
+
+      showGirl(girl, rand(girl.introHuman));
+      setTimeout(() => {
+        updateGirlText(rand(girl.thinkHuman));
+      }, 700);
+
+      setTimeout(() => {
+        const tileId = drawTile(players[0]);
+        justDrawnIndex = players[0].hand.length - 1;
+        pendingTsumo = isWinningHand(players[0].hand);
+        pendingRon = false;
+        waitingPlayerDiscard = true;
+        renderAll();
+
+        updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+      }, WAIT_LONG);
+    }
+
+    async function startCpuTurn(player){
+      setBusy(true);
+      const girl = getCpuGirlByIndex(player.girlIndex);
+
+      showGirl(girl, rand(girl.introCpu));
+      await wait(700);
+
+      updateGirlText(rand(girl.thinkCpu));
+      await wait(700);
+
+      const tileId = drawTile(player);
+      const tsumo = isWinningHand(player.hand);
+
+      updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
+      await wait(WAIT_LONG);
+
+      if(tsumo){
+        await finishRound({ type:"tsumo", winner:player });
+        return;
+      }
+
+      const discardIndex = cpuChooseDiscardIndex(player);
+      const discardTile = player.hand[discardIndex];
+
+      showBigTile(discardTile, `${player.name}：${getTileName(discardTile)}を捨てる`);
+      updateGirlText(rand(girl.discard));
+      await wait(WAIT_DISCARD_PREVIEW);
+
+      player.hand.splice(discardIndex,1);
+      discardPile.push({
+        tileId: discardTile,
+        owner: `${player.seat} ${player.name}`,
+        playerId: player.id
+      });
+      addHistory(`${player.seat} ${player.name}：${getTileName(discardTile)}を捨てた`);
+      renderAll();
+
+      const ronPlayer = getRonCandidateAfterDiscard(player, discardTile);
+      if(ronPlayer){
+        const ronGirl = ronPlayer.id === "you" ? getSupportGirl() : getCpuGirlByIndex(ronPlayer.girlIndex);
+        showGirl(ronGirl, rand(ronGirl.ron));
+        await wait(WAIT_RON_CHECK);
+        await finishRound({ type:"ron", winner:ronPlayer, loser:player });
+        return;
+      }
+
+      await wait(200);
+      advanceTurn();
+      setBusy(false);
+
+      if(getCurrentPlayer().id === "you"){
+        startHumanTurn();
+      } else {
+        await startCpuTurn(getCurrentPlayer());
+      }
+    }
+
+    function onPlayerDiscard(index){
+      if(!waitingPlayerDiscard || busy || gameEnded) return;
+
+      const me = players[0];
+      const tileId = me.hand[index];
+      const girl = getSupportGirl();
+
+      setBusy(true);
+      waitingPlayerDiscard = false;
+
+      showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
+      updateGirlText(rand(girl.discard));
+
+      setTimeout(async () => {
+        me.hand.splice(index,1);
+        discardPile.push({
+          tileId,
+          owner:`${me.seat} あなた`,
+          playerId:me.id
+        });
+        addHistory(`${me.seat} あなた：${getTileName(tileId)}を捨てた`);
+
+        justDrawnIndex = -1;
+        renderAll();
+
+        const ronPlayer = getRonCandidateAfterDiscard(me, tileId);
+        if(ronPlayer){
+          const ronGirl = getCpuGirlByIndex(ronPlayer.girlIndex);
+          showGirl(ronGirl, rand(ronGirl.ron));
+          await wait(WAIT_RON_CHECK);
+          await finishRound({ type:"ron", winner:ronPlayer, loser:me });
+          return;
+        }
+
+        advanceTurn();
+        setBusy(false);
+
+        if(getCurrentPlayer().id === "you"){
+          startHumanTurn();
+        } else {
+          await startCpuTurn(getCurrentPlayer());
+        }
+      }, WAIT_DISCARD_PREVIEW);
+    }
+
+    async function finishRound(result){
+      setBusy(true);
+      clearPendingActions();
+
+      let desc = "";
+      let winText = "";
+      const roundText = `${getRoundName()}終了`;
+
+      if(result.type === "tsumo"){
+        applyTsumoPoints(result.winner);
+        desc = `${result.winner.name}がツモ`;
+        winText = `${result.winner.seat} ${result.winner.name} ツモ`;
+      } else if(result.type === "ron"){
+        applyRonPoints(result.winner, result.loser);
+        desc = `${result.loser.name}から2点`;
+        winText = `${result.winner.seat} ${result.winner.name} ロン`;
+      } else {
+        const judged = judgeRoundRanking();
+        if(judged.reason === "draw"){
+          desc = "流局";
+          winText = "引き分け";
+        } else {
+          applyTsumoPoints(judged.winner);
+          desc = "流局判定勝ち";
+          winText = `${judged.winner.name} 勝ち`;
+          result.winner = judged.winner;
+        }
+      }
+
+      renderAll();
+      await showRoundResult(roundText, winText, desc);
+
+      await new Promise(res => {
+        nextRoundBtn.onclick = () => {
+          hideOverlay(roundResultOverlay);
+          res();
+        };
+      });
+
+      if(hasHako()){
+        const winners = getFinalWinnersByPoints();
+        gameEnded = true;
+        showResultScreen(winners);
+        setBusy(false);
+        return;
+      }
+
+      if(result.winner && result.winner.seat === getCurrentParentSeat()){
+        // 親継続
+      } else {
+        parentSeatIndex = (parentSeatIndex + 1) % 4;
+      }
+
+      await startRound(false);
+    }
+
+    function advanceTurn(){
+      const order = getTurnOrder();
+      turnIndex = (turnIndex + 1) % order.length;
     }
 
     startBtn.addEventListener("click", beginSetupFlow);
     girlSelectNextBtn.addEventListener("click", proceedToTileSelect);
     tileSelectBackBtn.addEventListener("click", () => {
       hideOverlay(tileSelectOverlay);
-      renderGirlSelect();
       showOverlay(girlSelectOverlay);
     });
     tileSelectNextBtn.addEventListener("click", proceedToColorSelect);
     colorSelectBackBtn.addEventListener("click", () => {
       hideOverlay(colorSelectOverlay);
-      renderTilePickGrid(tileSelectGrid, tempTileIds);
       showOverlay(tileSelectOverlay);
     });
     gameStartBtn.addEventListener("click", finalizeSetupAndStart);
 
     openCustomBtn.addEventListener("click", openCustom);
-    saveCustomBtn.addEventListener("click", saveCustomInGame);
     closeCustomBtn.addEventListener("click", closeCustom);
-
-    tsumoBtn.addEventListener("click", handleTsumoButton);
-    ronBtn.addEventListener("click", handleRonButton);
-    passBtn.addEventListener("click", handlePassButton);
-
-    nextRoundBtn.addEventListener("click", () => {
-      if(!pendingNextRoundAction) return;
-      hideOverlay(roundResultOverlay);
-      const fn = pendingNextRoundAction;
-      pendingNextRoundAction = null;
-      fn();
-    });
+    saveCustomBtn.addEventListener("click", saveCustomInGame);
 
     resetBtn.addEventListener("click", () => {
-      if(busy) return;
+      hideResultScreen();
       resetGame();
     });
 
     retryBtn.addEventListener("click", () => {
+      hideResultScreen();
       resetGame();
     });
 
-    rebuildActiveTiles();
-    assignSeats();
-    renderHistory();
     renderAll();
-  </script>
+     </script>
 </body>
 </html>
