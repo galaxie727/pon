@@ -5,45 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>デカブサジャラジャラ × チー娘</title>
 <style>
-  *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{
-    margin:0;
-    padding:0;
-    width:100%;
-    min-height:100%;
-    background:#05070c;
-    color:#fff;
+    margin:0;padding:0;width:100%;min-height:100%;
+    background:#05070c;color:#fff;
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
   }
-  body{
-    display:flex;
-    justify-content:center;
-  }
-  button,input{
-    font-family:inherit;
-  }
-
+  body{display:flex;justify-content:center}
+  button,input,select{font-family:inherit}
   .app{
-    width:100%;
-    max-width:430px;
-    min-height:100vh;
+    width:100%;max-width:430px;min-height:100vh;
     background:
       radial-gradient(circle at top, rgba(255,255,255,.06), transparent 30%),
       linear-gradient(180deg,#10131d 0%,#06080d 100%);
     padding:12px 10px 18px;
   }
-
   .title{
-    text-align:center;
-    font-size:24px;
-    font-weight:900;
-    letter-spacing:.04em;
-    margin:4px 0 12px;
+    text-align:center;font-size:24px;font-weight:900;letter-spacing:.04em;margin:4px 0 12px;
   }
-
   .panel{
     background:rgba(255,255,255,.04);
     border:1px solid rgba(255,255,255,.07);
@@ -51,377 +30,131 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
   }
 
-  .statusBox{
-    padding:14px 14px 10px;
-    margin-bottom:12px;
-  }
+  .statusBox{padding:14px 14px 10px;margin-bottom:12px}
   .statusTop{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    font-size:14px;
-    font-weight:800;
-    margin-bottom:10px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-size:14px;font-weight:800;margin-bottom:10px;
   }
-  .statusMain{
-    text-align:center;
-    font-size:18px;
-    font-weight:900;
-    min-height:26px;
-    margin-bottom:8px;
-  }
-  .subInfo{
-    text-align:center;
-    font-size:12px;
-    opacity:.75;
-    min-height:18px;
-  }
+  .statusMain{text-align:center;font-size:18px;font-weight:900;min-height:26px;margin-bottom:8px}
+  .subInfo{text-align:center;font-size:12px;opacity:.75;min-height:18px}
 
-  .scoreWrap{
-    padding:12px;
-    margin-bottom:12px;
-  }
+  .scoreWrap{padding:12px;margin-bottom:12px}
   .scoreHead{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    margin-bottom:10px;
+    display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;
   }
-  .scoreTitle{
-    font-size:14px;
-    font-weight:900;
-  }
+  .scoreTitle{font-size:14px;font-weight:900}
   .miniBtn{
-    appearance:none;
-    border:1px solid rgba(255,255,255,.08);
-    background:rgba(255,255,255,.05);
-    color:#fff;
-    border-radius:999px;
-    padding:8px 12px;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
+    appearance:none;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.05);color:#fff;border-radius:999px;
+    padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;
   }
-  .scoreList{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
+  .scoreList{display:flex;flex-direction:column;gap:8px}
   .scoreLine{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 12px;
-    background:rgba(255,255,255,.05);
-    border-radius:14px;
-    font-size:14px;
-    font-weight:900;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;background:rgba(255,255,255,.05);
+    border-radius:14px;font-size:14px;font-weight:900;
   }
-  .scoreLine.active{
-    outline:2px solid rgba(255,255,255,.12);
-  }
-  .scoreName{
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
+  .scoreLine.active{outline:2px solid rgba(255,255,255,.12)}
+  .scoreName{display:flex;align-items:center;gap:8px}
   .scoreBadge{
-    min-width:22px;
-    height:22px;
-    border-radius:999px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    font-weight:900;
-    color:#111;
+    min-width:22px;height:22px;border-radius:999px;display:inline-flex;
+    align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#111;
   }
-  .badge-you{ background:#fff; }
-  .badge-a{ background:#ffbfdc; }
-  .badge-b{ background:#bedcff; }
-  .badge-c{ background:#d6ffb8; }
+  .badge-you{background:#fff}
+  .badge-a{background:#ffbfdc}
+  .badge-b{background:#bedcff}
+  .badge-c{background:#d6ffb8}
 
-  .topArea{
-    padding:12px;
-    margin-bottom:12px;
-  }
-  .topGrid{
-    display:grid;
-    grid-template-columns:116px 1fr;
-    gap:10px;
-    align-items:stretch;
-  }
-  .wallBox,
-  .riverBox{
+  .topArea{padding:12px;margin-bottom:12px}
+  .topGrid{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:stretch}
+  .wallBox,.riverBox{
     background:rgba(255,255,255,.05);
     border:1px solid rgba(255,255,255,.06);
-    border-radius:18px;
-    padding:12px;
+    border-radius:18px;padding:12px;
   }
-  .topTitle{
-    font-size:13px;
-    font-weight:900;
-    margin-bottom:8px;
-  }
+  .topTitle{font-size:13px;font-weight:900;margin-bottom:8px}
   .wallInner{
-    min-height:124px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
+    min-height:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
   }
-  .wallCount{
-    font-size:40px;
-    font-weight:900;
-    line-height:1;
-  }
-  .wallSub{
-    font-size:12px;
-    opacity:.78;
-  }
+  .wallCount{font-size:40px;font-weight:900;line-height:1}
+  .wallSub{font-size:12px;opacity:.78}
 
   .riverHead{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:8px;
-    margin-bottom:8px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;
   }
-  .riverOwner{
-    font-size:12px;
-    opacity:.82;
-    text-align:right;
-  }
+  .riverOwner{font-size:12px;opacity:.82;text-align:right}
   .riverColumnHeads{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    margin-bottom:8px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;
   }
   .riverColHead{
-    text-align:center;
-    font-size:11px;
-    font-weight:900;
-    opacity:.82;
-    padding:2px 0;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    text-align:center;font-size:11px;font-weight:900;opacity:.82;padding:2px 0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
   .riverGrid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:6px;
-    min-height:124px;
-    align-content:start;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:124px;align-content:start;
   }
   .riverTile{
-    aspect-ratio:1 / 1;
-    border-radius:16px;
-    overflow:hidden;
-    background:#1b2130;
-    border:1px solid rgba(255,255,255,.08);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
+    aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;background:#1b2130;
+    border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;position:relative;
   }
-  .riverTile.last{
-    outline:2px solid rgba(255,230,120,.95);
-  }
+  .riverTile.last{outline:2px solid rgba(255,230,120,.95)}
   .riverImg{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    display:block;
-    position:relative;
-    z-index:1;
-    padding:3px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:3px;
   }
-  .riverTint{
-    position:absolute;
-    inset:0;
-    opacity:.68;
-    z-index:0;
-  }
+  .riverTint{position:absolute;inset:0;opacity:.68;z-index:0}
   .riverEmpty{
-    min-height:124px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    opacity:.65;
+    min-height:124px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.65;
   }
 
-  .handWrap{
-    padding:12px;
-    margin-bottom:12px;
-  }
-  .handTitle{
-    font-size:14px;
-    font-weight:900;
-    margin-bottom:10px;
-  }
-  .hand{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
+  .handWrap{padding:12px;margin-bottom:12px}
+  .handTitle{font-size:14px;font-weight:900;margin-bottom:10px}
+  .hand{display:flex;flex-wrap:wrap;gap:8px}
   .tileBtn{
-    width:86px;
-    height:86px;
-    border:none;
-    border-radius:22px;
-    overflow:hidden;
-    border:1px solid rgba(255,255,255,.08);
-    color:#fff;
-    font-size:12px;
-    font-weight:900;
-    padding:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    position:relative;
-    background:#1c2230;
-    transition:transform .15s ease, box-shadow .15s ease;
-    cursor:pointer;
+    width:86px;height:86px;border:none;border-radius:22px;overflow:hidden;
+    border:1px solid rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:900;
+    padding:0;display:flex;align-items:center;justify-content:center;text-align:center;
+    position:relative;background:#1c2230;transition:transform .15s ease, box-shadow .15s ease;cursor:pointer;
   }
-  .tileBtn:active{
-    transform:scale(.96);
-  }
-  .tileBtn.drawn{
-    outline:2px solid rgba(255,230,120,.95);
-    transform:translateY(-1px);
-  }
-  .tileBtn:disabled{
-    opacity:.55;
-    cursor:default;
-  }
+  .tileBtn:active{transform:scale(.96)}
+  .tileBtn.drawn{outline:2px solid rgba(255,230,120,.95);transform:translateY(-1px)}
+  .tileBtn:disabled{opacity:.55;cursor:default}
   .tileInner{
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    padding:4px;
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:4px;
   }
-  .tileTint{
-    position:absolute;
-    inset:0;
-    opacity:.64;
-    z-index:0;
-  }
+  .tileTint{position:absolute;inset:0;opacity:.64;z-index:0}
   .tileImg{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    display:block;
-    position:relative;
-    z-index:1;
-    padding:2px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
   }
   .tileFallback{
-    padding:6px;
-    line-height:1.25;
-    position:relative;
-    z-index:1;
-    text-shadow:0 1px 2px rgba(0,0,0,.35);
+    padding:6px;line-height:1.25;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);
   }
 
-  .actionWrap{
-    display:flex;
-    gap:8px;
-    margin-bottom:12px;
-  }
+  .actionWrap{display:flex;gap:8px;margin-bottom:12px}
   .actionBtn{
-    flex:1;
-    appearance:none;
-    border:none;
-    border-radius:16px;
-    padding:14px 10px;
-    font-size:15px;
-    font-weight:900;
-    cursor:pointer;
+    flex:1;appearance:none;border:none;border-radius:16px;padding:14px 10px;font-size:15px;font-weight:900;cursor:pointer;
   }
-  .actionBtn:disabled{
-    opacity:.45;
-    cursor:default;
-  }
-  #tsumoBtn{
-    background:#fff;
-    color:#111;
-  }
-  #ronBtn{
-    background:#ffe59a;
-    color:#111;
-  }
-  #passBtn{
-    background:#2b3044;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.08);
-  }
+  .actionBtn:disabled{opacity:.45;cursor:default}
+  #tsumoBtn{background:#fff;color:#111}
+  #ronBtn{background:#ffe59a;color:#111}
+  #passBtn{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
-  .controls{
-    display:flex;
-    gap:8px;
-    margin-bottom:12px;
-  }
+  .controls{display:flex;gap:8px;margin-bottom:12px}
   .mainBtn{
-    appearance:none;
-    border:none;
-    border-radius:20px;
-    padding:15px 14px;
-    font-size:16px;
-    font-weight:900;
-    cursor:pointer;
+    appearance:none;border:none;border-radius:20px;padding:15px 14px;font-size:16px;font-weight:900;cursor:pointer;
   }
-  #resetBtn{
-    width:100%;
-    background:#272b3b;
-    color:#fff;
-    border:1px solid rgba(255,255,255,.08);
-  }
+  #resetBtn{width:100%;background:#272b3b;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
-  .historyWrap{
-    padding:12px;
-  }
-  .historyTitle{
-    font-size:14px;
-    font-weight:900;
-    margin-bottom:10px;
-  }
-  .historyBox{
-    max-height:220px;
-    overflow:auto;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
+  .historyWrap{padding:12px}
+  .historyTitle{font-size:14px;font-weight:900;margin-bottom:10px}
+  .historyBox{max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:8px}
   .historyLine{
-    background:rgba(255,255,255,.05);
-    border-radius:12px;
-    padding:10px 12px;
-    font-size:13px;
-    line-height:1.5;
+    background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;
   }
 
   .overlay{
-    position:fixed;
-    inset:0;
-    z-index:100;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .22s ease;
+    position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;transition:opacity .22s ease;
   }
-  .overlay.show{
-    opacity:1;
-    pointer-events:auto;
-  }
+  .overlay.show{opacity:1;pointer-events:auto}
 
   .titleOverlay{
     z-index:140;
@@ -430,582 +163,204 @@
       linear-gradient(180deg,#0d1018 0%,#07090e 100%);
   }
   .titleScreen{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding:24px 20px;
-    text-align:center;
+    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    padding:24px 20px;text-align:center;
   }
   .titleLogo{
-    font-size:34px;
-    font-weight:900;
-    line-height:1.25;
-    letter-spacing:.03em;
-    margin-bottom:18px;
+    font-size:34px;font-weight:900;line-height:1.25;letter-spacing:.03em;margin-bottom:18px;
     text-shadow:0 2px 18px rgba(0,0,0,.35);
   }
   .titleSub{
-    font-size:14px;
-    opacity:.82;
-    line-height:1.8;
-    margin-bottom:26px;
-    max-width:320px;
+    font-size:14px;opacity:.82;line-height:1.8;margin-bottom:26px;max-width:320px;
   }
   .startBtn{
-    appearance:none;
-    border:none;
-    border-radius:999px;
-    padding:18px 34px;
-    font-size:18px;
-    font-weight:900;
-    background:#fff;
-    color:#111;
-    cursor:pointer;
-    box-shadow:0 10px 28px rgba(0,0,0,.25);
+    appearance:none;border:none;border-radius:999px;padding:18px 34px;font-size:18px;font-weight:900;
+    background:#fff;color:#111;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.25);
   }
-  .titleNote{
-    margin-top:18px;
-    font-size:12px;
-    opacity:.65;
-  }
+  .titleNote{margin-top:18px;font-size:12px;opacity:.65}
 
-  .stepOverlay{
-    z-index:145;
-    background:rgba(5,7,12,.94);
-  }
+  .stepOverlay{z-index:145;background:rgba(5,7,12,.94)}
   .stepBox{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:min(92vw,430px);
-    max-height:88vh;
-    overflow:auto;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border-radius:28px;
-    padding:20px 16px 16px;
-    box-shadow:0 14px 36px rgba(0,0,0,.22);
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(92vw,430px);max-height:88vh;overflow:auto;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-radius:28px;padding:20px 16px 16px;box-shadow:0 14px 36px rgba(0,0,0,.22);
   }
-  .stepTitle{
-    font-size:22px;
-    font-weight:900;
-    text-align:center;
-    margin-bottom:8px;
-  }
-  .stepSub{
-    text-align:center;
-    font-size:13px;
-    opacity:.84;
-    line-height:1.6;
-    margin-bottom:14px;
-  }
-  .selectCount{
-    text-align:center;
-    font-size:14px;
-    font-weight:900;
-    margin:0 0 12px;
-    color:#fff;
-  }
-  .stepButtons{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:12px;
-  }
+  .stepTitle{font-size:22px;font-weight:900;text-align:center;margin-bottom:8px}
+  .stepSub{text-align:center;font-size:13px;opacity:.84;line-height:1.6;margin-bottom:14px}
+  .selectCount{text-align:center;font-size:14px;font-weight:900;margin:0 0 12px;color:#fff}
+  .stepButtons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
 
   .girlSelectGrid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
   }
   .girlCard{
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.04);
-    border-radius:18px;
-    padding:8px;
-    cursor:pointer;
+    border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+    border-radius:18px;padding:8px;cursor:pointer;
   }
-  .girlCard.selected{
-    outline:2px solid rgba(255,230,120,.95);
-  }
+  .girlCard.selected{outline:2px solid rgba(255,230,120,.95)}
   .girlPreview{
-    width:100%;
-    aspect-ratio:3 / 4;
-    border-radius:14px;
-    overflow:hidden;
-    position:relative;
-    background:#1b2130;
-    margin-bottom:8px;
+    width:100%;aspect-ratio:3 / 4;border-radius:14px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:8px;
   }
   .girlPreviewBg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:0;
-    filter:blur(4px) brightness(.98);
-    transform:scale(1.03);
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+    filter:blur(4px) brightness(.98);transform:scale(1.03);
   }
   .girlPreviewShade{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.10));
-    z-index:1;
+    position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.10));z-index:1;
   }
   .girlPreviewChara{
-    position:absolute;
-    inset:auto 0 0 0;
-    width:100%;
-    height:96%;
-    object-fit:contain;
-    z-index:2;
+    position:absolute;inset:auto 0 0 0;width:100%;height:96%;object-fit:contain;z-index:2;
   }
-  .girlCardName{
-    text-align:center;
-    font-size:13px;
-    font-weight:900;
-  }
+  .girlCardName{text-align:center;font-size:13px;font-weight:900}
 
   .customGrid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-bottom:14px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;
   }
   .customCard{
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.04);
-    border-radius:16px;
-    padding:8px;
-    text-align:center;
-    cursor:pointer;
+    border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+    border-radius:16px;padding:8px;text-align:center;cursor:pointer;
   }
-  .customCard.selected{
-    outline:2px solid rgba(255,230,120,.95);
-  }
+  .customCard.selected{outline:2px solid rgba(255,230,120,.95)}
   .customThumb{
-    width:100%;
-    aspect-ratio:1 / 1;
-    border-radius:16px;
-    overflow:hidden;
-    position:relative;
-    background:#1b2130;
-    margin-bottom:6px;
+    width:100%;aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:6px;
   }
   .customThumb img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    display:block;
-    position:relative;
-    z-index:1;
-    padding:2px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
   }
-  .customThumbTint{
-    position:absolute;
-    inset:0;
-    opacity:.72;
-    z-index:0;
-  }
-  .customName{
-    font-size:12px;
-    font-weight:900;
-    line-height:1.35;
-  }
+  .customThumbTint{position:absolute;inset:0;opacity:.72;z-index:0}
+  .customName{font-size:12px;font-weight:900;line-height:1.35}
 
-  .cpuPickList{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .cpuPickRow{
-    background:rgba(255,255,255,.05);
-    border-radius:14px;
-    padding:10px;
-  }
-  .cpuPickLabel{
-    font-size:13px;
-    font-weight:900;
-    margin-bottom:8px;
-  }
-  .cpuPickChoices{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-  }
-  .cpuChoice{
-    border:none;
-    background:rgba(255,255,255,.04);
-    border-radius:14px;
-    padding:6px;
-    color:#fff;
-    cursor:pointer;
-  }
-  .cpuChoice.selected{
-    outline:2px solid rgba(255,230,120,.95);
-  }
-
-  .colorList{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
+  .colorList{display:flex;flex-direction:column;gap:10px}
   .colorLine{
-    display:grid;
-    grid-template-columns:74px 1fr 54px;
-    align-items:center;
-    gap:10px;
-    background:rgba(255,255,255,.05);
-    border-radius:14px;
-    padding:8px 10px;
+    display:grid;grid-template-columns:74px 1fr 54px;align-items:center;gap:10px;
+    background:rgba(255,255,255,.05);border-radius:14px;padding:8px 10px;
   }
   .colorThumb{
-    width:74px;
-    aspect-ratio:1 / 1;
-    border-radius:12px;
-    overflow:hidden;
-    position:relative;
-    background:#1b2130;
+    width:74px;aspect-ratio:1 / 1;border-radius:12px;overflow:hidden;position:relative;background:#1b2130;
   }
   .colorThumb img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    display:block;
-    position:relative;
-    z-index:1;
-    padding:2px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
   }
-  .colorThumbTint{
-    position:absolute;
-    inset:0;
-    opacity:.76;
-    z-index:0;
+  .colorThumbTint{position:absolute;inset:0;opacity:.76;z-index:0}
+  .colorName{font-size:13px;font-weight:900}
+  .colorPicker{width:44px;height:34px;border:none;background:none;padding:0}
+
+  .modeRow{
+    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 14px;
   }
-  .colorName{
-    font-size:13px;
-    font-weight:900;
+  .modeBtn{
+    appearance:none;border:none;border-radius:999px;padding:10px 16px;font-weight:900;
+    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
   }
-  .colorPicker{
-    width:44px;
-    height:34px;
-    border:none;
-    background:none;
-    padding:0;
+  .modeBtn.selected{
+    background:#fff;color:#111;
   }
 
-  .girlOverlay{
-    background:#000;
-    z-index:130;
-  }
-  .girlBgWrap{
-    position:absolute;
-    inset:0;
-  }
+  .girlOverlay{background:#000;z-index:130}
+  .girlBgWrap{position:absolute;inset:0}
   .girlBgScene{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    object-position:center center;
-    z-index:0;
-    filter:blur(6px) brightness(.98);
-    transform:scale(1.03);
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;
+    filter:blur(6px) brightness(.98);transform:scale(1.03);
   }
   .girlBgShade{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 100%);
-    z-index:1;
+    position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 100%);z-index:1;
   }
   .girlChara{
-    position:absolute;
-    left:50%;
-    bottom:-8px;
-    transform:translateX(-50%);
-    width:min(118vw,600px);
-    height:100%;
-    object-fit:contain;
-    object-position:center bottom;
-    z-index:2;
+    position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
+    width:min(118vw,600px);height:100%;object-fit:contain;object-position:center bottom;z-index:2;
   }
   .girlUi{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    padding:20px 16px max(20px, env(safe-area-inset-bottom));
-    z-index:3;
+    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:20px 16px max(20px, env(safe-area-inset-bottom));z-index:3;
   }
   .girlSpeech{
-    width:100%;
-    background:rgba(255,255,255,.14);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    color:#fff;
-    border-radius:28px;
-    padding:16px 16px 18px;
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    width:100%;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    color:#fff;border-radius:28px;padding:16px 16px 18px;border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.08);
   }
   .girlName{
-    display:inline-block;
-    margin-bottom:12px;
-    padding:8px 15px;
-    border-radius:999px;
-    background:rgba(0,0,0,.72);
-    color:#fff;
-    font-size:14px;
-    font-weight:900;
+    display:inline-block;margin-bottom:12px;padding:8px 15px;border-radius:999px;background:rgba(0,0,0,.72);
+    color:#fff;font-size:14px;font-weight:900;
   }
   .girlText{
-    font-size:18px;
-    font-weight:900;
-    line-height:1.55;
-    min-height:42px;
-    text-shadow:0 1px 2px rgba(0,0,0,.28);
+    font-size:18px;font-weight:900;line-height:1.55;min-height:42px;text-shadow:0 1px 2px rgba(0,0,0,.28);
   }
 
   .bigTileWrap{
-    display:none;
-    width:100%;
-    margin:0 0 16px;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:10px;
+    display:none;width:100%;margin:0 0 16px;align-items:center;justify-content:center;flex-direction:column;gap:10px;
   }
-  .bigTileWrap.show{
-    display:flex;
-  }
+  .bigTileWrap.show{display:flex}
   .bigTileCard{
-    width:min(56vw,240px);
-    aspect-ratio:1 / 1;
-    border-radius:20px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    position:relative;
-    border:3px solid rgba(255,255,255,.22);
-    box-shadow:0 18px 36px rgba(0,0,0,.30);
-    color:#fff;
-    text-shadow:0 1px 2px rgba(0,0,0,.35);
-    background:#1b2130;
+    width:min(56vw,240px);aspect-ratio:1 / 1;border-radius:20px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;position:relative;border:3px solid rgba(255,255,255,.22);box-shadow:0 18px 36px rgba(0,0,0,.30);
+    color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);background:#1b2130;
   }
-  .bigTileTint{
-    position:absolute;
-    inset:0;
-    opacity:.82;
-    z-index:0;
-  }
+  .bigTileTint{position:absolute;inset:0;opacity:.82;z-index:0}
   .bigTileImg{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    position:relative;
-    z-index:1;
-    padding:4px;
+    width:100%;height:100%;object-fit:contain;position:relative;z-index:1;padding:4px;
   }
   .bigTileFallback{
-    position:relative;
-    z-index:1;
-    font-size:28px;
-    font-weight:900;
-    padding:16px;
-    text-align:center;
+    position:relative;z-index:1;font-size:28px;font-weight:900;padding:16px;text-align:center;
   }
-  .bigTileCaption{
-    font-size:16px;
-    font-weight:900;
-    text-shadow:0 1px 2px rgba(0,0,0,.35);
-  }
+  .bigTileCaption{font-size:16px;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 
-  .roundOverlay{
-    z-index:110;
-    background:rgba(5,7,12,.86);
-  }
+  .roundOverlay{z-index:110;background:rgba(5,7,12,.86)}
   .roundStage{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:14px;
-    padding:24px;
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;
   }
-  .roundMain{
-    font-size:54px;
-    font-weight:900;
-    line-height:1;
-    letter-spacing:.08em;
-  }
-  .roundSub{
-    font-size:16px;
-    font-weight:800;
-    opacity:.9;
-  }
+  .roundMain{font-size:54px;font-weight:900;line-height:1;letter-spacing:.08em}
+  .roundSub{font-size:16px;font-weight:800;opacity:.9}
 
-  .roundResultOverlay{
-    z-index:125;
-    background:rgba(5,7,12,.88);
-  }
+  .roundResultOverlay{z-index:125;background:rgba(5,7,12,.88)}
   .roundResultBox{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:min(90vw,420px);
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border-radius:28px;
-    padding:24px 18px 18px;
-    box-shadow:0 14px 36px rgba(0,0,0,.22);
-    text-align:center;
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(90vw,420px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
+    padding:24px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);text-align:center;
   }
-  .roundResultRound{
-    font-size:18px;
-    font-weight:900;
-    opacity:.9;
-    margin-bottom:12px;
-  }
-  .roundResultWin{
-    font-size:30px;
-    font-weight:900;
-    line-height:1.25;
-    margin-bottom:10px;
-  }
-  .roundResultDesc{
-    font-size:15px;
-    line-height:1.6;
-    opacity:.92;
-    margin-bottom:14px;
-  }
-  .roundResultScore{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-top:10px;
-  }
+  .roundResultRound{font-size:18px;font-weight:900;opacity:.9;margin-bottom:12px}
+  .roundResultWin{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:10px}
+  .roundResultDesc{font-size:15px;line-height:1.6;opacity:.92;margin-bottom:14px}
+  .roundResultScore{display:flex;flex-direction:column;gap:8px;margin-top:10px}
   .roundResultScoreLine{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 12px;
-    background:rgba(255,255,255,.05);
-    border-radius:12px;
-    font-size:14px;
-    font-weight:800;
+    display:flex;justify-content:space-between;align-items:center;padding:10px 12px;
+    background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:800;
   }
-  .nextRoundWrap{
-    margin-top:14px;
-  }
+  .nextRoundWrap{margin-top:14px}
 
-  .resultOverlay{
-    z-index:120;
-    background:rgba(5,7,12,.92);
-  }
+  .resultOverlay{z-index:120;background:rgba(5,7,12,.92)}
   .resultBox{
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:min(92vw,430px);
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border-radius:28px;
-    padding:22px 18px 18px;
-    box-shadow:0 14px 36px rgba(0,0,0,.22);
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(92vw,430px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
+    padding:22px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);
   }
-  .resultTitle{
-    font-size:28px;
-    font-weight:900;
-    text-align:center;
-    margin-bottom:10px;
-  }
-  .resultSub{
-    text-align:center;
-    font-size:15px;
-    opacity:.92;
-    margin-bottom:16px;
-    line-height:1.6;
-  }
+  .resultTitle{font-size:28px;font-weight:900;text-align:center;margin-bottom:10px}
+  .resultSub{text-align:center;font-size:15px;opacity:.92;margin-bottom:16px;line-height:1.6}
   .resultList{
-    background:rgba(255,255,255,.05);
-    border-radius:18px;
-    padding:10px;
-    margin-bottom:14px;
+    background:rgba(255,255,255,.05);border-radius:18px;padding:10px;margin-bottom:14px;
   }
   .resultLine{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 10px;
-    border-radius:12px;
-    background:rgba(255,255,255,.04);
-    margin-bottom:6px;
-    font-size:14px;
-    font-weight:800;
+    display:flex;justify-content:space-between;align-items:center;padding:10px 10px;
+    border-radius:12px;background:rgba(255,255,255,.04);margin-bottom:6px;font-size:14px;font-weight:800;
   }
-  .resultLine:last-child{
-    margin-bottom:0;
-  }
-  .resultButtons{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
+  .resultLine:last-child{margin-bottom:0}
+  .resultButtons{display:flex;flex-direction:column;gap:10px}
   .resultBtn{
-    appearance:none;
-    border:none;
-    border-radius:18px;
-    padding:16px 14px;
-    font-size:16px;
-    font-weight:900;
-    cursor:pointer;
+    appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
   }
-  .resultRetry{
-    background:#fff;
-    color:#111;
-  }
+  .resultRetry{background:#fff;color:#111}
 
   @media (max-width:390px){
-    .tileBtn{
-      width:78px;
-      height:78px;
-    }
-    .roundMain{
-      font-size:46px;
-    }
-    .topGrid{
-      grid-template-columns:104px 1fr;
-    }
-    .titleLogo{
-      font-size:29px;
-    }
-    .roundResultWin{
-      font-size:25px;
-    }
-    .girlChara{
-      width:min(122vw,560px);
-      height:100%;
-    }
+    .tileBtn{width:78px;height:78px}
+    .roundMain{font-size:46px}
+    .topGrid{grid-template-columns:104px 1fr}
+    .titleLogo{font-size:29px}
+    .roundResultWin{font-size:25px}
+    .girlChara{width:min(122vw,560px);height:100%}
   }
-</style>
+ </style>
 </head>
 <body>
   <div class="app">
@@ -1107,6 +462,23 @@
     </div>
   </div>
 
+  <div class="overlay stepOverlay" id="modeSelectOverlay">
+    <div class="stepBox">
+      <div class="stepTitle">周回数を選ぶ</div>
+      <div class="stepSub">東→南→西→北 を何周するか選択</div>
+      <div class="modeRow">
+        <button class="modeBtn" data-loop="1" type="button">1周</button>
+        <button class="modeBtn" data-loop="2" type="button">2周</button>
+        <button class="modeBtn" data-loop="3" type="button">3周</button>
+        <button class="modeBtn" data-loop="4" type="button">4周</button>
+      </div>
+      <div class="stepButtons">
+        <button class="resultBtn" id="modeSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
+        <button class="resultBtn resultRetry" id="modeSelectNextBtn" type="button">次へ</button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay stepOverlay" id="tileSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">牌に使うキャラを選ぶ</div>
@@ -1199,829 +571,81 @@
   </div>
 
   <script>
+    const modeSelectOverlay = document.getElementById("modeSelectOverlay");
+    const modeSelectBackBtn = document.getElementById("modeSelectBackBtn");
+    const modeSelectNextBtn = document.getElementById("modeSelectNextBtn");
+    const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
 
-       const START_POINT = 5;
-    const BASE_HAND_SIZE = 5;
-    const COPIES_PER_TILE = 6;
-    const PICK_COUNT = 9;
-    const WAIT_LONG = 1100;
-    const WAIT_RON_CHECK = 700;
-    const WAIT_DISCARD_PREVIEW = 700;
-    const WAIT_ROUND_START_GAP = 500;
-    const PARENT_ORDER = ["東","南","西","北"];
+    let tempLoopCount = 1;
+    let loopCount = 1;
+    let totalRounds = 4;
+    let currentRoundNumber = 0;
 
-    const ALL_TILE_POOL = [
-      { id:"dekabusa", name:"デカブサ", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
-      { id:"ani", name:"デカブサ兄", defaultColor:"#ffd93d", image:"img/tile_aniki.png" },
-      { id:"namaken", name:"ナマケン", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
-      { id:"tora", name:"トラさん", defaultColor:"#6ee7a8", image:"img/tile_torasan.png" },
-      { id:"king", name:"キング", defaultColor:"#c084fc", image:"img/tile_king.png" },
-      { id:"gori", name:"ゴリさん", defaultColor:"#d2a679", image:"img/tile_gorisan.png" },
-      { id:"kabao", name:"カバオ", defaultColor:"#ffb86b", image:"img/tile_kabao.png" },
-      { id:"kan", name:"カンえもん", defaultColor:"#9aa4b8", image:"img/tile_kanemon.png" },
-      { id:"pan", name:"パンパン", defaultColor:"#ff8fd1", image:"img/tile_panpan.png" },
-      { id:"latero", name:"ラテロウ", defaultColor:"#d7b896", image:"img/tile_latero.png" },
-      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#c7d2e2", image:"img/tile_juuzo.png" },
-      { id:"nisebusa", name:"ニセブサ", defaultColor:"#94a3ff", image:"img/tile_nisebusa.png" }
-    ];
-
-    const GIRLS = [
-      {
-        id:"girlA",
-        name:"チー娘A",
-        chara:"img/girlA_clear.png",
-        bg:"img/bg_east.png",
-        introHuman:["あなたの番だよ。","どれ切る？","いけそうだね。","1枚選んでね。"],
-        thinkHuman:["ちょっと考えよう。","どれを残す？","ここ大事かも。","落ち着いていこう。"],
-        drawHumanGood:["それ良さそう！","来たかも！","ギュウ…？","かなりいいね。"],
-        drawHumanNormal:["どうかな。","まだこれからだね。","悪くないかも。","考えどころだね。"],
-        introCpu:["いくよ。","見てて。","引くね。","私の番だよ。"],
-        thinkCpu:["ちょっと考えるね。","どれかな。","ここ悩むかも。","まだ見てて。"],
-        drawCpuGood:["来たかも！","いい感じ。","揃いそう！","これ欲しかったかも。"],
-        drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
-        discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
-        tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
-        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"]
-      },
-      {
-        id:"girlB",
-        name:"チー娘B",
-        chara:"img/girlB_clear.png",
-        bg:"img/bg_south.png",
-        introHuman:["ほら、あなたの番。","どれ切るの？","ちゃんと見て選んで。","さて、どうするの。"],
-        thinkHuman:["急がなくていいでしょ。","ちゃんと見て。","ここは考えどころ。","まあ落ち着いて。"],
-        drawHumanGood:["悪くないじゃん。","来たかもね。","それ残す？","かなりいい形。"],
-        drawHumanNormal:["まあ普通。","まだ何とも。","急がなくていいでしょ。","考えるところね。"],
-        introCpu:["始めるよ。","見てなさい。","引く。","私の番ね。"],
-        thinkCpu:["少し考える。","ここは悩むかな。","どれを切るかね。","待ってて。"],
-        drawCpuGood:["来るね。","悪くない。","揃うんじゃない？","だいぶ近い。"],
-        drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
-        discard:["これで。","切るよ。","はい次。","これを捨てる。"],
-        tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
-        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"]
-      },
-      {
-        id:"girlC",
-        name:"チー娘C",
-        chara:"img/girlC_clear.png",
-        bg:"img/bg_west.png",
-        introHuman:["あなたの番。","どれでもいいけど選んで。","……切って。","好きにして。"],
-        thinkHuman:["……考えて。","急がなくていい。","見てからでいい。","好きに決めて。"],
-        drawHumanGood:["揃うかもね。","来たっぽい。","まあ良さそう。","悪くない。"],
-        drawHumanNormal:["どうだろ。","まだ分からない。","……普通。","別に。"],
-        introCpu:["……いく。","引く。","始める。","私の番。"],
-        thinkCpu:["……考える。","少し待つ。","どれかな。","まだ決めない。"],
-        drawCpuGood:["来た。","揃うかも。","悪くない。","たぶんこれ。"],
-        drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
-        discard:["これで。","切る。","……次。","いらない。"],
-        tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
-        ron:["それロン。","その牌でいい。","待ってた。","完成。"]
-      },
-      {
-        id:"girlD",
-        name:"チー娘D",
-        chara:"img/girlD_clear.png",
-        bg:"img/bg_north.png",
-        introHuman:["いこうか。","あなたの番。","選んでみて。","悪くない流れ。"],
-        thinkHuman:["焦らなくていいよ。","見てから決めよう。","そのままでもいいかも。","ゆっくりで大丈夫。"],
-        drawHumanGood:["いいの来たかも。","それ、かなり良さそう。","揃いそうだね。","いけるかも。"],
-        drawHumanNormal:["まだ分からないね。","悪くはないかな。","続けてみよう。","ここからかな。"],
-        introCpu:["始めるね。","見てて。","引いてみる。","私の番。"],
-        thinkCpu:["ちょっと考える。","うーん、どうしよう。","ここ迷うね。","少し待って。"],
-        drawCpuGood:["いい感じ。","これは欲しかった。","近いかも。","揃いそう。"],
-        drawCpuNormal:["まだかな。","普通だね。","もう少し。","そんな感じ。"],
-        discard:["これにする。","じゃあこれで。","切るね。","これかな。"],
-        tsumo:["ツモ！","やった、引いた。","これで完成。","決まったね。"],
-        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"]
-      }
-    ];
-
-    const DEFAULT_SETUP = {
-      supportGirlId:"girlA",
-      cpuGirlIds:["girlB","girlC","girlD"],
-      selectedTileIds:[],
-      tileColors:{}
-    };
-
-    const players = [
-      { id:"you", name:"あなた", short:"自", type:"human", girlId:null, point:START_POINT, hand:[], seat:"" },
-      { id:"cpu1", name:"CPU1", short:"A", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" },
-      { id:"cpu2", name:"CPU2", short:"B", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" },
-      { id:"cpu3", name:"CPU3", short:"C", type:"cpu", girlId:null, point:START_POINT, hand:[], seat:"" }
-    ];
-
-    let gameSetup = structuredCloneSafe(DEFAULT_SETUP);
-    let TILES = [];
-    let deck = [];
-    let discardPile = [];
-    let gameEnded = false;
-    let busy = false;
-    let waitingPlayerDiscard = false;
-    let justDrawnIndex = -1;
-    let historyLogs = [];
-    let parentSeatIndex = 0;
-    let turnIndex = 0;
-    let pendingTsumo = false;
-    let pendingRon = false;
-    let lastDiscardInfo = null;
-
-    let tempGirlId = null;
-    let tempCpuGirlIds = [];
-    let tempTileIds = [];
-    let tempTileColors = {};
-
-    let humanTurnTimer1 = null;
-    let humanTurnTimer2 = null;
-
-    const turnLabel = document.getElementById("turnLabel");
-    const roundLabel = document.getElementById("roundLabel");
-    const statusMain = document.getElementById("statusMain");
-    const subInfo = document.getElementById("subInfo");
-    const scoreList = document.getElementById("scoreList");
-    const deckCount = document.getElementById("deckCount");
-    const handEl = document.getElementById("hand");
-    const historyBox = document.getElementById("historyBox");
-
-    const startBtn = document.getElementById("startBtn");
-    const openCustomBtn = document.getElementById("openCustomBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const retryBtn = document.getElementById("retryBtn");
-
-    const tsumoBtn = document.getElementById("tsumoBtn");
-    const ronBtn = document.getElementById("ronBtn");
-    const passBtn = document.getElementById("passBtn");
-    const nextRoundBtn = document.getElementById("nextRoundBtn");
-
-    const riverGrid = document.getElementById("riverGrid");
-    const riverEmpty = document.getElementById("riverEmpty");
-    const lastOwner = document.getElementById("lastOwner");
-    const riverColumnHeads = document.getElementById("riverColumnHeads");
-
-    const titleOverlay = document.getElementById("titleOverlay");
-    const girlSelectOverlay = document.getElementById("girlSelectOverlay");
-    const cpuSelectOverlay = document.getElementById("cpuSelectOverlay");
-    const tileSelectOverlay = document.getElementById("tileSelectOverlay");
-    const colorSelectOverlay = document.getElementById("colorSelectOverlay");
-    const customOverlay = document.getElementById("customOverlay");
-
-    const girlSelectGrid = document.getElementById("girlSelectGrid");
-    const cpuSelectGrid = document.getElementById("cpuSelectGrid");
-    const tileSelectGrid = document.getElementById("tileSelectGrid");
-    const customGrid = document.getElementById("customGrid");
-    const colorList = document.getElementById("colorList");
-    const cpuSelectCount = document.getElementById("cpuSelectCount");
-    const tileSelectCount = document.getElementById("tileSelectCount");
-    const customSelectCount = document.getElementById("customSelectCount");
-
-    const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
-    const cpuSelectBackBtn = document.getElementById("cpuSelectBackBtn");
-    const cpuSelectNextBtn = document.getElementById("cpuSelectNextBtn");
-    const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
-    const tileSelectNextBtn = document.getElementById("tileSelectNextBtn");
-    const colorSelectBackBtn = document.getElementById("colorSelectBackBtn");
-    const gameStartBtn = document.getElementById("gameStartBtn");
-    const saveCustomBtn = document.getElementById("saveCustomBtn");
-    const closeCustomBtn = document.getElementById("closeCustomBtn");
-
-    const girlOverlay = document.getElementById("girlOverlay");
-    const girlBgScene = document.getElementById("girlBgScene");
-    const girlChara = document.getElementById("girlChara");
-    const girlNameEl = document.getElementById("girlName");
-    const girlTextEl = document.getElementById("girlText");
-    const bigTileWrap = document.getElementById("bigTileWrap");
-    const bigTileCard = document.getElementById("bigTileCard");
-    const bigTileTint = document.getElementById("bigTileTint");
-    const bigTileFallback = document.getElementById("bigTileFallback");
-    const bigTileCaption = document.getElementById("bigTileCaption");
-
-    const roundOverlay = document.getElementById("roundOverlay");
-    const roundOverlayMain = document.getElementById("roundOverlayMain");
-    const roundOverlaySub = document.getElementById("roundOverlaySub");
-
-    const roundResultOverlay = document.getElementById("roundResultOverlay");
-    const roundResultRound = document.getElementById("roundResultRound");
-    const roundResultWin = document.getElementById("roundResultWin");
-    const roundResultDesc = document.getElementById("roundResultDesc");
-    const roundResultScore = document.getElementById("roundResultScore");
-
-    const resultOverlay = document.getElementById("resultOverlay");
-    const resultTitle = document.getElementById("resultTitle");
-    const resultSub = document.getElementById("resultSub");
-    const resultList = document.getElementById("resultList");
-
-    function structuredCloneSafe(obj){
-      return JSON.parse(JSON.stringify(obj));
-    }
-
-    function rand(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function wait(ms){
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    function clearHumanTimers(){
-      if(humanTurnTimer1){
-        clearTimeout(humanTurnTimer1);
-        humanTurnTimer1 = null;
-      }
-      if(humanTurnTimer2){
-        clearTimeout(humanTurnTimer2);
-        humanTurnTimer2 = null;
-      }
-    }
-
-    function shuffle(array){
-      const arr = [...array];
-      for(let i = arr.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function assignSeats(){
-      const seats = shuffle(["東","南","西","北"]);
-      players.forEach((p, i) => {
-        p.seat = seats[i];
-      });
-    }
-
-    function sortBySeat(list){
-      const rank = { "東":0, "南":1, "西":2, "北":3 };
-      return [...list].sort((a,b) => rank[a.seat] - rank[b.seat]);
-    }
-
-    function getTurnOrder(){
-      return sortBySeat(players);
-    }
-
-    function getCurrentPlayer(){
-      return getTurnOrder()[turnIndex];
-    }
-
-    function getCurrentParentSeat(){
-      return PARENT_ORDER[parentSeatIndex];
-    }
-
-    function getRoundName(){
-      return `${getCurrentParentSeat()}局`;
-    }
-
-    function getParentPlayer(){
-      return players.find(p => p.seat === getCurrentParentSeat());
-    }
-
-    function getGirlById(id){
-      return GIRLS.find(g => g.id === id) || GIRLS[0];
-    }
-
-    function getSupportGirl(){
-      return getGirlById(gameSetup.supportGirlId);
-    }
-
-    function getGirlForPlayer(player){
-      if(player.id === "you"){
-        return getSupportGirl();
-      }
-      return getGirlById(player.girlId);
-    }
-
-    function syncCpuPlayersFromSetup(){
-      const ids = [...gameSetup.cpuGirlIds];
-      players[1].girlId = ids[0] || null;
-      players[2].girlId = ids[1] || null;
-      players[3].girlId = ids[2] || null;
-
-      players[1].name = getGirlById(players[1].girlId).name;
-      players[2].name = getGirlById(players[2].girlId).name;
-      players[3].name = getGirlById(players[3].girlId).name;
-    }
-
-    function getTileDef(id){
-      return TILES.find(t => t.id === id);
-    }
-
-    function rebuildActiveTiles(){
-      TILES = gameSetup.selectedTileIds
-        .map(id => {
-          const base = ALL_TILE_POOL.find(t => t.id === id);
-          if(!base) return null;
-          return {
-            ...base,
-            color: gameSetup.tileColors[id] || base.defaultColor
-          };
-        })
-        .filter(Boolean);
-    }
-
-    function setBusy(flag){
-      busy = flag;
-      resetBtn.disabled = flag;
-      openCustomBtn.disabled = flag;
-    }
-
-    function updateActionButtons(){
-      const enabled = !busy && !gameEnded;
-      tsumoBtn.disabled = !(enabled && pendingTsumo);
-      ronBtn.disabled = !(enabled && pendingRon);
-      passBtn.disabled = !(enabled && pendingRon);
-    }
-
-    function clearPendingActions(){
-      pendingTsumo = false;
-      pendingRon = false;
-      lastDiscardInfo = null;
-      updateActionButtons();
-    }
-
-    function addHistory(text){
-      historyLogs.unshift(text);
-      renderHistory();
-    }
-
-    function renderHistory(){
-      historyBox.innerHTML = "";
-      if(!historyLogs.length){
-        const div = document.createElement("div");
-        div.className = "historyLine";
-        div.textContent = "まだ履歴はありません。";
-        historyBox.appendChild(div);
-        return;
-      }
-      historyLogs.forEach(line => {
-        const div = document.createElement("div");
-        div.className = "historyLine";
-        div.textContent = line;
-        historyBox.appendChild(div);
-      });
-    }
-
-    function getTileName(id){
-      const tile = getTileDef(id);
-      return tile ? tile.name : id;
-    }
-
-    function getTileColor(id){
-      const tile = getTileDef(id);
-      return tile ? tile.color : "#888";
-    }
-
-    function createDeck(){
-      const arr = [];
-      TILES.forEach(tile => {
-        for(let i = 0; i < COPIES_PER_TILE; i++){
-          arr.push(tile.id);
-        }
-      });
-      return shuffle(arr);
-    }
-
-    function countMap(hand){
-      const map = {};
-      hand.forEach(tileId => {
-        map[tileId] = (map[tileId] || 0) + 1;
-      });
-      return map;
-    }
-
-    function getCompletedTriples(hand){
-      const map = countMap(hand);
-      let sets = 0;
-      for(const key in map){
-        sets += Math.floor(map[key] / 3);
-      }
-      return sets;
-    }
-
-    function isWinningHand(hand){
-      return getCompletedTriples(hand) >= 2;
-    }
-
-    function getBestCount(hand){
-      const map = countMap(hand);
-      let best = 0;
-      Object.values(map).forEach(v => {
-        if(v > best) best = v;
-      });
-      return best;
-    }
-
-    function drawTile(player){
-      if(deck.length <= 0) return null;
-      const tileId = deck.pop();
-      player.hand.push(tileId);
-      return tileId;
-    }
-
-    function canRonWithTile(hand, tileId){
-      const temp = [...hand, tileId];
-      return isWinningHand(temp);
-    }
-
-    function showOverlay(el){
-      el.classList.add("show");
-    }
-
-    function hideOverlay(el){
-      el.classList.remove("show");
+    function getGirlImages(girl){
+      if(Array.isArray(girl.chara)) return girl.chara;
+      return [
+        `img/${girl.id}_1.png`,
+        `img/${girl.id}_2.png`,
+        `img/${girl.id}_3.png`
+      ];
     }
 
     function showGirl(girlObj, text){
+      const images = getGirlImages(girlObj);
+      const picked = rand(images);
+
       girlBgScene.src = girlObj.bg;
-      girlChara.src = girlObj.chara;
+      girlChara.src = picked;
+      girlChara.onerror = () => {
+        if (girlObj.chara && !Array.isArray(girlObj.chara)) {
+          girlChara.src = girlObj.chara;
+        }
+      };
+
       girlNameEl.textContent = girlObj.name;
       girlTextEl.textContent = text;
       bigTileWrap.classList.remove("show");
       showOverlay(girlOverlay);
     }
 
-    function updateGirlText(text){
-      girlTextEl.textContent = text;
-    }
-
-    function hideGirl(){
-      bigTileWrap.classList.remove("show");
-      hideOverlay(girlOverlay);
-    }
-
-    function showBigTile(tileId, caption){
-      const tile = getTileDef(tileId);
-      bigTileTint.style.background = getTileColor(tileId);
-      bigTileCard.innerHTML = "";
-      bigTileCard.appendChild(bigTileTint);
-
-      if(tile && tile.image){
-        const img = document.createElement("img");
-        img.className = "bigTileImg";
-        img.src = tile.image;
-        img.alt = tile.name;
-        img.onerror = () => {
-          bigTileCard.innerHTML = "";
-          bigTileCard.appendChild(bigTileTint);
-          bigTileFallback.textContent = tile.name;
-          bigTileCard.appendChild(bigTileFallback);
-        };
-        bigTileCard.appendChild(img);
-      } else {
-        bigTileFallback.textContent = getTileName(tileId);
-        bigTileCard.appendChild(bigTileFallback);
-      }
-
-      bigTileCaption.textContent = caption;
-      bigTileWrap.classList.add("show");
-    }
-
-    async function showRoundIntro(){
-      roundOverlayMain.textContent = getRoundName();
-      roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
-      showOverlay(roundOverlay);
-      await wait(950);
-      hideOverlay(roundOverlay);
-      await wait(180);
-    }
-
-    function renderTileContent(parent, tileId){
-      const tile = getTileDef(tileId);
-      parent.innerHTML = "";
-
-      const inner = document.createElement("div");
-      inner.className = "tileInner";
-
-      const tint = document.createElement("div");
-      tint.className = "tileTint";
-      tint.style.background = getTileColor(tileId);
-      inner.appendChild(tint);
-
-      if(!tile){
-        const div = document.createElement("div");
-        div.className = "tileFallback";
-        div.textContent = tileId;
-        inner.appendChild(div);
-        parent.appendChild(inner);
-        return;
-      }
-
-      const img = document.createElement("img");
-      img.className = "tileImg";
-      img.src = tile.image;
-      img.alt = tile.name;
-      img.onerror = () => {
-        inner.innerHTML = "";
-        inner.appendChild(tint);
-        const fallback = document.createElement("div");
-        fallback.className = "tileFallback";
-        fallback.textContent = tile.name;
-        inner.appendChild(fallback);
-      };
-      inner.appendChild(img);
-      parent.appendChild(inner);
-    }
-
-    function createRiverTile(tileId, isLast){
-      const div = document.createElement("div");
-      div.className = "riverTile" + (isLast ? " last" : "");
-
-      const tint = document.createElement("div");
-      tint.className = "riverTint";
-      tint.style.background = getTileColor(tileId);
-      div.appendChild(tint);
-
-      const tile = getTileDef(tileId);
-      if(tile && tile.image){
-        const img = document.createElement("img");
-        img.className = "riverImg";
-        img.src = tile.image;
-        img.alt = tile.name;
-        div.appendChild(img);
-      }
-      return div;
-    }
-
-    function renderRiverColumnHeads(){
-      riverColumnHeads.innerHTML = "";
-      const order = getTurnOrder();
-      order.forEach(player => {
-        const div = document.createElement("div");
-        div.className = "riverColHead";
-        div.textContent = `${player.seat} ${player.name}`;
-        riverColumnHeads.appendChild(div);
+    function renderModeButtons(){
+      modeButtons.forEach(btn => {
+        btn.classList.toggle("selected", Number(btn.dataset.loop) === tempLoopCount);
       });
     }
 
-    function renderDiscardPile(){
-      riverGrid.innerHTML = "";
-      renderRiverColumnHeads();
-
-      if(!discardPile.length){
-        riverEmpty.style.display = "flex";
-        lastOwner.textContent = "---";
-        return;
-      }
-
-      riverEmpty.style.display = "none";
-      const order = getTurnOrder();
-      const playerIndexMap = {};
-      order.forEach((player, index) => {
-        playerIndexMap[player.id] = index;
-      });
-
-      const columnStacks = [[], [], [], []];
-      discardPile.forEach((item, index) => {
-        const col = playerIndexMap[item.playerId];
-        if(col !== undefined){
-          columnStacks[col].push({
-            ...item,
-            isLast: index === discardPile.length - 1
-          });
-        }
-      });
-
-      const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
-      for(let row = 0; row < maxRows; row++){
-        for(let col = 0; col < 4; col++){
-          const item = columnStacks[col][row];
-          if(item){
-            riverGrid.appendChild(createRiverTile(item.tileId, item.isLast));
-          } else {
-            const empty = document.createElement("div");
-            empty.className = "riverTile";
-            empty.style.opacity = "0";
-            empty.style.pointerEvents = "none";
-            riverGrid.appendChild(empty);
-          }
-        }
-      }
-
-      lastOwner.textContent = discardPile[discardPile.length - 1].owner;
-    }
-
-    function renderScores(){
-      scoreList.innerHTML = "";
-      const ordered = getTurnOrder();
-
-      ordered.forEach(player => {
-        const row = document.createElement("div");
-        row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
-
-        let badgeClass = "badge-you";
-        if(player.id === "cpu1") badgeClass = "badge-a";
-        if(player.id === "cpu2") badgeClass = "badge-b";
-        if(player.id === "cpu3") badgeClass = "badge-c";
-
-        row.innerHTML = `
-          <div class="scoreName">
-            <span class="scoreBadge ${badgeClass}">${player.short}</span>
-            <span>${player.seat}　${player.name}${player.seat === getCurrentParentSeat() ? "（親）" : ""}</span>
-          </div>
-          <div>${player.point}点</div>
-        `;
-        scoreList.appendChild(row);
-      });
-    }
-
-    function renderHand(){
-      const me = players[0];
-      handEl.innerHTML = "";
-      me.hand.forEach((tileId, index) => {
-        const btn = document.createElement("button");
-        btn.className = "tileBtn" + (index === justDrawnIndex ? " drawn" : "");
-        btn.disabled = !(waitingPlayerDiscard && !busy && !gameEnded && !pendingRon && !pendingTsumo);
-        btn.addEventListener("click", () => onPlayerDiscard(index));
-        renderTileContent(btn, tileId);
-        handEl.appendChild(btn);
-      });
-    }
-
-    function renderAll(){
-      const current = getCurrentPlayer();
-      turnLabel.textContent = `${current.seat}　${current.name}の番`;
-      roundLabel.textContent = getRoundName();
-      deckCount.textContent = deck.length;
-      renderDiscardPile();
-      renderScores();
-      renderHand();
-      updateActionButtons();
-    }
-
-    function renderGirlSelect(){
-      girlSelectGrid.innerHTML = "";
-      GIRLS.forEach(girl => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
-        card.addEventListener("click", () => {
-          tempGirlId = girl.id;
-          renderGirlSelect();
-        });
-        card.innerHTML = `
-          <div class="girlPreview">
-            <img class="girlPreviewBg" src="${girl.bg}" alt="">
-            <div class="girlPreviewShade"></div>
-            <img class="girlPreviewChara" src="${girl.chara}" alt="${girl.name}">
-          </div>
-          <div class="girlCardName">${girl.name}</div>
-        `;
-        girlSelectGrid.appendChild(card);
-      });
-    }
-
-    function renderCpuSelect(){
-      cpuSelectGrid.innerHTML = "";
-      const selectable = GIRLS.filter(g => g.id !== tempGirlId);
-      cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
-
-      selectable.forEach(girl => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "girlCard" + (tempCpuGirlIds.includes(girl.id) ? " selected" : "");
-        card.addEventListener("click", () => {
-          const exists = tempCpuGirlIds.includes(girl.id);
-          if(exists){
-            tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== girl.id);
-          } else {
-            if(tempCpuGirlIds.length >= 3){
-              alert("CPUは3人選んでね。");
-              return;
-            }
-            tempCpuGirlIds.push(girl.id);
-          }
-          renderCpuSelect();
-        });
-        card.innerHTML = `
-          <div class="girlPreview">
-            <img class="girlPreviewBg" src="${girl.bg}" alt="">
-            <div class="girlPreviewShade"></div>
-            <img class="girlPreviewChara" src="${girl.chara}" alt="${girl.name}">
-          </div>
-          <div class="girlCardName">${girl.name}</div>
-        `;
-        cpuSelectGrid.appendChild(card);
-      });
-    }
-
-    function renderTilePickGrid(targetEl, selectedIds, countEl){
-      targetEl.innerHTML = "";
-      if(countEl){
-        countEl.textContent = `${selectedIds.length}/9 選択中`;
-      }
-
-      ALL_TILE_POOL.forEach(tile => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
-        card.addEventListener("click", () => {
-          const exists = selectedIds.includes(tile.id);
-
-          if(exists){
-            selectedIds.splice(selectedIds.indexOf(tile.id), 1);
-          } else {
-            if(selectedIds.length >= PICK_COUNT){
-              alert("9体選択中です。先に1体外してね。");
-              return;
-            }
-            selectedIds.push(tile.id);
-            if(!tempTileColors[tile.id]){
-              tempTileColors[tile.id] = tile.defaultColor;
-            }
-          }
-
-          renderTilePickGrid(targetEl, selectedIds, countEl);
-        });
-
-        const bgColor = selectedIds.includes(tile.id)
-          ? (tempTileColors[tile.id] || tile.defaultColor)
-          : tile.defaultColor;
-
-        card.innerHTML = `
-          <div class="customThumb">
-            <div class="customThumbTint" style="background:${bgColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="customName">${tile.name}</div>
-        `;
-        targetEl.appendChild(card);
-      });
-    }
-
-    function renderColorList(){
-      colorList.innerHTML = "";
-      tempTileIds.forEach(id => {
-        const tile = ALL_TILE_POOL.find(t => t.id === id);
-        const row = document.createElement("div");
-        row.className = "colorLine";
-        row.innerHTML = `
-          <div class="colorThumb">
-            <div class="colorThumbTint" style="background:${tempTileColors[id] || tile.defaultColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="colorName">${tile.name}</div>
-        `;
-        const picker = document.createElement("input");
-        picker.type = "color";
-        picker.className = "colorPicker";
-        picker.value = tempTileColors[id] || tile.defaultColor;
-        picker.addEventListener("input", (e) => {
-          tempTileColors[id] = e.target.value;
-          renderColorList();
-        });
-        row.appendChild(picker);
-        colorList.appendChild(row);
-      });
-    }
-
-    function beginSetupFlow(){
-      tempGirlId = gameSetup.supportGirlId;
-      tempCpuGirlIds = [...gameSetup.cpuGirlIds];
-      tempTileIds = [...gameSetup.selectedTileIds];
-      tempTileColors = structuredCloneSafe(gameSetup.tileColors);
-      hideOverlay(titleOverlay);
-      renderGirlSelect();
-      showOverlay(girlSelectOverlay);
-    }
-
-    function proceedToCpuSelect(){
-      if(!tempGirlId){
-        alert("パートナーを選んでね。");
-        return;
-      }
-      tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
-      hideOverlay(girlSelectOverlay);
-      renderCpuSelect();
-      showOverlay(cpuSelectOverlay);
-    }
-
-    function proceedToTileSelect(){
+    function proceedToModeSelect(){
       if(tempCpuGirlIds.length !== 3){
         alert("CPUを3人選んでね。");
         return;
       }
       hideOverlay(cpuSelectOverlay);
+      renderModeButtons();
+      showOverlay(modeSelectOverlay);
+    }
+
+    function proceedToTileSelect(){
+      if(!tempLoopCount){
+        alert("周回数を選んでね。");
+        return;
+      }
+      hideOverlay(modeSelectOverlay);
       renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
       showOverlay(tileSelectOverlay);
     }
 
-    function proceedToColorSelect(){
-      if(tempTileIds.length !== PICK_COUNT){
-        alert("9体ちょうど選んでね。");
-        return;
-      }
-      tempTileIds.forEach(id => {
-        const base = ALL_TILE_POOL.find(t => t.id === id);
-        if(!tempTileColors[id]) tempTileColors[id] = base.defaultColor;
-      });
-      hideOverlay(tileSelectOverlay);
-      renderColorList();
-      showOverlay(colorSelectOverlay);
-    }
-       async function finalizeSetupAndStart(){
+    async function finalizeSetupAndStart(){
       gameSetup = {
         supportGirlId: tempGirlId,
         cpuGirlIds: [...tempCpuGirlIds],
         selectedTileIds: [...tempTileIds],
         tileColors: structuredCloneSafe(tempTileColors)
       };
+
+      loopCount = tempLoopCount;
+      totalRounds = loopCount * 4;
+      currentRoundNumber = 0;
+
       syncCpuPlayersFromSetup();
       rebuildActiveTiles();
       hideOverlay(colorSelectOverlay);
@@ -2077,11 +701,12 @@
       });
 
       players[0].girlId = gameSetup.supportGirlId;
-
       assignSeats();
-      parentSeatIndex = 0;
-      rebuildActiveTiles();
 
+      parentSeatIndex = 0;
+      currentRoundNumber = 0;
+
+      rebuildActiveTiles();
       renderHistory();
       renderAll();
 
@@ -2103,14 +728,15 @@
 
       deck = createDeck();
 
-      for(let i=0;i<BASE_HAND_SIZE;i++){
+      for(let i = 0; i < BASE_HAND_SIZE; i++){
         players.forEach(p => drawTile(p));
       }
 
       const order = getTurnOrder();
       turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
+      currentRoundNumber += 1;
 
-      addHistory(`${getRoundName()} 開始 / 親：${getParentPlayer().seat} ${getParentPlayer().name}`);
+      addHistory(`${getRoundName()} ${Math.ceil(currentRoundNumber / 4)}周目 / ${currentRoundNumber}局目 開始`);
       renderAll();
 
       if(!isFirst){
@@ -2130,6 +756,7 @@
     function startHumanTurn(){
       clearHumanTimers();
       const girl = getSupportGirl();
+
       waitingPlayerDiscard = false;
       justDrawnIndex = -1;
       pendingRon = false;
@@ -2139,48 +766,56 @@
       showGirl(girl, rand(girl.introHuman));
 
       humanTurnTimer1 = setTimeout(() => {
-        updateGirlText(rand(girl.thinkHuman));
-      }, 520);
+        updateGirlText("...");
+      }, 650);
 
       humanTurnTimer2 = setTimeout(() => {
-        drawTile(players[0]);
-        justDrawnIndex = players[0].hand.length - 1;
-        pendingTsumo = isWinningHand(players[0].hand);
-        pendingRon = false;
-        waitingPlayerDiscard = true;
-        renderAll();
-
-        updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+        updateGirlText(rand(girl.thinkHuman));
 
         setTimeout(() => {
-          hideGirl();
+          drawTile(players[0]);
+          justDrawnIndex = players[0].hand.length - 1;
+          pendingTsumo = isWinningHand(players[0].hand);
+          pendingRon = false;
+          waitingPlayerDiscard = true;
           renderAll();
-        }, 520);
 
+          updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+
+          setTimeout(() => {
+            hideGirl();
+            renderAll();
+          }, 780);
+        }, 800);
       }, WAIT_LONG);
     }
 
     async function startCpuTurn(player){
       clearHumanTimers();
       setBusy(true);
-      const girl = getGirlForPlayer(player);
 
+      const girl = getGirlForPlayer(player);
       showGirl(girl, rand(girl.introCpu));
+      await wait(700);
+
+      updateGirlText("...");
       await wait(500);
 
       updateGirlText(rand(girl.thinkCpu));
-      await wait(520);
+      await wait(820);
 
       drawTile(player);
       const tsumo = isWinningHand(player.hand);
-
       updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
-      await wait(520);
+      await wait(760);
 
       if(tsumo){
         await finishRound({ type:"tsumo", winner:player });
         return;
       }
+
+      updateGirlText("...");
+      await wait(420);
 
       const discardIndex = cpuChooseDiscardIndex(player);
       const discardTile = player.hand[discardIndex];
@@ -2221,7 +856,7 @@
       }
 
       hideGirl();
-      await wait(120);
+      await wait(180);
       advanceTurn();
       setBusy(false);
 
@@ -2244,8 +879,12 @@
       setBusy(true);
       waitingPlayerDiscard = false;
 
-      showGirl(girl, rand(girl.discard));
+      showGirl(girl, "...");
       showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
+
+      setTimeout(async () => {
+        updateGirlText(rand(girl.discard));
+      }, 220);
 
       setTimeout(async () => {
         me.hand.splice(index,1);
@@ -2289,7 +928,9 @@
         const candidate = order[(startIdx + offset) % order.length];
         if(candidate.id === "you") continue;
         if(canRonWithTile(candidate.hand, tileId)){
-          return candidate;
+          if(Math.random() < 0.88){
+            return candidate;
+          }
         }
       }
       return null;
@@ -2341,7 +982,7 @@
         };
       });
 
-      if(hasHako()){
+      if(hasHako() || currentRoundNumber >= totalRounds){
         const winners = getFinalWinnersByPoints();
         gameEnded = true;
         showResultScreen(winners);
@@ -2372,9 +1013,7 @@
 
       if(winners.length === 1){
         resultTitle.textContent = `${winners[0].name}の優勝！`;
-        resultSub.textContent = winners[0].id === "you"
-          ? "トップで終了しました。"
-          : "相手がトップで終了しました。";
+        resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
       } else {
         resultTitle.textContent = "同点優勝！";
         resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
@@ -2409,55 +1048,14 @@
       });
     }
 
-    function applyTsumoPoints(winner){
-      players.forEach((p) => {
-        if(p.id === winner.id){
-          p.point += 3;
-        } else {
-          p.point -= 1;
-        }
-      });
-    }
-
-    function applyRonPoints(winner, discarder){
-      winner.point += 2;
-      discarder.point -= 2;
-    }
-
-    function getFinalWinnersByPoints(){
-      const max = Math.max(...players.map(p => p.point));
-      return players.filter(p => p.point === max);
-    }
-
-    function hasHako(){
-      return players.some(p => p.point <= 0);
-    }
-
-    function judgeRoundRanking(){
-      const ranking = players.map(player => ({
-        player,
-        triples:getCompletedTriples(player.hand),
-        best:getBestCount(player.hand)
-      }));
-
-      ranking.sort((a,b) => {
-        if(b.triples !== a.triples) return b.triples - a.triples;
-        return b.best - a.best;
-      });
-
-      const top = ranking[0];
-      const sameTop = ranking.filter(r => r.triples === top.triples && r.best === top.best);
-
-      if(sameTop.length >= 2){
-        return { reason:"draw" };
-      }
-      return { reason:"best", winner:top.player };
-    }
-
     function cpuChooseDiscardIndex(player){
       const hand = player.hand;
-      const map = countMap(hand);
 
+      if(Math.random() < 0.38){
+        return Math.floor(Math.random() * hand.length);
+      }
+
+      const map = countMap(hand);
       let bestScore = Infinity;
       let candidates = [];
 
@@ -2497,11 +1095,25 @@
       showOverlay(girlSelectOverlay);
     });
 
-    cpuSelectNextBtn.addEventListener("click", proceedToTileSelect);
+    cpuSelectNextBtn.addEventListener("click", proceedToModeSelect);
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tempLoopCount = Number(btn.dataset.loop);
+        renderModeButtons();
+      });
+    });
+
+    modeSelectBackBtn.addEventListener("click", () => {
+      hideOverlay(modeSelectOverlay);
+      showOverlay(cpuSelectOverlay);
+    });
+
+    modeSelectNextBtn.addEventListener("click", proceedToTileSelect);
 
     tileSelectBackBtn.addEventListener("click", () => {
       hideOverlay(tileSelectOverlay);
-      showOverlay(cpuSelectOverlay);
+      showOverlay(modeSelectOverlay);
     });
 
     tileSelectNextBtn.addEventListener("click", proceedToColorSelect);
@@ -2544,6 +1156,7 @@
 
     passBtn.addEventListener("click", async () => {
       if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
+
       pendingRon = false;
       waitingPlayerDiscard = false;
       hideGirl();
@@ -2557,8 +1170,10 @@
       }
     });
 
+    renderModeButtons();
     renderHistory();
     renderAll();
   </script>
 </body>
 </html>
+   
