@@ -54,8 +54,12 @@
     display:flex;justify-content:space-between;align-items:center;
     padding:10px 12px;background:rgba(255,255,255,.05);
     border-radius:14px;font-size:14px;font-weight:900;
+    transition:.15s ease;
   }
-  .scoreLine.active{outline:2px solid rgba(255,255,255,.12)}
+  .scoreLine.active{
+    outline:2px solid rgba(255,255,255,.12);
+    box-shadow:0 0 18px rgba(255,255,255,.08);
+  }
   .scoreName{display:flex;align-items:center;gap:8px}
   .scoreBadge{
     min-width:22px;height:22px;border-radius:999px;display:inline-flex;
@@ -98,9 +102,19 @@
     aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;background:#1b2130;
     border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;position:relative;
   }
-  .riverTile.last{outline:2px solid rgba(255,230,120,.95)}
+  .riverTile.last{
+    outline:3px solid rgba(255,230,120,.98);
+    box-shadow:0 0 16px rgba(255,230,120,.25);
+  }
   .riverImg{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:3px;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    position:relative;
+    z-index:1;
+    padding:1px;
+    transform:scale(1.08);
   }
   .riverTint{position:absolute;inset:0;opacity:.68;z-index:0}
   .riverEmpty{
@@ -117,14 +131,25 @@
     position:relative;background:#1c2230;transition:transform .15s ease, box-shadow .15s ease;cursor:pointer;
   }
   .tileBtn:active{transform:scale(.96)}
-  .tileBtn.drawn{outline:2px solid rgba(255,230,120,.95);transform:translateY(-1px)}
+  .tileBtn.drawn{
+    outline:2px solid rgba(255,230,120,.95);
+    transform:translateY(-1px);
+    box-shadow:0 0 16px rgba(255,230,120,.20);
+  }
   .tileBtn:disabled{opacity:.55;cursor:default}
   .tileInner{
     width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:4px;
   }
   .tileTint{position:absolute;inset:0;opacity:.64;z-index:0}
   .tileImg{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    position:relative;
+    z-index:1;
+    padding:0;
+    transform:scale(1.12);
   }
   .tileFallback{
     padding:6px;line-height:1.25;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);
@@ -133,11 +158,21 @@
   .actionWrap{display:flex;gap:8px;margin-bottom:12px}
   .actionBtn{
     flex:1;appearance:none;border:none;border-radius:16px;padding:14px 10px;font-size:15px;font-weight:900;cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
   }
   .actionBtn:disabled{opacity:.45;cursor:default}
+  .actionBtn.ready{
+    animation:readyPulse 1s ease-in-out infinite;
+    box-shadow:0 0 18px rgba(255,255,255,.25);
+  }
   #tsumoBtn{background:#fff;color:#111}
   #ronBtn{background:#ffe59a;color:#111}
   #passBtn{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
+  @keyframes readyPulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.03)}
+    100%{transform:scale(1)}
+  }
 
   .controls{display:flex;gap:8px;margin-bottom:12px}
   .mainBtn{
@@ -228,7 +263,7 @@
     width:100%;aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:6px;
   }
   .customThumb img{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;transform:scale(1.05);
   }
   .customThumbTint{position:absolute;inset:0;opacity:.72;z-index:0}
   .customName{font-size:12px;font-weight:900;line-height:1.35}
@@ -242,7 +277,7 @@
     width:74px;aspect-ratio:1 / 1;border-radius:12px;overflow:hidden;position:relative;background:#1b2130;
   }
   .colorThumb img{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
+    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;transform:scale(1.05);
   }
   .colorThumbTint{position:absolute;inset:0;opacity:.76;z-index:0}
   .colorName{font-size:13px;font-weight:900}
@@ -297,12 +332,21 @@
   }
   .bigTileTint{position:absolute;inset:0;opacity:.82;z-index:0}
   .bigTileImg{
-    width:100%;height:100%;object-fit:contain;position:relative;z-index:1;padding:4px;
+    width:100%;height:100%;object-fit:contain;position:relative;z-index:1;padding:4px;transform:scale(1.08);
   }
   .bigTileFallback{
     position:relative;z-index:1;font-size:28px;font-weight:900;padding:16px;text-align:center;
   }
-  .bigTileCaption{font-size:16px;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .bigTileCaption{
+    font-size:18px;
+    font-weight:900;
+    text-shadow:0 2px 6px rgba(0,0,0,.65);
+    background:rgba(0,0,0,.34);
+    padding:8px 14px;
+    border-radius:999px;
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
 
   .roundOverlay{z-index:110;background:rgba(5,7,12,.86)}
   .roundStage{
@@ -612,7 +656,9 @@
         drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
         discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
         tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
-        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"]
+        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"],
+        loseTsumo:["やられた…","つもられた…","うそ…","きついかも…"],
+        loseRon:["それは無理…","ロンされた…","やられた…","くっ…"]
       },
       {
         id:"girlB",
@@ -628,7 +674,9 @@
         drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
         discard:["これで。","切るよ。","はい次。","これを捨てる。"],
         tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
-        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"]
+        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"],
+        loseTsumo:["つもられた…","ちょっと最悪。","やられたわ。","それはないでしょ。"],
+        loseRon:["ロンされた…","くっ…","やられた。","それは通らないの。"]
       },
       {
         id:"girlC",
@@ -644,7 +692,9 @@
         drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
         discard:["これで。","切る。","……次。","いらない。"],
         tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
-        ron:["それロン。","その牌でいい。","待ってた。","完成。"]
+        ron:["それロン。","その牌でいい。","待ってた。","完成。"],
+        loseTsumo:["……やられた。","つもられた。","別に。","……負け。"],
+        loseRon:["ロンされた。","……無理。","やられた。","それは通る。"]
       },
       {
         id:"girlD",
@@ -660,15 +710,27 @@
         drawCpuNormal:["まだかな。","普通だね。","もう少し。","そんな感じ。"],
         discard:["これにする。","じゃあこれで。","切るね。","これかな。"],
         tsumo:["ツモ！","やった、引いた。","これで完成。","決まったね。"],
-        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"]
+        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"],
+        loseTsumo:["つもられちゃった。","やられたね。","今回はだめかも。","うーん、負け。"],
+        loseRon:["ロンされたね。","くやしい。","やられたかも。","今回は通っちゃった。"]
       }
     ];
 
     const DEFAULT_SETUP = {
       supportGirlId:"girlA",
       cpuGirlIds:["girlB","girlC","girlD"],
-      selectedTileIds:[],
-      tileColors:{}
+      selectedTileIds:["dekabusa","ani","namaken","tora","king","gori","kabao","kan","pan"],
+      tileColors:{
+        dekabusa:"#ff6b6b",
+        ani:"#ffd93d",
+        namaken:"#6bcBff",
+        tora:"#6ee7a8",
+        king:"#c084fc",
+        gori:"#d2a679",
+        kabao:"#ffb86b",
+        kan:"#9aa4b8",
+        pan:"#ff8fd1"
+      }
     };
 
     const players = [
@@ -700,6 +762,11 @@
 
     let humanTurnTimer1 = null;
     let humanTurnTimer2 = null;
+
+    let tempLoopCount = 1;
+    let loopCount = 1;
+    let totalRounds = 4;
+    let currentRoundNumber = 0;
 
     const turnLabel = document.getElementById("turnLabel");
     const roundLabel = document.getElementById("roundLabel");
@@ -782,11 +849,6 @@
     const resultList = document.getElementById("resultList");
 
     const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
-
-    let tempLoopCount = 1;
-    let loopCount = 1;
-    let totalRounds = 4;
-    let currentRoundNumber = 0;
 
     function structuredCloneSafe(obj){
       return JSON.parse(JSON.stringify(obj));
@@ -913,6 +975,16 @@
       return map;
     }
 
+    function sortHandByGroups(hand){
+      const map = countMap(hand);
+      return [...hand].sort((a, b) => {
+        const ca = map[a];
+        const cb = map[b];
+        if(cb !== ca) return cb - ca;
+        return getTileName(a).localeCompare(getTileName(b), "ja");
+      });
+    }
+
     function getCompletedTriples(hand){
       const map = countMap(hand);
       let sets = 0;
@@ -942,6 +1014,7 @@
       if(deck.length <= 0) return null;
       const tileId = deck.pop();
       player.hand.push(tileId);
+      player.hand = sortHandByGroups(player.hand);
       return tileId;
     }
 
@@ -953,9 +1026,13 @@
 
     function updateActionButtons(){
       const enabled = !busy && !gameEnded;
+
       tsumoBtn.disabled = !(enabled && pendingTsumo);
       ronBtn.disabled = !(enabled && pendingRon);
       passBtn.disabled = !(enabled && pendingRon);
+
+      tsumoBtn.classList.toggle("ready", enabled && pendingTsumo);
+      ronBtn.classList.toggle("ready", enabled && pendingRon);
     }
 
     function clearPendingActions(){
@@ -1558,6 +1635,34 @@
       hideOverlay(resultOverlay);
     }
 
+    async function showWinLoseDialogue(result){
+      if(result.type === "tsumo"){
+        const winGirl = getGirlForPlayer(result.winner);
+        showGirl(winGirl, rand(winGirl.tsumo));
+        await wait(850);
+
+        const losers = players.filter(p => p.id !== result.winner.id);
+        for(const p of losers){
+          const loseGirl = getGirlForPlayer(p);
+          showGirl(loseGirl, rand(loseGirl.loseTsumo));
+          await wait(700);
+        }
+
+      } else if(result.type === "ron"){
+        const winGirl = getGirlForPlayer(result.winner);
+        showGirl(winGirl, rand(winGirl.ron));
+        await wait(900);
+
+        if(result.loser){
+          const loseGirl = getGirlForPlayer(result.loser);
+          showGirl(loseGirl, rand(loseGirl.loseRon));
+          await wait(900);
+        }
+      }
+
+      hideGirl();
+    }
+
     async function finalizeSetupAndStart(){
       gameSetup = {
         supportGirlId: tempGirlId,
@@ -1697,7 +1802,17 @@
         updateGirlText(rand(girl.thinkHuman));
 
         setTimeout(() => {
-          drawTile(players[0]);
+          const drawn = drawTile(players[0]);
+
+          if(!drawn){
+            updateGirlText("……");
+            setTimeout(async () => {
+              hideGirl();
+              await finishRound({ type:"draw" });
+            }, 500);
+            return;
+          }
+
           justDrawnIndex = players[0].hand.length - 1;
           pendingTsumo = isWinningHand(players[0].hand);
           pendingRon = false;
@@ -1728,7 +1843,14 @@
       updateGirlText(rand(girl.thinkCpu));
       await wait(820);
 
-      drawTile(player);
+      const drawn = drawTile(player);
+
+      if(!drawn){
+        hideGirl();
+        await finishRound({ type:"draw" });
+        return;
+      }
+
       const tsumo = isWinningHand(player.hand);
       updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
       await wait(760);
@@ -1749,6 +1871,8 @@
       await wait(WAIT_DISCARD_PREVIEW);
 
       player.hand.splice(discardIndex,1);
+      player.hand = sortHandByGroups(player.hand);
+
       discardPile.push({
         tileId: discardTile,
         owner: `${player.seat} ${player.name}`,
@@ -1772,9 +1896,6 @@
 
       const ronCpu = getCpuRonCandidateAfterDiscard(player, discardTile);
       if(ronCpu){
-        const ronGirl = getGirlForPlayer(ronCpu);
-        showGirl(ronGirl, rand(ronGirl.ron));
-        await wait(WAIT_RON_CHECK);
         await finishRound({ type:"ron", winner:ronCpu, loser:player });
         return;
       }
@@ -1812,6 +1933,8 @@
 
       setTimeout(async () => {
         me.hand.splice(index,1);
+        me.hand = sortHandByGroups(me.hand);
+
         discardPile.push({
           tileId,
           owner:`${me.seat} あなた`,
@@ -1825,9 +1948,6 @@
 
         const ronCpu = getCpuRonCandidateAfterDiscard(me, tileId);
         if(ronCpu){
-          const ronGirl = getGirlForPlayer(ronCpu);
-          showGirl(ronGirl, rand(ronGirl.ron));
-          await wait(WAIT_RON_CHECK);
           await finishRound({ type:"ron", winner:ronCpu, loser:me });
           return;
         }
@@ -1859,13 +1979,31 @@
         desc = `${result.winner.name}がツモ`;
         winText = `${result.winner.seat} ${result.winner.name} ツモ`;
         addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
+
       } else if(result.type === "ron"){
         applyRonPoints(result.winner, result.loser);
         desc = `${result.loser.name}から2点`;
         winText = `${result.winner.seat} ${result.winner.name} ロン`;
         addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
+
+      } else if(result.type === "draw"){
+        const judged = judgeRoundRanking();
+
+        if(judged.reason === "draw"){
+          desc = "山札切れで流局";
+          winText = "引き分け";
+          addHistory(`${getRoundName()}：山札切れで流局`);
+        } else {
+          applyTsumoPoints(judged.winner);
+          desc = "山札切れ判定勝ち";
+          winText = `${judged.winner.name} 勝ち`;
+          result.winner = judged.winner;
+          addHistory(`${getRoundName()}：山札切れ判定で ${judged.winner.seat} ${judged.winner.name} 勝ち`);
+        }
+
       } else {
         const judged = judgeRoundRanking();
+
         if(judged.reason === "draw"){
           desc = "流局";
           winText = "引き分け";
@@ -1880,7 +2018,13 @@
       }
 
       renderAll();
-      hideGirl();
+
+      if(result.type === "tsumo" || result.type === "ron"){
+        await showWinLoseDialogue(result);
+      } else {
+        hideGirl();
+      }
+
       await showRoundResult(roundText, winText, desc);
 
       await new Promise(resolve => {
@@ -1994,6 +2138,8 @@
 
     renderModeButtons();
     renderHistory();
+    rebuildActiveTiles();
+    syncCpuPlayersFromSetup();
     renderAll();
   </script>
 </body>
