@@ -1,3 +1,4 @@
+<!-- ===== PART 1 START ===== -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -254,9 +255,7 @@
     appearance:none;border:none;border-radius:999px;padding:10px 16px;font-weight:900;
     background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
   }
-  .modeBtn.selected{
-    background:#fff;color:#111;
-  }
+  .modeBtn.selected{background:#fff;color:#111}
 
   .girlOverlay{background:#000;z-index:130}
   .girlBgWrap{position:absolute;inset:0}
@@ -360,7 +359,7 @@
     .roundResultWin{font-size:25px}
     .girlChara{width:min(122vw,560px);height:100%}
   }
- </style>
+</style>
 </head>
 <body>
   <div class="app">
@@ -571,9 +570,217 @@
   </div>
 
   <script>
+    const START_POINT = 5;
+    const BASE_HAND_SIZE = 5;
+    const COPIES_PER_TILE = 6;
+    const PICK_COUNT = 9;
+
+    const WAIT_LONG = 1350;
+    const WAIT_RON_CHECK = 950;
+    const WAIT_DISCARD_PREVIEW = 950;
+    const WAIT_ROUND_START_GAP = 700;
+
+    const PARENT_ORDER = ["東","南","西","北"];
+
+    const ALL_TILE_POOL = [
+      { id:"dekabusa", name:"デカブサ", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
+      { id:"ani", name:"デカブサ兄", defaultColor:"#ffd93d", image:"img/tile_aniki.png" },
+      { id:"namaken", name:"ナマケン", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
+      { id:"tora", name:"トラさん", defaultColor:"#6ee7a8", image:"img/tile_torasan.png" },
+      { id:"king", name:"キング", defaultColor:"#c084fc", image:"img/tile_king.png" },
+      { id:"gori", name:"ゴリさん", defaultColor:"#d2a679", image:"img/tile_gorisan.png" },
+      { id:"kabao", name:"カバオ", defaultColor:"#ffb86b", image:"img/tile_kabao.png" },
+      { id:"kan", name:"カンえもん", defaultColor:"#9aa4b8", image:"img/tile_kanemon.png" },
+      { id:"pan", name:"パンパン", defaultColor:"#ff8fd1", image:"img/tile_panpan.png" },
+      { id:"latero", name:"ラテロウ", defaultColor:"#d7b896", image:"img/tile_latero.png" },
+      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#c7d2e2", image:"img/tile_juuzo.png" },
+      { id:"nisebusa", name:"ニセブサ", defaultColor:"#94a3ff", image:"img/tile_nisebusa.png" }
+    ];
+
+    const GIRLS = [
+      {
+        id:"girlA",
+        name:"チー娘A",
+        bg:"img/bg_east.png",
+        introHuman:["あなたの番だよ。","どれ切る？","いけそうだね。","1枚選んでね。"],
+        thinkHuman:["ちょっと考えよう。","どれを残す？","ここ大事かも。","落ち着いていこう。"],
+        drawHumanGood:["それ良さそう！","来たかも！","ギュウ…？","かなりいいね。"],
+        drawHumanNormal:["どうかな。","まだこれからだね。","悪くないかも。","考えどころだね。"],
+        introCpu:["いくよ。","見てて。","引くね。","私の番だよ。"],
+        thinkCpu:["ちょっと考えるね。","どれかな。","ここ悩むかも。","まだ見てて。"],
+        drawCpuGood:["来たかも！","いい感じ。","揃いそう！","これ欲しかったかも。"],
+        drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
+        discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
+        tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
+        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"]
+      },
+      {
+        id:"girlB",
+        name:"チー娘B",
+        bg:"img/bg_south.png",
+        introHuman:["ほら、あなたの番。","どれ切るの？","ちゃんと見て選んで。","さて、どうするの。"],
+        thinkHuman:["急がなくていいでしょ。","ちゃんと見て。","ここは考えどころ。","まあ落ち着いて。"],
+        drawHumanGood:["悪くないじゃん。","来たかもね。","それ残す？","かなりいい形。"],
+        drawHumanNormal:["まあ普通。","まだ何とも。","急がなくていいでしょ。","考えるところね。"],
+        introCpu:["始めるよ。","見てなさい。","引く。","私の番ね。"],
+        thinkCpu:["少し考える。","ここは悩むかな。","どれを切るかね。","待ってて。"],
+        drawCpuGood:["来るね。","悪くない。","揃うんじゃない？","だいぶ近い。"],
+        drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
+        discard:["これで。","切るよ。","はい次。","これを捨てる。"],
+        tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
+        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"]
+      },
+      {
+        id:"girlC",
+        name:"チー娘C",
+        bg:"img/bg_west.png",
+        introHuman:["あなたの番。","どれでもいいけど選んで。","……切って。","好きにして。"],
+        thinkHuman:["……考えて。","急がなくていい。","見てからでいい。","好きに決めて。"],
+        drawHumanGood:["揃うかもね。","来たっぽい。","まあ良さそう。","悪くない。"],
+        drawHumanNormal:["どうだろ。","まだ分からない。","……普通。","別に。"],
+        introCpu:["……いく。","引く。","始める。","私の番。"],
+        thinkCpu:["……考える。","少し待つ。","どれかな。","まだ決めない。"],
+        drawCpuGood:["来た。","揃うかも。","悪くない。","たぶんこれ。"],
+        drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
+        discard:["これで。","切る。","……次。","いらない。"],
+        tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
+        ron:["それロン。","その牌でいい。","待ってた。","完成。"]
+      },
+      {
+        id:"girlD",
+        name:"チー娘D",
+        bg:"img/bg_north.png",
+        introHuman:["いこうか。","あなたの番。","選んでみて。","悪くない流れ。"],
+        thinkHuman:["焦らなくていいよ。","見てから決めよう。","そのままでもいいかも。","ゆっくりで大丈夫。"],
+        drawHumanGood:["いいの来たかも。","それ、かなり良さそう。","揃いそうだね。","いけるかも。"],
+        drawHumanNormal:["まだ分からないね。","悪くはないかな。","続けてみよう。","ここからかな。"],
+        introCpu:["始めるね。","見てて。","引いてみる。","私の番。"],
+        thinkCpu:["ちょっと考える。","うーん、どうしよう。","ここ迷うね。","少し待って。"],
+        drawCpuGood:["いい感じ。","これは欲しかった。","近いかも。","揃いそう。"],
+        drawCpuNormal:["まだかな。","普通だね。","もう少し。","そんな感じ。"],
+        discard:["これにする。","じゃあこれで。","切るね。","これかな。"],
+        tsumo:["ツモ！","やった、引いた。","これで完成。","決まったね。"],
+        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"]
+      }
+    ];
+
+    const DEFAULT_SETUP = {
+      supportGirlId:"girlA",
+      cpuGirlIds:["girlB","girlC","girlD"],
+      selectedTileIds:[],
+      tileColors:{}
+    };
+
+    const players = [
+      { id:"you",  name:"あなた", short:"自", type:"human", girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu1", name:"CPU1",   short:"A", type:"cpu",   girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu2", name:"CPU2",   short:"B", type:"cpu",   girlId:null, point:START_POINT, hand:[], seat:"" },
+      { id:"cpu3", name:"CPU3",   short:"C", type:"cpu",   girlId:null, point:START_POINT, hand:[], seat:"" }
+    ];
+
+    let gameSetup = structuredCloneSafe(DEFAULT_SETUP);
+    let TILES = [];
+    let deck = [];
+    let discardPile = [];
+    let gameEnded = false;
+    let busy = false;
+    let waitingPlayerDiscard = false;
+    let justDrawnIndex = -1;
+    let historyLogs = [];
+    let parentSeatIndex = 0;
+    let turnIndex = 0;
+    let pendingTsumo = false;
+    let pendingRon = false;
+    let lastDiscardInfo = null;
+
+    let tempGirlId = null;
+    let tempCpuGirlIds = [];
+    let tempTileIds = [];
+    let tempTileColors = {};
+
+    let humanTurnTimer1 = null;
+    let humanTurnTimer2 = null;
+
+    const turnLabel = document.getElementById("turnLabel");
+    const roundLabel = document.getElementById("roundLabel");
+    const statusMain = document.getElementById("statusMain");
+    const subInfo = document.getElementById("subInfo");
+    const scoreList = document.getElementById("scoreList");
+    const deckCount = document.getElementById("deckCount");
+    const handEl = document.getElementById("hand");
+    const historyBox = document.getElementById("historyBox");
+
+    const startBtn = document.getElementById("startBtn");
+    const openCustomBtn = document.getElementById("openCustomBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const retryBtn = document.getElementById("retryBtn");
+
+    const tsumoBtn = document.getElementById("tsumoBtn");
+    const ronBtn = document.getElementById("ronBtn");
+    const passBtn = document.getElementById("passBtn");
+    const nextRoundBtn = document.getElementById("nextRoundBtn");
+
+    const riverGrid = document.getElementById("riverGrid");
+    const riverEmpty = document.getElementById("riverEmpty");
+    const lastOwner = document.getElementById("lastOwner");
+    const riverColumnHeads = document.getElementById("riverColumnHeads");
+
+    const titleOverlay = document.getElementById("titleOverlay");
+    const girlSelectOverlay = document.getElementById("girlSelectOverlay");
+    const cpuSelectOverlay = document.getElementById("cpuSelectOverlay");
     const modeSelectOverlay = document.getElementById("modeSelectOverlay");
+    const tileSelectOverlay = document.getElementById("tileSelectOverlay");
+    const colorSelectOverlay = document.getElementById("colorSelectOverlay");
+    const customOverlay = document.getElementById("customOverlay");
+
+    const girlSelectGrid = document.getElementById("girlSelectGrid");
+    const cpuSelectGrid = document.getElementById("cpuSelectGrid");
+    const tileSelectGrid = document.getElementById("tileSelectGrid");
+    const customGrid = document.getElementById("customGrid");
+    const colorList = document.getElementById("colorList");
+
+    const cpuSelectCount = document.getElementById("cpuSelectCount");
+    const tileSelectCount = document.getElementById("tileSelectCount");
+    const customSelectCount = document.getElementById("customSelectCount");
+
+    const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
+    const cpuSelectBackBtn = document.getElementById("cpuSelectBackBtn");
+    const cpuSelectNextBtn = document.getElementById("cpuSelectNextBtn");
     const modeSelectBackBtn = document.getElementById("modeSelectBackBtn");
     const modeSelectNextBtn = document.getElementById("modeSelectNextBtn");
+    const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
+    const tileSelectNextBtn = document.getElementById("tileSelectNextBtn");
+    const colorSelectBackBtn = document.getElementById("colorSelectBackBtn");
+    const gameStartBtn = document.getElementById("gameStartBtn");
+    const saveCustomBtn = document.getElementById("saveCustomBtn");
+    const closeCustomBtn = document.getElementById("closeCustomBtn");
+
+    const girlOverlay = document.getElementById("girlOverlay");
+    const girlBgScene = document.getElementById("girlBgScene");
+    const girlChara = document.getElementById("girlChara");
+    const girlNameEl = document.getElementById("girlName");
+    const girlTextEl = document.getElementById("girlText");
+    const bigTileWrap = document.getElementById("bigTileWrap");
+    const bigTileCard = document.getElementById("bigTileCard");
+    const bigTileTint = document.getElementById("bigTileTint");
+    const bigTileFallback = document.getElementById("bigTileFallback");
+    const bigTileCaption = document.getElementById("bigTileCaption");
+
+    const roundOverlay = document.getElementById("roundOverlay");
+    const roundOverlayMain = document.getElementById("roundOverlayMain");
+    const roundOverlaySub = document.getElementById("roundOverlaySub");
+
+    const roundResultOverlay = document.getElementById("roundResultOverlay");
+    const roundResultRound = document.getElementById("roundResultRound");
+    const roundResultWin = document.getElementById("roundResultWin");
+    const roundResultDesc = document.getElementById("roundResultDesc");
+    const roundResultScore = document.getElementById("roundResultScore");
+
+    const resultOverlay = document.getElementById("resultOverlay");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultSub = document.getElementById("resultSub");
+    const resultList = document.getElementById("resultList");
+
     const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
 
     let tempLoopCount = 1;
@@ -581,8 +788,33 @@
     let totalRounds = 4;
     let currentRoundNumber = 0;
 
+    function structuredCloneSafe(obj){
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function rand(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function wait(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function clearHumanTimers(){
+      if(humanTurnTimer1){ clearTimeout(humanTurnTimer1); humanTurnTimer1 = null; }
+      if(humanTurnTimer2){ clearTimeout(humanTurnTimer2); humanTurnTimer2 = null; }
+    }
+
+    function shuffle(array){
+      const arr = [...array];
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
     function getGirlImages(girl){
-      if(Array.isArray(girl.chara)) return girl.chara;
       return [
         `img/${girl.id}_1.png`,
         `img/${girl.id}_2.png`,
@@ -590,28 +822,326 @@
       ];
     }
 
-    function showGirl(girlObj, text){
-      const images = getGirlImages(girlObj);
-      const picked = rand(images);
+    function getGirlById(id){
+      return GIRLS.find(g => g.id === id) || GIRLS[0];
+    }
 
-      girlBgScene.src = girlObj.bg;
-      girlChara.src = picked;
-      girlChara.onerror = () => {
-        if (girlObj.chara && !Array.isArray(girlObj.chara)) {
-          girlChara.src = girlObj.chara;
-        }
-      };
+    function getSupportGirl(){
+      return getGirlById(gameSetup.supportGirlId);
+    }
 
-      girlNameEl.textContent = girlObj.name;
-      girlTextEl.textContent = text;
-      bigTileWrap.classList.remove("show");
-      showOverlay(girlOverlay);
+    function getGirlForPlayer(player){
+      if(player.id === "you") return getSupportGirl();
+      return getGirlById(player.girlId);
+    }
+
+    function assignSeats(){
+      const seats = shuffle(["東","南","西","北"]);
+      players.forEach((p, i) => { p.seat = seats[i]; });
+    }
+
+    function sortBySeat(list){
+      const rank = { "東":0, "南":1, "西":2, "北":3 };
+      return [...list].sort((a,b) => rank[a.seat] - rank[b.seat]);
+    }
+
+    function getTurnOrder(){
+      return sortBySeat(players);
+    }
+
+    function getCurrentPlayer(){
+      return getTurnOrder()[turnIndex];
+    }
+
+    function getCurrentParentSeat(){
+      return PARENT_ORDER[parentSeatIndex];
+    }
+
+    function getRoundName(){
+      return `${getCurrentParentSeat()}局`;
+    }
+
+    function getParentPlayer(){
+      return players.find(p => p.seat === getCurrentParentSeat());
+    }
+
+    function syncCpuPlayersFromSetup(){
+      players[1].girlId = gameSetup.cpuGirlIds[0] || "girlB";
+      players[2].girlId = gameSetup.cpuGirlIds[1] || "girlC";
+      players[3].girlId = gameSetup.cpuGirlIds[2] || "girlD";
+
+      players[1].name = getGirlById(players[1].girlId).name;
+      players[2].name = getGirlById(players[2].girlId).name;
+      players[3].name = getGirlById(players[3].girlId).name;
+    }
+
+    function rebuildActiveTiles(){
+      TILES = gameSetup.selectedTileIds
+        .map(id => {
+          const base = ALL_TILE_POOL.find(t => t.id === id);
+          if(!base) return null;
+          return { ...base, color: gameSetup.tileColors[id] || base.defaultColor };
+        })
+        .filter(Boolean);
+    }
+
+    function getTileDef(id){
+      return TILES.find(t => t.id === id);
+    }
+
+    function getTileName(id){
+      const tile = getTileDef(id);
+      return tile ? tile.name : id;
+    }
+
+    function getTileColor(id){
+      const tile = getTileDef(id);
+      return tile ? tile.color : "#888";
+    }
+
+    function createDeck(){
+      const arr = [];
+      TILES.forEach(tile => {
+        for(let i = 0; i < COPIES_PER_TILE; i++) arr.push(tile.id);
+      });
+      return shuffle(arr);
+    }
+
+    function countMap(hand){
+      const map = {};
+      hand.forEach(tileId => { map[tileId] = (map[tileId] || 0) + 1; });
+      return map;
+    }
+
+    function getCompletedTriples(hand){
+      const map = countMap(hand);
+      let sets = 0;
+      for(const key in map){
+        sets += Math.floor(map[key] / 3);
+      }
+      return sets;
+    }
+
+    function isWinningHand(hand){
+      return getCompletedTriples(hand) >= 2;
+    }
+
+    function getBestCount(hand){
+      const map = countMap(hand);
+      let best = 0;
+      Object.values(map).forEach(v => { if(v > best) best = v; });
+      return best;
+    }
+
+    function canRonWithTile(hand, tileId){
+      const temp = [...hand, tileId];
+      return isWinningHand(temp);
+    }
+
+    function drawTile(player){
+      if(deck.length <= 0) return null;
+      const tileId = deck.pop();
+      player.hand.push(tileId);
+      return tileId;
+    }
+
+    function setBusy(flag){
+      busy = flag;
+      resetBtn.disabled = flag;
+      openCustomBtn.disabled = flag;
+    }
+
+    function updateActionButtons(){
+      const enabled = !busy && !gameEnded;
+      tsumoBtn.disabled = !(enabled && pendingTsumo);
+      ronBtn.disabled = !(enabled && pendingRon);
+      passBtn.disabled = !(enabled && pendingRon);
+    }
+
+    function clearPendingActions(){
+      pendingTsumo = false;
+      pendingRon = false;
+      lastDiscardInfo = null;
+      updateActionButtons();
+    }
+
+    function addHistory(text){
+      historyLogs.unshift(text);
+      renderHistory();
+    }
+
+    function showOverlay(el){
+      el.classList.add("show");
+    }
+
+    function hideOverlay(el){
+      el.classList.remove("show");
+    }
+
+    function renderHistory(){
+      historyBox.innerHTML = "";
+      if(!historyLogs.length){
+        const div = document.createElement("div");
+        div.className = "historyLine";
+        div.textContent = "まだ履歴はありません。";
+        historyBox.appendChild(div);
+        return;
+      }
+      historyLogs.forEach(line => {
+        const div = document.createElement("div");
+        div.className = "historyLine";
+        div.textContent = line;
+        historyBox.appendChild(div);
+      });
     }
 
     function renderModeButtons(){
       modeButtons.forEach(btn => {
         btn.classList.toggle("selected", Number(btn.dataset.loop) === tempLoopCount);
       });
+    }
+
+    function renderGirlSelect(){
+      girlSelectGrid.innerHTML = "";
+      GIRLS.forEach(girl => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
+        card.addEventListener("click", () => {
+          tempGirlId = girl.id;
+          renderGirlSelect();
+        });
+        card.innerHTML = `
+          <div class="girlPreview">
+            <img class="girlPreviewBg" src="${girl.bg}" alt="">
+            <div class="girlPreviewShade"></div>
+            <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
+          </div>
+          <div class="girlCardName">${girl.name}</div>
+        `;
+        girlSelectGrid.appendChild(card);
+      });
+    }
+
+    function renderCpuSelect(){
+      cpuSelectGrid.innerHTML = "";
+      const selectable = GIRLS.filter(g => g.id !== tempGirlId);
+      cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
+
+      selectable.forEach(girl => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "girlCard" + (tempCpuGirlIds.includes(girl.id) ? " selected" : "");
+        card.addEventListener("click", () => {
+          const exists = tempCpuGirlIds.includes(girl.id);
+          if(exists){
+            tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== girl.id);
+          } else {
+            if(tempCpuGirlIds.length >= 3){
+              alert("CPUは3人選んでね。");
+              return;
+            }
+            tempCpuGirlIds.push(girl.id);
+          }
+          renderCpuSelect();
+        });
+        card.innerHTML = `
+          <div class="girlPreview">
+            <img class="girlPreviewBg" src="${girl.bg}" alt="">
+            <div class="girlPreviewShade"></div>
+            <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
+          </div>
+          <div class="girlCardName">${girl.name}</div>
+        `;
+        cpuSelectGrid.appendChild(card);
+      });
+    }
+
+    function renderTilePickGrid(targetEl, selectedIds, countEl){
+      targetEl.innerHTML = "";
+      if(countEl) countEl.textContent = `${selectedIds.length}/9 選択中`;
+
+      ALL_TILE_POOL.forEach(tile => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
+        card.addEventListener("click", () => {
+          const exists = selectedIds.includes(tile.id);
+          if(exists){
+            selectedIds.splice(selectedIds.indexOf(tile.id), 1);
+          } else {
+            if(selectedIds.length >= PICK_COUNT){
+              alert("9体選択中です。先に1体外してね。");
+              return;
+            }
+            selectedIds.push(tile.id);
+            if(!tempTileColors[tile.id]) tempTileColors[tile.id] = tile.defaultColor;
+          }
+          renderTilePickGrid(targetEl, selectedIds, countEl);
+        });
+
+        const bgColor = selectedIds.includes(tile.id)
+          ? (tempTileColors[tile.id] || tile.defaultColor)
+          : tile.defaultColor;
+
+        card.innerHTML = `
+          <div class="customThumb">
+            <div class="customThumbTint" style="background:${bgColor}"></div>
+            <img src="${tile.image}" alt="${tile.name}">
+          </div>
+          <div class="customName">${tile.name}</div>
+        `;
+        targetEl.appendChild(card);
+      });
+    }
+
+    function renderColorList(){
+      colorList.innerHTML = "";
+      tempTileIds.forEach(id => {
+        const tile = ALL_TILE_POOL.find(t => t.id === id);
+        const row = document.createElement("div");
+        row.className = "colorLine";
+        row.innerHTML = `
+          <div class="colorThumb">
+            <div class="colorThumbTint" style="background:${tempTileColors[id] || tile.defaultColor}"></div>
+            <img src="${tile.image}" alt="${tile.name}">
+          </div>
+          <div class="colorName">${tile.name}</div>
+        `;
+        const picker = document.createElement("input");
+        picker.type = "color";
+        picker.className = "colorPicker";
+        picker.value = tempTileColors[id] || tile.defaultColor;
+        picker.addEventListener("input", (e) => {
+          tempTileColors[id] = e.target.value;
+          renderColorList();
+        });
+        row.appendChild(picker);
+        colorList.appendChild(row);
+      });
+    }
+
+    function beginSetupFlow(){
+      tempGirlId = gameSetup.supportGirlId || "girlA";
+      tempCpuGirlIds = [...(gameSetup.cpuGirlIds || ["girlB","girlC","girlD"])];
+      tempTileIds = [...(gameSetup.selectedTileIds || [])];
+      tempTileColors = structuredCloneSafe(gameSetup.tileColors || {});
+      tempLoopCount = loopCount || 1;
+
+      hideOverlay(titleOverlay);
+      renderGirlSelect();
+      showOverlay(girlSelectOverlay);
+    }
+
+    function proceedToCpuSelect(){
+      if(!tempGirlId){
+        alert("パートナーを選んでね。");
+        return;
+      }
+      tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
+      hideOverlay(girlSelectOverlay);
+      renderCpuSelect();
+      showOverlay(cpuSelectOverlay);
     }
 
     function proceedToModeSelect(){
@@ -632,6 +1162,400 @@
       hideOverlay(modeSelectOverlay);
       renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
       showOverlay(tileSelectOverlay);
+    }
+
+    function proceedToColorSelect(){
+      if(tempTileIds.length !== PICK_COUNT){
+        alert("9体ちょうど選んでね。");
+        return;
+      }
+      tempTileIds.forEach(id => {
+        const base = ALL_TILE_POOL.find(t => t.id === id);
+        if(!tempTileColors[id]) tempTileColors[id] = base.defaultColor;
+      });
+      hideOverlay(tileSelectOverlay);
+      renderColorList();
+      showOverlay(colorSelectOverlay);
+    }
+   <!-- ===== PART 2 START ===== -->
+    function createRiverTile(tileId, isLast){
+      const div = document.createElement("div");
+      div.className = "riverTile" + (isLast ? " last" : "");
+
+      const tint = document.createElement("div");
+      tint.className = "riverTint";
+      tint.style.background = getTileColor(tileId);
+      div.appendChild(tint);
+
+      const tile = getTileDef(tileId);
+      if(tile && tile.image){
+        const img = document.createElement("img");
+        img.className = "riverImg";
+        img.src = tile.image;
+        img.alt = tile.name;
+        img.onerror = () => {
+          div.innerHTML = "";
+          const t2 = document.createElement("div");
+          t2.className = "riverTint";
+          t2.style.background = getTileColor(tileId);
+          div.appendChild(t2);
+        };
+        div.appendChild(img);
+      }
+
+      return div;
+    }
+
+    function renderRiverColumnHeads(){
+      riverColumnHeads.innerHTML = "";
+      const order = getTurnOrder();
+      order.forEach(player => {
+        const div = document.createElement("div");
+        div.className = "riverColHead";
+        div.textContent = `${player.seat} ${player.name}`;
+        riverColumnHeads.appendChild(div);
+      });
+    }
+
+    function renderDiscardPile(){
+      riverGrid.innerHTML = "";
+      renderRiverColumnHeads();
+
+      if(!discardPile.length){
+        riverEmpty.style.display = "flex";
+        lastOwner.textContent = "---";
+        return;
+      }
+
+      riverEmpty.style.display = "none";
+      const order = getTurnOrder();
+      const playerIndexMap = {};
+      order.forEach((player, index) => {
+        playerIndexMap[player.id] = index;
+      });
+
+      const columnStacks = [[], [], [], []];
+      discardPile.forEach((item, index) => {
+        const col = playerIndexMap[item.playerId];
+        if(col !== undefined){
+          columnStacks[col].push({
+            ...item,
+            isLast: index === discardPile.length - 1
+          });
+        }
+      });
+
+      const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
+
+      for(let row = 0; row < maxRows; row++){
+        for(let col = 0; col < 4; col++){
+          const item = columnStacks[col][row];
+          if(item){
+            riverGrid.appendChild(createRiverTile(item.tileId, item.isLast));
+          } else {
+            const empty = document.createElement("div");
+            empty.className = "riverTile";
+            empty.style.opacity = "0";
+            empty.style.pointerEvents = "none";
+            riverGrid.appendChild(empty);
+          }
+        }
+      }
+
+      lastOwner.textContent = discardPile[discardPile.length - 1].owner;
+    }
+
+    function renderScores(){
+      scoreList.innerHTML = "";
+      const ordered = getTurnOrder();
+
+      ordered.forEach(player => {
+        const row = document.createElement("div");
+        row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
+
+        let badgeClass = "badge-you";
+        if(player.id === "cpu1") badgeClass = "badge-a";
+        if(player.id === "cpu2") badgeClass = "badge-b";
+        if(player.id === "cpu3") badgeClass = "badge-c";
+
+        row.innerHTML = `
+          <div class="scoreName">
+            <span class="scoreBadge ${badgeClass}">${player.short}</span>
+            <span>${player.seat}　${player.name}${player.seat === getCurrentParentSeat() ? "（親）" : ""}</span>
+          </div>
+          <div>${player.point}点</div>
+        `;
+        scoreList.appendChild(row);
+      });
+    }
+
+    function renderTileContent(parent, tileId){
+      const tile = getTileDef(tileId);
+      parent.innerHTML = "";
+
+      const inner = document.createElement("div");
+      inner.className = "tileInner";
+
+      const tint = document.createElement("div");
+      tint.className = "tileTint";
+      tint.style.background = getTileColor(tileId);
+      inner.appendChild(tint);
+
+      if(!tile){
+        const div = document.createElement("div");
+        div.className = "tileFallback";
+        div.textContent = tileId;
+        inner.appendChild(div);
+        parent.appendChild(inner);
+        return;
+      }
+
+      const img = document.createElement("img");
+      img.className = "tileImg";
+      img.src = tile.image;
+      img.alt = tile.name;
+      img.onerror = () => {
+        inner.innerHTML = "";
+        inner.appendChild(tint);
+        const fallback = document.createElement("div");
+        fallback.className = "tileFallback";
+        fallback.textContent = tile.name;
+        inner.appendChild(fallback);
+      };
+      inner.appendChild(img);
+      parent.appendChild(inner);
+    }
+
+    function renderHand(){
+      const me = players[0];
+      handEl.innerHTML = "";
+      me.hand.forEach((tileId, index) => {
+        const btn = document.createElement("button");
+        btn.className = "tileBtn" + (index === justDrawnIndex ? " drawn" : "");
+        btn.disabled = !(waitingPlayerDiscard && !busy && !gameEnded && !pendingRon && !pendingTsumo);
+        btn.addEventListener("click", () => onPlayerDiscard(index));
+        renderTileContent(btn, tileId);
+        handEl.appendChild(btn);
+      });
+    }
+
+    function renderAll(){
+      const current = getCurrentPlayer();
+      turnLabel.textContent = `${current.seat}　${current.name}の番`;
+      roundLabel.textContent = `${getRoundName()} / ${currentRoundNumber}/${totalRounds}`;
+      deckCount.textContent = deck.length;
+      renderDiscardPile();
+      renderScores();
+      renderHand();
+      updateActionButtons();
+    }
+
+    function showGirl(girlObj, text){
+      const images = getGirlImages(girlObj);
+      const picked = rand(images);
+
+      girlBgScene.src = girlObj.bg;
+      girlChara.src = picked;
+      girlChara.onerror = () => {
+        girlChara.src = images[0];
+      };
+
+      girlNameEl.textContent = girlObj.name;
+      girlTextEl.textContent = text;
+      bigTileWrap.classList.remove("show");
+      showOverlay(girlOverlay);
+    }
+
+    function updateGirlText(text){
+      girlTextEl.textContent = text;
+    }
+
+    function hideGirl(){
+      bigTileWrap.classList.remove("show");
+      hideOverlay(girlOverlay);
+    }
+
+    function showBigTile(tileId, caption){
+      const tile = getTileDef(tileId);
+      bigTileTint.style.background = getTileColor(tileId);
+      bigTileCard.innerHTML = "";
+      bigTileCard.appendChild(bigTileTint);
+
+      if(tile && tile.image){
+        const img = document.createElement("img");
+        img.className = "bigTileImg";
+        img.src = tile.image;
+        img.alt = tile.name;
+        img.onerror = () => {
+          bigTileCard.innerHTML = "";
+          bigTileCard.appendChild(bigTileTint);
+          bigTileFallback.textContent = tile.name;
+          bigTileCard.appendChild(bigTileFallback);
+        };
+        bigTileCard.appendChild(img);
+      } else {
+        bigTileFallback.textContent = getTileName(tileId);
+        bigTileCard.appendChild(bigTileFallback);
+      }
+
+      bigTileCaption.textContent = caption;
+      bigTileWrap.classList.add("show");
+    }
+
+    async function showRoundIntro(){
+      roundOverlayMain.textContent = getRoundName();
+      roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
+      showOverlay(roundOverlay);
+      await wait(1050);
+      hideOverlay(roundOverlay);
+      await wait(200);
+    }
+
+    function cpuChooseDiscardIndex(player){
+      const hand = player.hand;
+
+      if(Math.random() < 0.38){
+        return Math.floor(Math.random() * hand.length);
+      }
+
+      const map = countMap(hand);
+      let bestScore = Infinity;
+      let candidates = [];
+
+      hand.forEach((tileId, i) => {
+        const count = map[tileId];
+        let score = 0;
+
+        if(count >= 3) score += 1000;
+        else if(count === 2) score += 100;
+
+        if(getCompletedTriples(hand) >= 1 && count === 2){
+          score += 80;
+        }
+
+        if(score < bestScore){
+          bestScore = score;
+          candidates = [i];
+        } else if(score === bestScore){
+          candidates.push(i);
+        }
+      });
+
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function getCpuRonCandidateAfterDiscard(discarder, tileId){
+      const order = getTurnOrder();
+      const startIdx = order.findIndex(p => p.id === discarder.id);
+
+      for(let offset = 1; offset < order.length; offset++){
+        const candidate = order[(startIdx + offset) % order.length];
+        if(candidate.id === "you") continue;
+        if(canRonWithTile(candidate.hand, tileId)){
+          if(Math.random() < 0.88){
+            return candidate;
+          }
+        }
+      }
+      return null;
+    }
+
+    function advanceTurn(){
+      const order = getTurnOrder();
+      turnIndex = (turnIndex + 1) % order.length;
+    }
+
+    function applyTsumoPoints(winner){
+      players.forEach((p) => {
+        if(p.id === winner.id){
+          p.point += 3;
+        } else {
+          p.point -= 1;
+        }
+      });
+    }
+
+    function applyRonPoints(winner, discarder){
+      winner.point += 2;
+      discarder.point -= 2;
+    }
+
+    function getFinalWinnersByPoints(){
+      const max = Math.max(...players.map(p => p.point));
+      return players.filter(p => p.point === max);
+    }
+
+    function hasHako(){
+      return players.some(p => p.point <= 0);
+    }
+
+    function judgeRoundRanking(){
+      const ranking = players.map(player => ({
+        player,
+        triples:getCompletedTriples(player.hand),
+        best:getBestCount(player.hand)
+      }));
+
+      ranking.sort((a,b) => {
+        if(b.triples !== a.triples) return b.triples - a.triples;
+        return b.best - a.best;
+      });
+
+      const top = ranking[0];
+      const sameTop = ranking.filter(r => r.triples === top.triples && r.best === top.best);
+
+      if(sameTop.length >= 2){
+        return { reason:"draw" };
+      }
+      return { reason:"best", winner:top.player };
+    }
+
+    function renderRoundResultScores(){
+      roundResultScore.innerHTML = "";
+      const sorted = [...players].sort((a,b) => b.point - a.point);
+      sorted.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "roundResultScoreLine";
+        row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${p.point}点</span>`;
+        roundResultScore.appendChild(row);
+      });
+    }
+
+    function showRoundResult(roundText, winText, descText){
+      return new Promise((resolve) => {
+        roundResultRound.textContent = roundText;
+        roundResultWin.textContent = winText;
+        roundResultDesc.textContent = descText;
+        renderRoundResultScores();
+        showOverlay(roundResultOverlay);
+        resolve();
+      });
+    }
+
+    function showResultScreen(winners){
+      resultList.innerHTML = "";
+
+      const sorted = [...players].sort((a,b) => b.point - a.point);
+      sorted.forEach((p, i) => {
+        const row = document.createElement("div");
+        row.className = "resultLine";
+        row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${p.point}点</span>`;
+        resultList.appendChild(row);
+      });
+
+      if(winners.length === 1){
+        resultTitle.textContent = `${winners[0].name}の優勝！`;
+        resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
+      } else {
+        resultTitle.textContent = "同点優勝！";
+        resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
+      }
+
+      showOverlay(resultOverlay);
+    }
+
+    function hideResultScreen(){
+      hideOverlay(resultOverlay);
     }
 
     async function finalizeSetupAndStart(){
@@ -789,7 +1713,7 @@
         }, 800);
       }, WAIT_LONG);
     }
-
+   <!-- ===== PART 3 START ===== -->
     async function startCpuTurn(player){
       clearHumanTimers();
       setBusy(true);
@@ -882,7 +1806,7 @@
       showGirl(girl, "...");
       showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
 
-      setTimeout(async () => {
+      setTimeout(() => {
         updateGirlText(rand(girl.discard));
       }, 220);
 
@@ -918,22 +1842,6 @@
           await startCpuTurn(getCurrentPlayer());
         }
       }, WAIT_DISCARD_PREVIEW);
-    }
-
-    function getCpuRonCandidateAfterDiscard(discarder, tileId){
-      const order = getTurnOrder();
-      const startIdx = order.findIndex(p => p.id === discarder.id);
-
-      for(let offset = 1; offset < order.length; offset++){
-        const candidate = order[(startIdx + offset) % order.length];
-        if(candidate.id === "you") continue;
-        if(canRonWithTile(candidate.hand, tileId)){
-          if(Math.random() < 0.88){
-            return candidate;
-          }
-        }
-      }
-      return null;
     }
 
     async function finishRound(result){
@@ -998,92 +1906,6 @@
       }
 
       await startRound(false);
-    }
-
-    function showResultScreen(winners){
-      resultList.innerHTML = "";
-
-      const sorted = [...players].sort((a,b) => b.point - a.point);
-      sorted.forEach((p, i) => {
-        const row = document.createElement("div");
-        row.className = "resultLine";
-        row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${p.point}点</span>`;
-        resultList.appendChild(row);
-      });
-
-      if(winners.length === 1){
-        resultTitle.textContent = `${winners[0].name}の優勝！`;
-        resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
-      } else {
-        resultTitle.textContent = "同点優勝！";
-        resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
-      }
-
-      showOverlay(resultOverlay);
-    }
-
-    function hideResultScreen(){
-      hideOverlay(resultOverlay);
-    }
-
-    function renderRoundResultScores(){
-      roundResultScore.innerHTML = "";
-      const sorted = [...players].sort((a,b) => b.point - a.point);
-      sorted.forEach(p => {
-        const row = document.createElement("div");
-        row.className = "roundResultScoreLine";
-        row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${p.point}点</span>`;
-        roundResultScore.appendChild(row);
-      });
-    }
-
-    function showRoundResult(roundText, winText, descText){
-      return new Promise((resolve) => {
-        roundResultRound.textContent = roundText;
-        roundResultWin.textContent = winText;
-        roundResultDesc.textContent = descText;
-        renderRoundResultScores();
-        showOverlay(roundResultOverlay);
-        resolve();
-      });
-    }
-
-    function cpuChooseDiscardIndex(player){
-      const hand = player.hand;
-
-      if(Math.random() < 0.38){
-        return Math.floor(Math.random() * hand.length);
-      }
-
-      const map = countMap(hand);
-      let bestScore = Infinity;
-      let candidates = [];
-
-      hand.forEach((tileId, i) => {
-        const count = map[tileId];
-        let score = 0;
-
-        if(count >= 3) score += 1000;
-        else if(count === 2) score += 100;
-
-        if(getCompletedTriples(hand) >= 1 && count === 2){
-          score += 80;
-        }
-
-        if(score < bestScore){
-          bestScore = score;
-          candidates = [i];
-        } else if(score === bestScore){
-          candidates.push(i);
-        }
-      });
-
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    function advanceTurn(){
-      const order = getTurnOrder();
-      turnIndex = (turnIndex + 1) % order.length;
     }
 
     startBtn.addEventListener("click", beginSetupFlow);
@@ -1176,4 +1998,4 @@
   </script>
 </body>
 </html>
-   
+<!-- ===== PART 3 END ===== -->
