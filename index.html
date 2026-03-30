@@ -13,7 +13,7 @@
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
   }
   body{display:flex;justify-content:center}
-  button,input,select{font-family:inherit}
+  button,input{font-family:inherit}
 
   .app{
     width:100%;max-width:430px;min-height:100vh;
@@ -25,6 +25,7 @@
   .title{
     text-align:center;font-size:24px;font-weight:900;letter-spacing:.04em;margin:4px 0 12px;
   }
+
   .panel{
     background:rgba(255,255,255,.04);
     border:1px solid rgba(255,255,255,.07);
@@ -50,6 +51,7 @@
     background:rgba(255,255,255,.05);color:#fff;border-radius:999px;
     padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;
   }
+
   .scoreList{display:flex;flex-direction:column;gap:8px}
   .scoreLine{
     display:flex;justify-content:space-between;align-items:center;
@@ -381,6 +383,58 @@
   }
   .resultRetry{background:#fff;color:#111}
 
+  /* 手牌公開 */
+  .handRevealOverlay{background:rgba(5,7,12,.92);z-index:128}
+  .handRevealBox{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(92vw,420px);
+    background:rgba(0,0,0,.85);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:20px 16px;
+    text-align:center;
+    box-shadow:0 14px 36px rgba(0,0,0,.35);
+  }
+  .handRevealTitle{
+    font-size:20px;
+    font-weight:900;
+    margin-bottom:12px;
+  }
+  .handRevealGrid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+  }
+  .handRevealTile{
+    width:70px;
+    height:70px;
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+    background:#1b2130;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .handRevealTint{
+    position:absolute;inset:0;opacity:.72;z-index:0;
+  }
+  .handRevealTile img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    position:relative;
+    z-index:1;
+    transform:scale(1.08);
+  }
+  .handRevealFallback{
+    position:relative;
+    z-index:1;
+    font-size:12px;
+    font-weight:900;
+    padding:8px;
+    line-height:1.35;
+  }
+
   @media (max-width:390px){
     .tileBtn{width:78px;height:78px}
     .roundMain{font-size:46px}
@@ -388,6 +442,7 @@
     .titleLogo{font-size:29px}
     .roundResultWin{font-size:25px}
     .girlChara{width:min(122vw,560px);height:100%}
+    .handRevealTile{width:62px;height:62px}
   }
 </style>
 </head>
@@ -596,6 +651,13 @@
       <div class="resultButtons">
         <button class="resultBtn resultRetry" id="retryBtn" type="button">もう一回</button>
       </div>
+    </div>
+  </div>
+
+  <div class="overlay handRevealOverlay" id="handRevealOverlay">
+    <div class="handRevealBox">
+      <div class="handRevealTitle" id="handRevealTitle">手札公開</div>
+      <div class="handRevealGrid" id="handRevealGrid"></div>
     </div>
   </div>
 
@@ -834,6 +896,10 @@
     const resultSub = document.getElementById("resultSub");
     const resultList = document.getElementById("resultList");
 
+    const handRevealOverlay = document.getElementById("handRevealOverlay");
+    const handRevealTitle = document.getElementById("handRevealTitle");
+    const handRevealGrid = document.getElementById("handRevealGrid");
+
     const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
 
     function structuredCloneSafe(obj){
@@ -992,16 +1058,8 @@
       return false;
     }
 
-    function getBestCount(hand){
-      const map = countMap(hand);
-      let best = 0;
-      Object.values(map).forEach(v => { if(v > best) best = v; });
-      return best;
-    }
-
     function canRonWithTile(hand, tileId){
-      const temp = [...hand, tileId];
-      return isWinningHand(temp);
+      return isWinningHand([...hand, tileId]);
     }
 
     function drawTile(player){
@@ -1020,11 +1078,9 @@
 
     function updateActionButtons(){
       const enabled = !busy && !gameEnded;
-
       tsumoBtn.disabled = !(enabled && pendingTsumo);
       ronBtn.disabled = !(enabled && pendingRon);
       passBtn.disabled = !(enabled && pendingRon);
-
       tsumoBtn.classList.toggle("ready", enabled && pendingTsumo);
       ronBtn.classList.toggle("ready", enabled && pendingRon);
     }
@@ -1336,6 +1392,10 @@
       lastOwner.textContent = discardPile[discardPile.length - 1].owner;
     }
 
+    function formatPoint(p){
+      return Number.isInteger(p) ? `${p}` : p.toFixed(1);
+    }
+
     function renderScores(){
       scoreList.innerHTML = "";
       const ordered = getTurnOrder();
@@ -1354,7 +1414,7 @@
             <span class="scoreBadge ${badgeClass}">${player.short}</span>
             <span>${player.seat}　${player.name}${player.seat === getCurrentParentSeat() ? "（親）" : ""}</span>
           </div>
-          <div>${Number.isInteger(player.point) ? player.point : player.point.toFixed(1)}点</div>
+          <div>${formatPoint(player.point)}点</div>
         `;
         scoreList.appendChild(row);
       });
@@ -1545,7 +1605,7 @@
         }
       });
       if(isParent){
-        winner.point += 1; // 親ツモは合計+4 / 他-1ずつ
+        winner.point += 1;
       }
     }
 
@@ -1567,12 +1627,16 @@
         return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
       }
 
-      const total = 3;
-      const gainPer = total / t;
-      const lossPer = total / n;
-
-      tenpaiPlayers.forEach(p => { p.point += gainPer; });
-      notenPlayers.forEach(p => { p.point -= lossPer; });
+      if(t === 1){
+        tenpaiPlayers[0].point += 3;
+        notenPlayers.forEach(p => { p.point -= 1; });
+      } else if(t === 2){
+        tenpaiPlayers.forEach(p => { p.point += 1.5; });
+        notenPlayers.forEach(p => { p.point -= 1.5; });
+      } else if(t === 3){
+        tenpaiPlayers.forEach(p => { p.point += 1; });
+        notenPlayers[0].point -= 3;
+      }
 
       return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
     }
@@ -1586,34 +1650,13 @@
       return players.some(p => p.point <= 0);
     }
 
-    function judgeRoundRanking(){
-      const ranking = players.map(player => ({
-        player,
-        triples:getCompletedTriples(player.hand),
-        best:getBestCount(player.hand)
-      }));
-
-      ranking.sort((a,b) => {
-        if(b.triples !== a.triples) return b.triples - a.triples;
-        return b.best - a.best;
-      });
-
-      const top = ranking[0];
-      const sameTop = ranking.filter(r => r.triples === top.triples && r.best === top.best);
-
-      if(sameTop.length >= 2){
-        return { reason:"draw" };
-      }
-      return { reason:"best", winner:top.player };
-    }
-
     function renderRoundResultScores(){
       roundResultScore.innerHTML = "";
       const sorted = [...players].sort((a,b) => b.point - a.point);
       sorted.forEach(p => {
         const row = document.createElement("div");
         row.className = "roundResultScoreLine";
-        row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${Number.isInteger(p.point) ? p.point : p.point.toFixed(1)}点</span>`;
+        row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
         roundResultScore.appendChild(row);
       });
     }
@@ -1636,7 +1679,7 @@
       sorted.forEach((p, i) => {
         const row = document.createElement("div");
         row.className = "resultLine";
-        row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${Number.isInteger(p.point) ? p.point : p.point.toFixed(1)}点</span>`;
+        row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
         resultList.appendChild(row);
       });
 
@@ -1683,13 +1726,69 @@
       hideGirl();
     }
 
+    function renderRevealHand(player){
+      handRevealGrid.innerHTML = "";
+      const hand = sortHandByGroups([...player.hand]);
+
+      hand.forEach(tileId => {
+        const tile = getTileDef(tileId);
+
+        const div = document.createElement("div");
+        div.className = "handRevealTile";
+
+        const tint = document.createElement("div");
+        tint.className = "handRevealTint";
+        tint.style.background = getTileColor(tileId);
+        div.appendChild(tint);
+
+        if(tile && tile.image){
+          const img = document.createElement("img");
+          img.src = tile.image;
+          img.alt = tile.name;
+          div.appendChild(img);
+        } else {
+          const fallback = document.createElement("div");
+          fallback.className = "handRevealFallback";
+          fallback.textContent = getTileName(tileId);
+          div.appendChild(fallback);
+        }
+
+        handRevealGrid.appendChild(div);
+      });
+    }
+
+    async function showRevealHand(player, titleText, waitMs = 1100){
+      handRevealTitle.textContent = titleText;
+      renderRevealHand(player);
+      showOverlay(handRevealOverlay);
+      await wait(waitMs);
+      hideOverlay(handRevealOverlay);
+    }
+
+    async function showWinReveal(result){
+      if(result.type === "tsumo"){
+        await showRevealHand(result.winner, `${result.winner.name}　ツモ手`);
+      } else if(result.type === "ron"){
+        await showRevealHand(result.winner, `${result.winner.name}　ロン手`);
+      }
+    }
+
+    async function showDrawTenpaiReveal(drawInfo){
+      if(!drawInfo || !drawInfo.tenpaiPlayers || drawInfo.tenpaiPlayers.length === 0) return;
+
+      for(const p of drawInfo.tenpaiPlayers){
+        await showRevealHand(p, `${p.name}　テンパイ`, 1000);
+        await wait(120);
+      }
+    }
+
     function updateParentAfterResult(result, drawInfo){
       const parentSeat = getCurrentParentSeat();
       const parentPlayer = players.find(p => p.seat === parentSeat);
 
       if(result && (result.type === "tsumo" || result.type === "ron")){
         if(result.winner.seat === parentSeat){
-          return; // 親上がり続行
+          return;
         }
         parentSeatIndex = (parentSeatIndex + 1) % 4;
         return;
@@ -1698,7 +1797,7 @@
       if(drawInfo){
         const parentTenpai = isTenpai(parentPlayer.hand);
         if(parentTenpai){
-          return; // 親テンパイなら流れない
+          return;
         }
         parentSeatIndex = (parentSeatIndex + 1) % 4;
       }
@@ -1752,6 +1851,7 @@
       hideGirl();
       hideOverlay(roundResultOverlay);
       hideResultScreen();
+      hideOverlay(handRevealOverlay);
 
       setBusy(true);
       gameEnded = false;
@@ -1789,6 +1889,7 @@
       clearHumanTimers();
       hideGirl();
       hideOverlay(roundResultOverlay);
+      hideOverlay(handRevealOverlay);
 
       setBusy(true);
       discardPile = [];
@@ -2052,8 +2153,10 @@
 
       if(result.type === "tsumo" || result.type === "ron"){
         await showWinLoseDialogue(result);
+        await showWinReveal(result);
       } else {
         hideGirl();
+        await showDrawTenpaiReveal(drawInfo);
       }
 
       await showRoundResult(roundText, winText, desc);
@@ -2076,9 +2179,9 @@
       updateParentAfterResult(result, drawInfo);
 
       if(result.type === "draw"){
-        const parentPlayer = players.find(p => p.seat === getCurrentParentSeat());
-        if(isTenpai(parentPlayer.hand)){
-          addHistory(`親テンパイ継続：${parentPlayer.seat} ${parentPlayer.name}`);
+        const parentBeforeMove = players.find(p => p.seat === getCurrentParentSeat());
+        if(isTenpai(parentBeforeMove.hand)){
+          addHistory(`親テンパイ継続：${parentBeforeMove.seat} ${parentBeforeMove.name}`);
         } else {
           addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
         }
