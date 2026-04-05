@@ -203,12 +203,13 @@
     justify-content:center;
     padding:18px 18px 24px;
     text-align:center;
+    overflow:auto;
   }
 
   .titleHero{
     position:relative;
     width:min(88vw,340px);
-    height:min(48vh,360px);
+    height:min(42vh,320px);
     margin:0 auto 18px;
     border-radius:28px;
     overflow:hidden;
@@ -250,6 +251,29 @@
     letter-spacing:.03em;
     margin-bottom:14px;
     text-shadow:0 4px 18px rgba(0,0,0,.38);
+  }
+
+  .titleModeRow{
+    display:flex;
+    gap:10px;
+    width:min(90vw,360px);
+    margin:0 auto 14px;
+  }
+  .titleModeBtn{
+    flex:1;
+    padding:12px 10px;
+    border:none;
+    border-radius:16px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .titleModeBtn.active{
+    background:#fff;
+    color:#111;
   }
 
   .titleProfileCard{
@@ -353,6 +377,7 @@
     margin-top:16px;
     font-size:12px;
     opacity:.62;
+    padding-bottom:max(20px, env(safe-area-inset-bottom));
   }
 
   .stepOverlay{z-index:145;background:rgba(5,7,12,.94)}
@@ -367,6 +392,12 @@
   .stepSub{text-align:center;font-size:13px;opacity:.84;line-height:1.6;margin-bottom:14px}
   .selectCount{text-align:center;font-size:14px;font-weight:900;margin:0 0 12px;color:#fff}
   .stepButtons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+  .stepBtnPrimary,
+  .stepBtnSecondary{
+    appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
+  }
+  .stepBtnPrimary{background:#fff;color:#111}
+  .stepBtnSecondary{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
   .girlSelectGrid{
     display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
@@ -390,8 +421,7 @@
     position:absolute;inset:auto 0 0 0;width:100%;height:96%;object-fit:contain;z-index:2;
   }
   .girlCardName{text-align:center;font-size:13px;font-weight:900}
-
-  .customGrid{
+   .customGrid{
     display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;
   }
   .customCard{
@@ -431,7 +461,8 @@
     background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
   }
   .modeBtn.selected{background:#fff;color:#111}
-   .girlOverlay{background:#000;z-index:130}
+
+  .girlOverlay{background:#000;z-index:130}
   .girlBgWrap{position:absolute;inset:0}
   .girlBgScene{
     position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;
@@ -494,7 +525,8 @@
   .roundResultOverlay{z-index:125;background:rgba(5,7,12,.88)}
   .roundResultBox{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(90vw,420px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    width:min(90vw,420px);max-height:88vh;overflow:auto;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
     backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
     padding:24px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);text-align:center;
   }
@@ -511,7 +543,8 @@
   .resultOverlay{z-index:120;background:rgba(5,7,12,.92)}
   .resultBox{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(92vw,430px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    width:min(92vw,430px);max-height:88vh;overflow:auto;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
     backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
     padding:22px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);
   }
@@ -557,11 +590,18 @@
     font-weight:900;
     color:#ffe78a;
   }
-  .resultButtons{display:flex;flex-direction:column;gap:10px}
+  .resultButtons{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:6px;
+    padding-bottom:calc(env(safe-area-inset-bottom) + 80px);
+  }
   .resultBtn{
     appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
   }
   .resultRetry{background:#fff;color:#111}
+  .resultConfig{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
   .handRevealOverlay{background:rgba(5,7,12,.92);z-index:128}
   .handRevealBox{
@@ -619,7 +659,7 @@
     .topGrid{grid-template-columns:104px 1fr}
     .titleHero{
       width:min(90vw,320px);
-      height:min(44vh,320px);
+      height:min(40vh,290px);
       margin-bottom:14px;
     }
     .titleLogo{font-size:29px}
@@ -706,6 +746,11 @@
 
       <div class="titleLogo">デカブサジャラジャラ<br>× チー娘</div>
 
+      <div class="titleModeRow">
+        <button class="titleModeBtn active" data-mode="free" id="modeFreeBtn" type="button">フリー</button>
+        <button class="titleModeBtn" data-mode="conquest" id="modeConquestBtn" type="button">制覇</button>
+      </div>
+
       <div class="titleProfileCard">
         <div class="titleProfileMain">
           <div class="titleProfileLabel">現在の称号</div>
@@ -730,6 +775,7 @@
         <div class="titleBadgeWrap">
           <div class="titleBadge" id="titleBadgeRank">RANK 01</div>
           <div class="titleBadge" id="titleBadgeTop">TOP 0</div>
+          <div class="titleBadge" id="titleBadgeConquest">制覇 0 / 4</div>
         </div>
 
         <div class="titleQuote" id="titleQuote">今日はどこまでジャラジャラする？</div>
@@ -744,14 +790,13 @@
       <div class="titleNote">プレイヤーだけ ロン / ツモ 手動</div>
     </div>
   </div>
-
-  <div class="overlay stepOverlay" id="girlSelectOverlay">
+    <div class="overlay stepOverlay" id="girlSelectOverlay">
     <div class="stepBox">
       <div class="stepTitle">パートナーを選ぶ</div>
       <div class="stepSub">あなた担当のチー娘を1人選択</div>
       <div class="girlSelectGrid" id="girlSelectGrid"></div>
       <div class="stepButtons">
-        <button class="resultBtn resultRetry" id="girlSelectNextBtn" type="button">次へ</button>
+        <button class="stepBtnPrimary" id="girlSelectNextBtn" type="button">次へ</button>
       </div>
     </div>
   </div>
@@ -763,8 +808,8 @@
       <div class="selectCount" id="cpuSelectCount">0/3 選択中</div>
       <div class="girlSelectGrid" id="cpuSelectGrid"></div>
       <div class="stepButtons">
-        <button class="resultBtn" id="cpuSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
-        <button class="resultBtn resultRetry" id="cpuSelectNextBtn" type="button">次へ</button>
+        <button class="stepBtnSecondary" id="cpuSelectBackBtn" type="button">戻る</button>
+        <button class="stepBtnPrimary" id="cpuSelectNextBtn" type="button">次へ</button>
       </div>
     </div>
   </div>
@@ -774,14 +819,14 @@
       <div class="stepTitle">周回数を選ぶ</div>
       <div class="stepSub">東→南→西→北 を何周するか選択</div>
       <div class="modeRow">
-        <button class="modeBtn" data-loop="1" type="button">1周</button>
+        <button class="modeBtn selected" data-loop="1" type="button">1周</button>
         <button class="modeBtn" data-loop="2" type="button">2周</button>
         <button class="modeBtn" data-loop="3" type="button">3周</button>
         <button class="modeBtn" data-loop="4" type="button">4周</button>
       </div>
       <div class="stepButtons">
-        <button class="resultBtn" id="modeSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
-        <button class="resultBtn resultRetry" id="modeSelectNextBtn" type="button">次へ</button>
+        <button class="stepBtnSecondary" id="modeSelectBackBtn" type="button">戻る</button>
+        <button class="stepBtnPrimary" id="modeSelectNextBtn" type="button">次へ</button>
       </div>
     </div>
   </div>
@@ -793,8 +838,8 @@
       <div class="selectCount" id="tileSelectCount">0/9 選択中</div>
       <div class="customGrid" id="tileSelectGrid"></div>
       <div class="stepButtons">
-        <button class="resultBtn" id="tileSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
-        <button class="resultBtn resultRetry" id="tileSelectNextBtn" type="button">次へ</button>
+        <button class="stepBtnSecondary" id="tileSelectBackBtn" type="button">戻る</button>
+        <button class="stepBtnPrimary" id="tileSelectNextBtn" type="button">次へ</button>
       </div>
     </div>
   </div>
@@ -805,8 +850,8 @@
       <div class="stepSub">選んだ9体それぞれの背景色を設定</div>
       <div class="colorList" id="colorList"></div>
       <div class="stepButtons">
-        <button class="resultBtn" id="colorSelectBackBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">戻る</button>
-        <button class="resultBtn resultRetry" id="gameStartBtn" type="button">ゲーム開始</button>
+        <button class="stepBtnSecondary" id="colorSelectBackBtn" type="button">戻る</button>
+        <button class="stepBtnPrimary" id="gameStartBtn" type="button">ゲーム開始</button>
       </div>
     </div>
   </div>
@@ -818,8 +863,8 @@
       <div class="selectCount" id="customSelectCount">0/9 選択中</div>
       <div class="customGrid" id="customGrid"></div>
       <div class="stepButtons">
-        <button class="resultBtn resultRetry" id="saveCustomBtn" type="button">保存</button>
-        <button class="resultBtn" id="closeCustomBtn" type="button" style="background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08);">閉じる</button>
+        <button class="stepBtnPrimary" id="saveCustomBtn" type="button">保存</button>
+        <button class="stepBtnSecondary" id="closeCustomBtn" type="button">閉じる</button>
       </div>
     </div>
   </div>
@@ -846,7 +891,8 @@
       </div>
     </div>
   </div>
-    <div class="overlay roundOverlay" id="roundOverlay">
+
+  <div class="overlay roundOverlay" id="roundOverlay">
     <div class="roundStage">
       <div class="roundMain" id="roundOverlayMain">東局</div>
       <div class="roundSub" id="roundOverlaySub">開局</div>
@@ -857,10 +903,10 @@
     <div class="roundResultBox">
       <div class="roundResultRound" id="roundResultRound">東局終了</div>
       <div class="roundResultWin" id="roundResultWin">チー娘A ロン</div>
-      <div class="roundResultDesc" id="roundResultDesc">チー娘Cから2点</div>
+      <div class="roundResultDesc" id="roundResultDesc">チー娘Cから3点</div>
       <div class="roundResultScore" id="roundResultScore"></div>
       <div class="nextRoundWrap">
-        <button id="nextRoundBtn" class="resultBtn resultRetry" type="button">次の局へ</button>
+        <button id="nextRoundBtn" class="stepBtnPrimary" type="button">次の局へ</button>
       </div>
     </div>
   </div>
@@ -872,6 +918,7 @@
       <div class="resultList" id="resultList"></div>
       <div class="resultPointBox" id="resultPointBox"></div>
       <div class="resultButtons">
+        <button class="resultBtn resultConfig" id="backToSetupBtn" type="button">設定に戻る</button>
         <button class="resultBtn resultRetry" id="retryBtn" type="button">もう一回</button>
       </div>
     </div>
@@ -885,18 +932,17 @@
   </div>
 
   <script>
-    const SAVE_KEY = "dekabusaJaraProfile";
-    const START_POINT_MAP = {1:10, 2:20, 3:25, 4:30};
+    const SAVE_KEY = "dekabusaJaraJaraComplete01";
     const BASE_HAND_SIZE = 5;
     const COPIES_PER_TILE = 6;
     const PICK_COUNT = 9;
-
-    const WAIT_LONG = 1350;
-    const WAIT_RON_CHECK = 950;
-    const WAIT_DISCARD_PREVIEW = 950;
-    const WAIT_ROUND_START_GAP = 700;
-
+    const WAIT_LONG = 1150;
+    const WAIT_RON_CHECK = 850;
+    const WAIT_DISCARD_PREVIEW = 800;
+    const WAIT_ROUND_START_GAP = 500;
     const PARENT_ORDER = ["東","南","西","北"];
+
+    const START_POINT_MAP = {1:10, 2:20, 3:25, 4:30};
 
     const ALL_TILE_POOL = [
       { id:"dekabusa", name:"デカブサ", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
@@ -988,6 +1034,9 @@
       }
     ];
 
+    const UNLOCKED_GIRLS_DEFAULT = ["girlA","girlB","girlC","girlD"];
+    const CONQUEST_ORDER = ["girlA","girlB","girlC","girlD"];
+
     const DEFAULT_SETUP = {
       supportGirlId:"girlA",
       cpuGirlIds:["girlB","girlC","girlD"],
@@ -1010,7 +1059,9 @@
       playCount: 0,
       firstCount: 0,
       winCount: 0,
-      bestTitle: "見習いジャララー"
+      bestTitle: "見習いジャララー",
+      conquestProgress: 0,
+      unlockedGirls: UNLOCKED_GIRLS_DEFAULT
     };
 
     const players = [
@@ -1022,6 +1073,7 @@
 
     let gameSetup = structuredCloneSafe(DEFAULT_SETUP);
     let playerProfile = loadProfile();
+    let gameMode = "free";
 
     let matchStats = {
       playerWon: false,
@@ -1049,11 +1101,11 @@
     let tempCpuGirlIds = [];
     let tempTileIds = [];
     let tempTileColors = {};
+    let tempLoopCount = 1;
 
     let humanTurnTimer1 = null;
     let humanTurnTimer2 = null;
 
-    let tempLoopCount = 1;
     let loopCount = 1;
     let totalRounds = 4;
     let currentRoundNumber = 0;
@@ -1071,6 +1123,7 @@
     const openCustomBtn = document.getElementById("openCustomBtn");
     const resetBtn = document.getElementById("resetBtn");
     const retryBtn = document.getElementById("retryBtn");
+    const backToSetupBtn = document.getElementById("backToSetupBtn");
 
     const tsumoBtn = document.getElementById("tsumoBtn");
     const ronBtn = document.getElementById("ronBtn");
@@ -1150,8 +1203,11 @@
     const titleProfileFirstCount = document.getElementById("titleProfileFirstCount");
     const titleBadgeRank = document.getElementById("titleBadgeRank");
     const titleBadgeTop = document.getElementById("titleBadgeTop");
+    const titleBadgeConquest = document.getElementById("titleBadgeConquest");
     const titleQuote = document.getElementById("titleQuote");
 
+    const modeFreeBtn = document.getElementById("modeFreeBtn");
+    const modeConquestBtn = document.getElementById("modeConquestBtn");
     const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
 
     function structuredCloneSafe(obj){
@@ -1172,9 +1228,7 @@
       localStorage.setItem(SAVE_KEY, JSON.stringify(playerProfile));
     }
 
-    function rand(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+    function rand(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
     function wait(ms){
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -1194,12 +1248,16 @@
       return arr;
     }
 
+    function getGirlById(id){
+      return GIRLS.find(g => g.id === id) || GIRLS[0];
+    }
+
     function getGirlImages(girl){
       return [`img/${girl.id}_1.png`,`img/${girl.id}_2.png`,`img/${girl.id}_3.png`];
     }
 
-    function getGirlById(id){
-      return GIRLS.find(g => g.id === id) || GIRLS[0];
+    function isGirlUnlocked(id){
+      return (playerProfile.unlockedGirls || []).includes(id);
     }
 
     function getSupportGirl(){
@@ -1255,19 +1313,20 @@
       document.documentElement.style.setProperty("--titleAccent2", theme.b);
 
       titleProfileTitle.textContent = title;
+      titleProfileTitle.style.color = theme.a;
       titleProfilePoint.textContent = `${playerProfile.totalPoint}pt`;
       titleProfilePlayCount.textContent = `${playerProfile.playCount}`;
       titleProfileFirstCount.textContent = `${playerProfile.firstCount}`;
       titleBadgeRank.textContent = `RANK ${getRankNumberByPoint(playerProfile.totalPoint)}`;
       titleBadgeTop.textContent = `TOP ${playerProfile.firstCount}`;
-
-      const supportGirl = getSupportGirl();
-      titleGirlImage.src = `img/${supportGirl.id}_1.png`;
-      titleQuote.textContent = rand(supportGirl.quotes);
-
+      titleBadgeConquest.textContent = `制覇 ${playerProfile.conquestProgress} / ${CONQUEST_ORDER.length}`;
       titleBadgeRank.style.color = theme.a;
       titleBadgeTop.style.color = theme.b;
-      titleProfileTitle.style.color = theme.a;
+      titleBadgeConquest.style.color = "#fff";
+
+      const supportGirl = getGirlById(gameSetup.supportGirlId || "girlA");
+      titleGirlImage.src = `img/${supportGirl.id}_1.png`;
+      titleQuote.textContent = rand(supportGirl.quotes);
     }
 
     function resetMatchStats(){
@@ -1305,12 +1364,14 @@
       }
       if(matchStats.hakoFinish) pt += 5;
       if(matchStats.bestPlayerRenchan >= 2) pt += 3;
+      if(gameMode === "conquest" && playerRank === 1) pt += 10;
       return {
         base,
         rankBonus,
         winBonus: matchStats.playerWon ? 2 : 0,
         hakoBonus: matchStats.hakoFinish ? 5 : 0,
         renchanBonus: matchStats.bestPlayerRenchan >= 2 ? 3 : 0,
+        conquestBonus: (gameMode === "conquest" && playerRank === 1) ? 10 : 0,
         total: pt
       };
     }
@@ -1324,6 +1385,10 @@
       if(playerRank === 1) playerProfile.firstCount += 1;
       if(matchStats.playerWon) playerProfile.winCount += 1;
       playerProfile.totalPoint += reward.total;
+
+      if(gameMode === "conquest" && playerRank === 1){
+        playerProfile.conquestProgress = Math.min(CONQUEST_ORDER.length, playerProfile.conquestProgress + 1);
+      }
 
       const afterTitle = getTitleByPoint(playerProfile.totalPoint);
       playerProfile.bestTitle = afterTitle;
@@ -1348,6 +1413,7 @@
         <div class="resultPointLine"><span>上がりボーナス</span><span>+${profileResult.reward.winBonus}pt</span></div>
         <div class="resultPointLine"><span>ハコ飛ばし</span><span>+${profileResult.reward.hakoBonus}pt</span></div>
         <div class="resultPointLine"><span>連荘ボーナス</span><span>+${profileResult.reward.renchanBonus}pt</span></div>
+        <div class="resultPointLine"><span>制覇ボーナス</span><span>+${profileResult.reward.conquestBonus}pt</span></div>
         <div class="resultPointLine"><span>獲得ポイント</span><span>+${profileResult.reward.total}pt</span></div>
         <div class="resultPointLine"><span>現在ポイント</span><span>${profileResult.afterPoint}pt</span></div>
         <div class="resultPointLine"><span>称号</span><span>${profileResult.afterTitle}</span></div>
@@ -1416,6 +1482,19 @@
       });
     }
 
+    function sortHandKeepDrawnLast(hand){
+      if(hand.length <= 1) return [...hand];
+      const drawn = hand[hand.length - 1];
+      const rest = hand.slice(0, -1);
+      const map = countMap(hand);
+      rest.sort((a,b) => {
+        const ca = map[a], cb = map[b];
+        if(cb !== ca) return cb - ca;
+        return getTileName(a).localeCompare(getTileName(b), "ja");
+      });
+      return [...rest, drawn];
+    }
+
     function getCompletedTriples(hand){
       const map = countMap(hand);
       let sets = 0;
@@ -1439,7 +1518,6 @@
       if(deck.length <= 0) return null;
       const tileId = deck.pop();
       player.hand.push(tileId);
-      player.hand = sortHandByGroups(player.hand);
       return tileId;
     }
 
@@ -1490,6 +1568,12 @@
       });
     }
 
+    function setMode(mode){
+      gameMode = mode;
+      modeFreeBtn.classList.toggle("active", mode === "free");
+      modeConquestBtn.classList.toggle("active", mode === "conquest");
+    }
+
     function renderModeButtons(){
       modeButtons.forEach(btn => {
         btn.classList.toggle("selected", Number(btn.dataset.loop) === tempLoopCount);
@@ -1499,10 +1583,16 @@
     function renderGirlSelect(){
       girlSelectGrid.innerHTML = "";
       GIRLS.forEach(girl => {
+        const locked = !isGirlUnlocked(girl.id);
         const card = document.createElement("button");
         card.type = "button";
         card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
+        card.style.opacity = locked ? ".45" : "1";
         card.addEventListener("click", () => {
+          if(locked){
+            alert("このチー娘は未解放です");
+            return;
+          }
           tempGirlId = girl.id;
           renderGirlSelect();
         });
@@ -1512,7 +1602,7 @@
             <div class="girlPreviewShade"></div>
             <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
           </div>
-          <div class="girlCardName">${girl.name}</div>
+          <div class="girlCardName">${girl.name}${locked ? "（未解放）" : ""}</div>
         `;
         girlSelectGrid.appendChild(card);
       });
@@ -1520,7 +1610,7 @@
 
     function renderCpuSelect(){
       cpuSelectGrid.innerHTML = "";
-      const selectable = GIRLS.filter(g => g.id !== tempGirlId);
+      const selectable = GIRLS.filter(g => g.id !== tempGirlId && isGirlUnlocked(g.id));
       cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
 
       selectable.forEach(girl => {
@@ -1635,12 +1725,22 @@
       }
       tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
       hideOverlay(girlSelectOverlay);
+
+      if(gameMode === "conquest"){
+        const nextBossId = CONQUEST_ORDER[playerProfile.conquestProgress] || CONQUEST_ORDER[CONQUEST_ORDER.length - 1];
+        const pool = GIRLS.filter(g => g.id !== tempGirlId && g.id !== nextBossId && isGirlUnlocked(g.id));
+        const shuffled = shuffle(pool).slice(0, 2);
+        tempCpuGirlIds = [nextBossId, ...shuffled.map(g => g.id)];
+        proceedToModeSelect();
+        return;
+      }
+
       renderCpuSelect();
       showOverlay(cpuSelectOverlay);
     }
 
     function proceedToModeSelect(){
-      if(tempCpuGirlIds.length !== 3){
+      if(gameMode === "free" && tempCpuGirlIds.length !== 3){
         alert("CPUを3人選んでね。");
         return;
       }
@@ -1738,7 +1838,6 @@
           }
         }
       }
-
       lastOwner.textContent = discardPile[discardPile.length - 1].owner;
     }
 
@@ -1814,9 +1913,8 @@
 
     function showGirl(girlObj, text, seat = null){
       const images = getGirlImages(girlObj);
-      const picked = rand(images);
       girlBgScene.src = seat ? getSeatBgBySeat(seat) : getSeatBgBySeat("東");
-      girlChara.src = picked;
+      girlChara.src = rand(images);
       girlNameEl.textContent = girlObj.name;
       girlTextEl.textContent = text;
       bigTileWrap.classList.remove("show");
@@ -1850,9 +1948,9 @@
       roundOverlayMain.textContent = getRoundName();
       roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
       showOverlay(roundOverlay);
-      await wait(1050);
+      await wait(900);
       hideOverlay(roundOverlay);
-      await wait(200);
+      await wait(180);
     }
 
     function cpuChooseDiscardIndex(player){
@@ -1968,30 +2066,29 @@
       if(result.type === "tsumo"){
         const winGirl = getGirlForPlayer(result.winner);
         showGirl(winGirl, rand(winGirl.tsumo), result.winner.seat);
-        await wait(850);
+        await wait(760);
         const losers = players.filter(p => p.id !== result.winner.id);
         for(const p of losers){
           const loseGirl = getGirlForPlayer(p);
           showGirl(loseGirl, rand(loseGirl.loseTsumo), p.seat);
-          await wait(700);
+          await wait(620);
         }
       }else if(result.type === "ron"){
         const winGirl = getGirlForPlayer(result.winner);
         showGirl(winGirl, rand(winGirl.ron), result.winner.seat);
-        await wait(900);
+        await wait(760);
         if(result.loser){
           const loseGirl = getGirlForPlayer(result.loser);
           showGirl(loseGirl, rand(loseGirl.loseRon), result.loser.seat);
-          await wait(900);
+          await wait(620);
         }
       }
       hideGirl();
     }
 
-    function renderRevealHand(player){
+    function renderRevealHand(handTiles){
       handRevealGrid.innerHTML = "";
-      const hand = sortHandByGroups([...player.hand]);
-      const tiles = [...hand];
+      const tiles = [...handTiles];
       if(tiles.length === 5) tiles.push("__empty__");
 
       tiles.forEach(tileId => {
@@ -2021,13 +2118,14 @@
           fallback.textContent = getTileName(tileId);
           div.appendChild(fallback);
         }
+
         handRevealGrid.appendChild(div);
       });
     }
 
-    async function showRevealHand(player, titleText, waitMs = 1100){
+    async function showRevealHand(titleText, handTiles, waitMs = 1100){
       handRevealTitle.textContent = titleText;
-      renderRevealHand(player);
+      renderRevealHand(sortHandByGroups([...handTiles]));
       showOverlay(handRevealOverlay);
       await wait(waitMs);
       hideOverlay(handRevealOverlay);
@@ -2035,16 +2133,18 @@
 
     async function showWinReveal(result){
       if(result.type === "tsumo"){
-        await showRevealHand(result.winner, `${result.winner.name}　ツモ手`);
+        const revealHand = [...result.winner.hand];
+        await showRevealHand(`${result.winner.name}　ツモ手`, revealHand);
       }else if(result.type === "ron"){
-        await showRevealHand(result.winner, `${result.winner.name}　ロン手`);
+        const revealHand = sortHandByGroups([...result.winner.hand, lastDiscardInfo.tileId]);
+        await showRevealHand(`${result.winner.name}　ロン手`, revealHand);
       }
     }
 
     async function showDrawTenpaiReveal(drawInfo){
       if(!drawInfo || !drawInfo.tenpaiPlayers || drawInfo.tenpaiPlayers.length === 0) return;
       for(const p of drawInfo.tenpaiPlayers){
-        await showRevealHand(p, `${p.name}　テンパイ`, 1000);
+        await showRevealHand(`${p.name}　テンパイ`, [...p.hand], 950);
         await wait(120);
       }
     }
@@ -2067,15 +2167,24 @@
     }
 
     async function finalizeSetupAndStart(){
+      if(gameMode === "conquest"){
+        const bossId = CONQUEST_ORDER[playerProfile.conquestProgress] || CONQUEST_ORDER[CONQUEST_ORDER.length - 1];
+        const pool = GIRLS.filter(g => g.id !== tempGirlId && g.id !== bossId && isGirlUnlocked(g.id));
+        const shuffled = shuffle(pool).slice(0,2);
+        tempCpuGirlIds = [bossId, ...shuffled.map(g => g.id)];
+      }
+
       gameSetup = {
         supportGirlId: tempGirlId,
         cpuGirlIds: [...tempCpuGirlIds],
         selectedTileIds: [...tempTileIds],
         tileColors: structuredCloneSafe(tempTileColors)
       };
+
       loopCount = tempLoopCount;
       totalRounds = loopCount * 4;
       currentRoundNumber = 0;
+
       syncCpuPlayersFromSetup();
       rebuildActiveTiles();
       updateTitleScreenProfile();
@@ -2112,6 +2221,7 @@
       hideOverlay(roundResultOverlay);
       hideResultScreen();
       hideOverlay(handRevealOverlay);
+
       setBusy(true);
       gameEnded = false;
       historyLogs = [];
@@ -2159,6 +2269,7 @@
 
       deck = createDeck();
       for(let i=0; i<BASE_HAND_SIZE; i++) players.forEach(p => drawTile(p));
+      players.forEach(p => p.hand = sortHandByGroups(p.hand));
 
       const order = getTurnOrder();
       turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
@@ -2192,7 +2303,7 @@
 
       humanTurnTimer1 = setTimeout(() => {
         updateGirlText("...");
-      }, 650);
+      }, 550);
 
       humanTurnTimer2 = setTimeout(() => {
         updateGirlText(rand(girl.thinkHuman));
@@ -2204,11 +2315,12 @@
             setTimeout(async () => {
               hideGirl();
               await finishRound({ type:"draw" });
-            }, 500);
+            }, 400);
             return;
           }
 
-          justDrawnIndex = players[0].hand.lastIndexOf(drawn);
+          players[0].hand = sortHandKeepDrawnLast(players[0].hand);
+          justDrawnIndex = players[0].hand.length - 1;
           pendingTsumo = isWinningHand(players[0].hand);
           pendingRon = false;
           waitingPlayerDiscard = true;
@@ -2219,8 +2331,8 @@
           setTimeout(() => {
             hideGirl();
             renderAll();
-          }, 780);
-        }, 800);
+          }, 700);
+        }, 700);
       }, WAIT_LONG);
     }
 
@@ -2230,13 +2342,13 @@
 
       const girl = getGirlForPlayer(player);
       showGirl(girl, rand(girl.introCpu), player.seat);
-      await wait(700);
+      await wait(550);
 
       updateGirlText("...");
-      await wait(500);
+      await wait(350);
 
       updateGirlText(rand(girl.thinkCpu));
-      await wait(820);
+      await wait(600);
 
       const drawn = drawTile(player);
       if(!drawn){
@@ -2245,9 +2357,11 @@
         return;
       }
 
+      player.hand = sortHandByGroups(player.hand);
+
       const tsumo = isWinningHand(player.hand);
       updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
-      await wait(760);
+      await wait(550);
 
       if(tsumo){
         await finishRound({ type:"tsumo", winner:player });
@@ -2255,7 +2369,7 @@
       }
 
       updateGirlText("...");
-      await wait(420);
+      await wait(300);
 
       const discardIndex = cpuChooseDiscardIndex(player);
       const discardTile = player.hand[discardIndex];
@@ -2290,12 +2404,13 @@
 
       const ronCpu = getCpuRonCandidateAfterDiscard(player, discardTile);
       if(ronCpu){
+        lastDiscardInfo = { tileId: discardTile, discarder: player };
         await finishRound({ type:"ron", winner:ronCpu, loser:player });
         return;
       }
 
       hideGirl();
-      await wait(180);
+      await wait(140);
       advanceTurn();
       setBusy(false);
 
@@ -2323,7 +2438,7 @@
 
       setTimeout(() => {
         updateGirlText(rand(girl.discard));
-      }, 220);
+      }, 180);
 
       setTimeout(async () => {
         me.hand.splice(index,1);
@@ -2342,6 +2457,7 @@
 
         const ronCpu = getCpuRonCandidateAfterDiscard(me, tileId);
         if(ronCpu){
+          lastDiscardInfo = { tileId, discarder: me };
           await finishRound({ type:"ron", winner:ronCpu, loser:me });
           return;
         }
@@ -2381,7 +2497,8 @@
 
       }else if(result.type === "ron"){
         applyRonPoints(result.winner, result.loser);
-        desc = `${result.loser.name}から${result.winner.seat === getCurrentParentSeat() ? "4" : "3"}点`;
+        const ronPoint = result.winner.seat === getCurrentParentSeat() ? 4 : 3;
+        desc = `${result.loser.name}から${ronPoint}点`;
         winText = `${result.winner.seat} ${result.winner.name} ロン`;
         addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
         if(result.winner.id === "you"){
@@ -2482,6 +2599,7 @@
     function showResultScreen(winners){
       resultList.innerHTML = "";
       const sorted = [...players].sort((a,b) => b.point - a.point);
+
       sorted.forEach((p, i) => {
         const row = document.createElement("div");
         row.className = "resultLine";
@@ -2494,21 +2612,52 @@
       renderResultPointBox(profileResult, playerRank);
       updateTitleScreenProfile();
 
-      if(winners.length === 1){
-        resultTitle.textContent = `${winners[0].name}の優勝！`;
-        resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
+      if(gameMode === "conquest"){
+        if(playerRank === 1){
+          if(playerProfile.conquestProgress >= CONQUEST_ORDER.length){
+            resultSub.textContent = `制覇モードクリア！ / 全チー娘を倒したよ。`;
+            playerProfile.conquestProgress = 0;
+            saveProfile();
+            updateTitleScreenProfile();
+          }else{
+            const nextBossId = CONQUEST_ORDER[playerProfile.conquestProgress];
+            resultSub.textContent = `制覇モード勝利！ / 次の相手は ${getGirlById(nextBossId).name}`;
+          }
+        }else{
+          const currentBossId = CONQUEST_ORDER[playerProfile.conquestProgress] || CONQUEST_ORDER[CONQUEST_ORDER.length - 1];
+          resultSub.textContent = `制覇モード敗北 / ${getGirlById(currentBossId).name} に再挑戦`;
+        }
       }else{
-        resultTitle.textContent = "同点優勝！";
-        resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
+        if(winners.length === 1){
+          resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
+        }else{
+          resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
+        }
       }
 
+      resultTitle.textContent = winners.length === 1 ? `${winners[0].name}の優勝！` : "同点優勝！";
       showOverlay(resultOverlay);
     }
 
     function hideResultScreen(){ hideOverlay(resultOverlay); }
 
+    async function resetAndPlaySameSettings(){
+      hideResultScreen();
+      await resetGame();
+    }
+
+    function backToSetup(){
+      hideResultScreen();
+      showOverlay(titleOverlay);
+      updateTitleScreenProfile();
+    }
+
+    modeFreeBtn.addEventListener("click", () => setMode("free"));
+    modeConquestBtn.addEventListener("click", () => setMode("conquest"));
+
     startBtn.addEventListener("click", beginSetupFlow);
     girlSelectNextBtn.addEventListener("click", proceedToCpuSelect);
+
     cpuSelectBackBtn.addEventListener("click", () => {
       hideOverlay(cpuSelectOverlay);
       showOverlay(girlSelectOverlay);
@@ -2523,8 +2672,13 @@
     });
 
     modeSelectBackBtn.addEventListener("click", () => {
-      hideOverlay(modeSelectOverlay);
-      showOverlay(cpuSelectOverlay);
+      if(gameMode === "conquest"){
+        hideOverlay(modeSelectOverlay);
+        showOverlay(girlSelectOverlay);
+      }else{
+        hideOverlay(modeSelectOverlay);
+        showOverlay(cpuSelectOverlay);
+      }
     });
     modeSelectNextBtn.addEventListener("click", proceedToTileSelect);
 
@@ -2544,14 +2698,15 @@
     closeCustomBtn.addEventListener("click", closeCustom);
     saveCustomBtn.addEventListener("click", saveCustomInGame);
 
-    resetBtn.addEventListener("click", () => {
-      hideResultScreen();
-      resetGame();
+    resetBtn.addEventListener("click", async () => {
+      await resetGame();
     });
-    retryBtn.addEventListener("click", () => {
-      hideResultScreen();
-      resetGame();
+
+    retryBtn.addEventListener("click", async () => {
+      await resetAndPlaySameSettings();
     });
+
+    backToSetupBtn.addEventListener("click", backToSetup);
 
     tsumoBtn.addEventListener("click", async () => {
       if(!pendingTsumo || busy || gameEnded) return;
