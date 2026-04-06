@@ -2,2852 +2,2180 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>デカブサジャラジャラ × チー娘</title>
 <style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{
-    margin:0;padding:0;width:100%;min-height:100%;
-    background:#05070c;color:#fff;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
-  }
-  body{display:flex;justify-content:center}
-  button,input{font-family:inherit}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;padding:0;width:100%;min-height:100%;
+  background:#05070c;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+}
+body{display:flex;justify-content:center}
+button,input{font-family:inherit}
 
-  :root{
-    --titleAccent:#8fb3ff;
-    --titleAccent2:#ffd36d;
-  }
+:root{
+  --panel:rgba(255,255,255,.05);
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.12);
+  --black:#111;
+}
 
-  .app{
-    width:100%;max-width:430px;min-height:100vh;
-    background:
-      radial-gradient(circle at top, rgba(255,255,255,.06), transparent 30%),
-      linear-gradient(180deg,#10131d 0%,#06080d 100%);
-    padding:12px 10px 18px;
-  }
+.app{
+  width:100%;max-width:430px;min-height:100vh;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.06), transparent 30%),
+    linear-gradient(180deg,#10131d 0%,#06080d 100%);
+  padding:12px 10px 18px;
+}
 
-  .title{
-    text-align:center;font-size:24px;font-weight:900;letter-spacing:.04em;margin:4px 0 12px;
-  }
+.title{
+  text-align:center;font-size:24px;font-weight:900;letter-spacing:.04em;margin:4px 0 12px;
+}
 
-  .panel{
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.07);
-    border-radius:22px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
-  }
+.panel{
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:22px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
 
-  .statusBox{padding:14px 14px 10px;margin-bottom:12px}
-  .statusTop{
-    display:flex;align-items:center;justify-content:space-between;gap:8px;
-    font-size:14px;font-weight:800;margin-bottom:10px;
-  }
-  .statusMain{text-align:center;font-size:18px;font-weight:900;min-height:26px;margin-bottom:8px}
-  .subInfo{text-align:center;font-size:12px;opacity:.78;min-height:18px}
+.statusBox{padding:14px 14px 10px;margin-bottom:12px}
+.statusTop{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:14px;font-weight:800;margin-bottom:10px;
+}
+.statusMain{text-align:center;font-size:18px;font-weight:900;min-height:26px;margin-bottom:8px}
+.subInfo{text-align:center;font-size:12px;opacity:.78;min-height:18px}
 
-  .scoreWrap{padding:12px;margin-bottom:12px}
-  .scoreHead{
-    display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;
-  }
-  .scoreTitle{font-size:14px;font-weight:900}
-  .miniBtn{
-    appearance:none;border:1px solid rgba(255,255,255,.08);
-    background:rgba(255,255,255,.05);color:#fff;border-radius:999px;
-    padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;
-  }
+.scoreWrap{padding:12px;margin-bottom:12px}
+.scoreHead{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;
+}
+.scoreTitle{font-size:14px;font-weight:900}
+.scoreList{display:flex;flex-direction:column;gap:8px}
+.scoreLine{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 12px;background:rgba(255,255,255,.05);
+  border-radius:14px;font-size:14px;font-weight:900;
+}
+.scoreLine.active{
+  outline:2px solid rgba(255,255,255,.14);
+  box-shadow:0 0 18px rgba(255,255,255,.08);
+}
+.scoreName{display:flex;align-items:center;gap:8px}
+.scoreBadge{
+  min-width:22px;height:22px;border-radius:999px;display:inline-flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#111;
+}
+.badge-you{background:#fff}
+.badge-a{background:#ffbfdc}
+.badge-b{background:#bedcff}
+.badge-c{background:#d6ffb8}
 
-  .scoreList{display:flex;flex-direction:column;gap:8px}
-  .scoreLine{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px 12px;background:rgba(255,255,255,.05);
-    border-radius:14px;font-size:14px;font-weight:900;transition:.15s ease;
-  }
-  .scoreLine.active{
-    outline:2px solid rgba(255,255,255,.14);
-    box-shadow:0 0 18px rgba(255,255,255,.08);
-  }
-  .scoreName{display:flex;align-items:center;gap:8px}
-  .scoreBadge{
-    min-width:22px;height:22px;border-radius:999px;display:inline-flex;
-    align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#111;
-  }
-  .badge-you{background:#fff}
-  .badge-a{background:#ffbfdc}
-  .badge-b{background:#bedcff}
-  .badge-c{background:#d6ffb8}
+.topArea{padding:12px;margin-bottom:12px}
+.topGrid{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:stretch}
+.wallBox,.riverBox{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;padding:12px;
+}
+.topTitle{font-size:13px;font-weight:900;margin-bottom:8px}
+.wallInner{
+  min-height:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+}
+.wallCount{font-size:40px;font-weight:900;line-height:1}
+.wallSub{font-size:12px;opacity:.78}
 
-  .topArea{padding:12px;margin-bottom:12px}
-  .topGrid{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:stretch}
-  .wallBox,.riverBox{
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.06);
-    border-radius:18px;padding:12px;
-  }
-  .topTitle{font-size:13px;font-weight:900;margin-bottom:8px}
-  .wallInner{
-    min-height:124px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  }
-  .wallCount{font-size:40px;font-weight:900;line-height:1}
-  .wallSub{font-size:12px;opacity:.78}
+.riverHead{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;
+}
+.riverOwner{font-size:12px;opacity:.82;text-align:right}
+.riverColumnHeads{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;
+}
+.riverColHead{
+  text-align:center;font-size:11px;font-weight:900;opacity:.82;padding:2px 0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.riverGrid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:124px;align-content:start;
+}
+.riverTile{
+  aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;background:#1b2130;
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;position:relative;
+}
+.riverTile.last{
+  outline:3px solid rgba(255,230,120,.98);
+  box-shadow:0 0 16px rgba(255,230,120,.22);
+}
+.riverImg{
+  width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:3px;
+}
+.riverTint{position:absolute;inset:0;opacity:.68;z-index:0}
+.riverFallback{
+  position:relative;z-index:1;font-size:11px;font-weight:900;padding:4px;text-align:center;line-height:1.2;
+}
+.riverEmpty{
+  min-height:124px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.65;
+}
 
-  .riverHead{
-    display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;
-  }
-  .riverOwner{font-size:12px;opacity:.82;text-align:right}
-  .riverColumnHeads{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;
-  }
-  .riverColHead{
-    text-align:center;font-size:11px;font-weight:900;opacity:.82;padding:2px 0;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .riverGrid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:124px;align-content:start;
-  }
-  .riverTile{
-    aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;background:#1b2130;
-    border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;position:relative;
-  }
-  .riverTile.last{
-    outline:3px solid rgba(255,230,120,.98);
-    box-shadow:0 0 16px rgba(255,230,120,.22);
-  }
-  .riverImg{
-    width:100%;height:100%;object-fit:contain;display:block;
-    position:relative;z-index:1;padding:1px;transform:scale(1.08);
-  }
-  .riverTint{position:absolute;inset:0;opacity:.68;z-index:0}
-  .riverEmpty{
-    min-height:124px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.65;
-  }
+.handWrap{padding:12px;margin-bottom:12px}
+.handTitle{font-size:14px;font-weight:900;margin-bottom:10px}
+.hand{display:flex;flex-wrap:wrap;gap:8px}
+.tileBtn{
+  width:86px;height:86px;border:none;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:900;
+  padding:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  position:relative;background:#1c2230;transition:transform .15s ease, box-shadow .15s ease;cursor:pointer;
+}
+.tileBtn:active{transform:scale(.96)}
+.tileBtn.drawn{
+  outline:2px solid rgba(255,230,120,.95);
+  transform:translateY(-1px);
+  box-shadow:0 0 16px rgba(255,230,120,.20);
+}
+.tileBtn:disabled{opacity:.55;cursor:default}
+.tileInner{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:4px;
+}
+.tileTint{position:absolute;inset:0;opacity:.64;z-index:0}
+.tileImg{
+  width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:1px;
+}
+.tileFallback{
+  padding:6px;line-height:1.2;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);
+  font-size:12px;font-weight:900;text-align:center;
+}
 
-  .handWrap{padding:12px;margin-bottom:12px}
-  .handTitle{font-size:14px;font-weight:900;margin-bottom:10px}
-  .hand{display:flex;flex-wrap:wrap;gap:8px}
-  .tileBtn{
-    width:86px;height:86px;border:none;border-radius:22px;overflow:hidden;
-    border:1px solid rgba(255,255,255,.08);color:#fff;font-size:12px;font-weight:900;
-    padding:0;display:flex;align-items:center;justify-content:center;text-align:center;
-    position:relative;background:#1c2230;transition:transform .15s ease, box-shadow .15s ease;cursor:pointer;
-  }
-  .tileBtn:active{transform:scale(.96)}
-  .tileBtn.drawn{
-    outline:2px solid rgba(255,230,120,.95);
-    transform:translateY(-1px);
-    box-shadow:0 0 16px rgba(255,230,120,.20);
-  }
-  .tileBtn:disabled{opacity:.55;cursor:default}
-  .tileInner{
-    width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;padding:4px;
-  }
-  .tileTint{position:absolute;inset:0;opacity:.64;z-index:0}
-  .tileImg{
-    width:100%;height:100%;object-fit:contain;display:block;
-    position:relative;z-index:1;padding:0;transform:scale(1.12);
-  }
-  .tileFallback{
-    padding:6px;line-height:1.25;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);
-  }
+.actionWrap{display:flex;gap:8px;margin-bottom:12px}
+.actionBtn{
+  flex:1;appearance:none;border:none;border-radius:16px;padding:14px 10px;font-size:15px;font-weight:900;cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.actionBtn:disabled{opacity:.45;cursor:default}
+.actionBtn.ready{
+  animation:readyPulse 1s ease-in-out infinite;
+  box-shadow:0 0 18px rgba(255,255,255,.25);
+}
+#tsumoBtn{background:#fff;color:#111}
+#ronBtn{background:#ffe59a;color:#111}
+#passBtn{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
+@keyframes readyPulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.03)}
+  100%{transform:scale(1)}
+}
 
-  .actionWrap{display:flex;gap:8px;margin-bottom:12px}
-  .actionBtn{
-    flex:1;appearance:none;border:none;border-radius:16px;padding:14px 10px;
-    font-size:15px;font-weight:900;cursor:pointer;
-    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-  }
-  .actionBtn:disabled{opacity:.45;cursor:default}
-  .actionBtn.ready{
-    animation:readyPulse 1s ease-in-out infinite;
-    box-shadow:0 0 18px rgba(255,255,255,.25);
-  }
-  #tsumoBtn{background:#fff;color:#111}
-  #ronBtn{background:#ffe59a;color:#111}
-  #passBtn{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
-  @keyframes readyPulse{
-    0%{transform:scale(1)}
-    50%{transform:scale(1.03)}
-    100%{transform:scale(1)}
-  }
+.controls{display:flex;gap:8px;margin-bottom:12px}
+.mainBtn{
+  appearance:none;border:none;border-radius:20px;padding:15px 14px;font-size:16px;font-weight:900;cursor:pointer;
+}
+#resetBtn{width:100%;background:#272b3b;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
-  .controls{display:flex;gap:8px;margin-bottom:12px}
-  .mainBtn{
-    appearance:none;border:none;border-radius:20px;padding:15px 14px;font-size:16px;font-weight:900;cursor:pointer;
-  }
-  #resetBtn{width:100%;background:#272b3b;color:#fff;border:1px solid rgba(255,255,255,.08)}
+.historyWrap{padding:12px}
+.historyTitle{font-size:14px;font-weight:900;margin-bottom:10px}
+.historyBox{max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.historyLine{
+  background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;
+}
 
-  .historyWrap{padding:12px}
-  .historyTitle{font-size:14px;font-weight:900;margin-bottom:10px}
-  .historyBox{max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:8px}
-  .historyLine{
-    background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;
-  }
+.overlay{
+  position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;transition:opacity .22s ease;
+}
+.overlay.show{opacity:1;pointer-events:auto}
 
-  .overlay{
-    position:fixed;inset:0;z-index:100;opacity:0;pointer-events:none;transition:opacity .22s ease;
-  }
-  .overlay.show{opacity:1;pointer-events:auto}
+.titleOverlay{
+  z-index:140;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.08), transparent 34%),
+    linear-gradient(180deg,#0d1018 0%,#07090e 100%);
+}
+.titleScreen{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px 18px 24px;text-align:center;overflow:auto;
+}
+.titleHero{
+  position:relative;width:min(88vw,340px);height:min(42vh,320px);margin:0 auto 18px;
+  border-radius:28px;overflow:hidden;
+  background:linear-gradient(180deg,#151a26 0%, #0d1018 100%);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 20px 40px rgba(0,0,0,.34);
+}
+.titleHeroBg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,255,255,.18), transparent 38%),
+    linear-gradient(180deg, rgba(120,150,255,.20) 0%, rgba(0,0,0,.12) 100%);
+  z-index:0;
+}
+.titleGirlImage{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:108%;height:100%;object-fit:contain;object-position:center bottom;z-index:1;
+}
+.titleHeroShade{
+  position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.18) 100%);z-index:2;
+}
+.titleLogo{
+  position:relative;z-index:3;font-size:34px;font-weight:900;line-height:1.2;letter-spacing:.03em;margin-bottom:14px;
+  text-shadow:0 4px 18px rgba(0,0,0,.38);
+}
+.titleModeRow{
+  display:flex;gap:10px;width:min(90vw,360px);margin:0 auto 14px;
+}
+.titleModeBtn{
+  flex:1;padding:12px 10px;border:none;border-radius:16px;background:rgba(255,255,255,.08);
+  color:#fff;font-size:14px;font-weight:900;cursor:pointer;border:1px solid rgba(255,255,255,.08);
+}
+.titleModeBtn.active{background:#fff;color:#111}
+.titleProfileCard{
+  position:relative;z-index:3;width:min(90vw,360px);margin:0 auto 14px;padding:14px 14px 12px;
+  border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 24px rgba(0,0,0,.20);
+}
+.titleProfileMain{margin-bottom:10px}
+.titleProfileLabel{font-size:12px;font-weight:800;opacity:.72;margin-bottom:4px}
+.titleProfileTitle{font-size:22px;font-weight:900;line-height:1.25}
+.titleProfilePoints{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;
+}
+.titlePointBox{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:10px 6px;
+}
+.titlePointLabel{font-size:11px;font-weight:800;opacity:.72;margin-bottom:4px}
+.titlePointValue{font-size:16px;font-weight:900}
+.titleBadgeWrap{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.titleBadge{
+  padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:900;
+}
+.titleQuote{
+  margin-top:10px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);font-size:13px;font-weight:800;line-height:1.5;
+}
+.titleSub{
+  position:relative;z-index:3;font-size:14px;opacity:.85;line-height:1.8;margin-bottom:18px;max-width:330px;
+}
+.startBtn{
+  position:relative;z-index:3;appearance:none;border:none;border-radius:999px;padding:18px 42px;
+  font-size:20px;font-weight:900;background:#fff;color:#111;cursor:pointer;box-shadow:0 14px 32px rgba(0,0,0,.28);
+}
+.titleNote{position:relative;z-index:3;margin-top:16px;font-size:12px;opacity:.62;padding-bottom:max(20px, env(safe-area-inset-bottom))}
+ .stepOverlay{z-index:145;background:rgba(5,7,12,.94)}
+.stepBox{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(92vw,430px);max-height:88vh;overflow:auto;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-radius:28px;padding:20px 16px 16px;box-shadow:0 14px 36px rgba(0,0,0,.22);
+}
+.stepTitle{font-size:22px;font-weight:900;text-align:center;margin-bottom:8px}
+.stepSub{text-align:center;font-size:13px;opacity:.84;line-height:1.6;margin-bottom:14px}
+.selectCount{text-align:center;font-size:14px;font-weight:900;margin:0 0 12px;color:#fff}
+.stepButtons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.stepBtnPrimary,.stepBtnSecondary{
+  appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
+}
+.stepBtnPrimary{background:#fff;color:#111}
+.stepBtnSecondary{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
-  .titleOverlay{
-    z-index:140;
-    background:
-      radial-gradient(circle at top, rgba(255,255,255,.08), transparent 34%),
-      linear-gradient(180deg,#0d1018 0%,#07090e 100%);
-  }
-  .titleScreen{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:18px 18px 24px;
-    text-align:center;
-    overflow:auto;
-  }
+.girlSelectGrid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.girlCard{
+  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+  border-radius:18px;padding:8px;cursor:pointer;
+}
+.girlCard.selected{outline:2px solid rgba(255,230,120,.95)}
+.girlPreview{
+  width:100%;aspect-ratio:3 / 4;border-radius:14px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:8px;
+}
+.girlPreviewBg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+  filter:blur(4px) brightness(.98);transform:scale(1.03);
+}
+.girlPreviewShade{
+  position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.10));z-index:1;
+}
+.girlPreviewChara{
+  position:absolute;inset:auto 0 0 0;width:100%;height:96%;object-fit:contain;z-index:2;
+}
+.girlCardName{text-align:center;font-size:13px;font-weight:900}
 
-  .titleHero{
-    position:relative;
-    width:min(88vw,340px);
-    height:min(42vh,320px);
-    margin:0 auto 18px;
-    border-radius:28px;
-    overflow:hidden;
-    background:linear-gradient(180deg,#151a26 0%, #0d1018 100%);
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 20px 40px rgba(0,0,0,.34);
-  }
-  .titleHeroBg{
-    position:absolute;inset:0;
-    background:
-      radial-gradient(circle at 50% 30%, rgba(255,255,255,.18), transparent 38%),
-      linear-gradient(180deg, rgba(120,150,255,.20) 0%, rgba(0,0,0,.12) 100%);
-    z-index:0;
-  }
-  .titleGirlImage{
-    position:absolute;
-    left:50%;
-    bottom:0;
-    transform:translateX(-50%);
-    width:108%;
-    height:100%;
-    object-fit:contain;
-    object-position:center bottom;
-    z-index:1;
-  }
-  .titleHeroShade{
-    position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.18) 100%);
-    z-index:2;
-    pointer-events:none;
-  }
+.customGrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;
+}
+.customCard{
+  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+  border-radius:16px;padding:8px;text-align:center;cursor:pointer;
+}
+.customCard.selected{outline:2px solid rgba(255,230,120,.95)}
+.customThumb{
+  width:100%;aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:6px;
+}
+.customThumb img{
+  width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
+}
+.customThumbTint{position:absolute;inset:0;opacity:.72;z-index:0}
+.customName{font-size:12px;font-weight:900;line-height:1.35}
 
-  .titleLogo{
-    position:relative;
-    z-index:3;
-    font-size:34px;
-    font-weight:900;
-    line-height:1.2;
-    letter-spacing:.03em;
-    margin-bottom:14px;
-    text-shadow:0 4px 18px rgba(0,0,0,.38);
-  }
+.colorList{display:flex;flex-direction:column;gap:10px}
+.colorLine{
+  display:grid;grid-template-columns:74px 1fr 54px;align-items:center;gap:10px;
+  background:rgba(255,255,255,.05);border-radius:14px;padding:8px 10px;
+}
+.colorThumb{
+  width:74px;aspect-ratio:1 / 1;border-radius:12px;overflow:hidden;position:relative;background:#1b2130;
+}
+.colorThumb img{
+  width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;
+}
+.colorThumbTint{position:absolute;inset:0;opacity:.76;z-index:0}
+.colorName{font-size:13px;font-weight:900}
+.colorPicker{width:44px;height:34px;border:none;background:none;padding:0}
 
-  .titleModeRow{
-    display:flex;
-    gap:10px;
-    width:min(90vw,360px);
-    margin:0 auto 14px;
-  }
-  .titleModeBtn{
-    flex:1;
-    padding:12px 10px;
-    border:none;
-    border-radius:16px;
-    background:rgba(255,255,255,.08);
-    color:#fff;
-    font-size:14px;
-    font-weight:900;
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .titleModeBtn.active{
-    background:#fff;
-    color:#111;
-  }
+.modeRow{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 14px;
+}
+.modeBtn{
+  appearance:none;border:none;border-radius:999px;padding:10px 16px;font-weight:900;
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
+}
+.modeBtn.selected{background:#fff;color:#111}
 
-  .titleProfileCard{
-    position:relative;
-    z-index:3;
-    width:min(90vw,360px);
-    margin:0 auto 14px;
-    padding:14px 14px 12px;
-    border-radius:22px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.10);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    box-shadow:0 10px 24px rgba(0,0,0,.20);
-  }
-  .titleProfileMain{margin-bottom:10px}
-  .titleProfileLabel{
-    font-size:12px;
-    font-weight:800;
-    opacity:.72;
-    margin-bottom:4px;
-  }
-  .titleProfileTitle{
-    font-size:22px;
-    font-weight:900;
-    line-height:1.25;
-  }
-  .titleProfilePoints{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-bottom:10px;
-  }
-  .titlePointBox{
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.06);
-    border-radius:16px;
-    padding:10px 6px;
-  }
-  .titlePointLabel{
-    font-size:11px;
-    font-weight:800;
-    opacity:.72;
-    margin-bottom:4px;
-  }
-  .titlePointValue{
-    font-size:16px;
-    font-weight:900;
-  }
-  .titleBadgeWrap{
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    flex-wrap:wrap;
-  }
-  .titleBadge{
-    padding:8px 12px;
-    border-radius:999px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    font-size:12px;
-    font-weight:900;
-  }
-  .titleQuote{
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:16px;
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.06);
-    font-size:13px;
-    font-weight:800;
-    line-height:1.5;
-  }
+.girlOverlay{background:#000;z-index:130}
+.girlBgWrap{position:absolute;inset:0}
+.girlBgScene{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;
+  filter:blur(6px) brightness(.98);transform:scale(1.03);
+}
+.girlBgShade{
+  position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 100%);z-index:1;
+}
+.girlChara{
+  position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
+  width:min(118vw,600px);height:100%;object-fit:contain;object-position:center bottom;z-index:2;
+}
+.girlUi{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:20px 16px max(20px, env(safe-area-inset-bottom));z-index:3;
+}
+.girlSpeech{
+  width:100%;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:#fff;border-radius:28px;padding:16px 16px 18px;border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+.girlName{
+  display:inline-block;margin-bottom:12px;padding:8px 15px;border-radius:999px;background:rgba(0,0,0,.72);
+  color:#fff;font-size:14px;font-weight:900;
+}
+.girlText{
+  font-size:18px;font-weight:900;line-height:1.55;min-height:42px;text-shadow:0 1px 2px rgba(0,0,0,.28);
+}
 
-  .titleSub{
-    position:relative;
-    z-index:3;
-    font-size:14px;
-    opacity:.85;
-    line-height:1.8;
-    margin-bottom:18px;
-    max-width:330px;
-  }
-  .startBtn{
-    position:relative;
-    z-index:3;
-    appearance:none;
-    border:none;
-    border-radius:999px;
-    padding:18px 42px;
-    font-size:20px;
-    font-weight:900;
-    background:#fff;
-    color:#111;
-    cursor:pointer;
-    box-shadow:0 14px 32px rgba(0,0,0,.28);
-  }
-  .titleNote{
-    position:relative;
-    z-index:3;
-    margin-top:16px;
-    font-size:12px;
-    opacity:.62;
-    padding-bottom:max(20px, env(safe-area-inset-bottom));
-  }
-   .stepOverlay{z-index:145;background:rgba(5,7,12,.94)}
-  .stepBox{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(92vw,430px);max-height:88vh;overflow:auto;
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    border-radius:28px;padding:20px 16px 16px;box-shadow:0 14px 36px rgba(0,0,0,.22);
-  }
-  .stepTitle{font-size:22px;font-weight:900;text-align:center;margin-bottom:8px}
-  .stepSub{text-align:center;font-size:13px;opacity:.84;line-height:1.6;margin-bottom:14px}
-  .selectCount{text-align:center;font-size:14px;font-weight:900;margin:0 0 12px;color:#fff}
-  .stepButtons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-  .stepBtnPrimary,.stepBtnSecondary{
-    appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
-  }
-  .stepBtnPrimary{background:#fff;color:#111}
-  .stepBtnSecondary{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
+.bigTileWrap{
+  display:none;width:100%;margin:0 0 16px;align-items:center;justify-content:center;flex-direction:column;gap:10px;
+}
+.bigTileWrap.show{display:flex}
+.bigTileCard{
+  width:min(56vw,240px);aspect-ratio:1 / 1;border-radius:20px;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;border:3px solid rgba(255,255,255,.22);box-shadow:0 18px 36px rgba(0,0,0,.30);
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);background:#1b2130;
+}
+.bigTileTint{position:absolute;inset:0;opacity:.82;z-index:0}
+.bigTileImg{
+  width:100%;height:100%;object-fit:contain;position:relative;z-index:1;padding:4px;
+}
+.bigTileFallback{
+  position:relative;z-index:1;font-size:28px;font-weight:900;padding:16px;text-align:center;
+}
+.bigTileCaption{
+  font-size:18px;font-weight:900;
+  text-shadow:0 2px 6px rgba(0,0,0,.65);
+  background:rgba(0,0,0,.34);
+  padding:8px 14px;border-radius:999px;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
 
-  .girlSelectGrid{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
-  }
-  .girlCard{
-    border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
-    border-radius:18px;padding:8px;cursor:pointer;
-  }
-  .girlCard.selected{outline:2px solid rgba(255,230,120,.95)}
-  .girlPreview{
-    width:100%;aspect-ratio:3 / 4;border-radius:14px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:8px;
-  }
-  .girlPreviewBg{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
-    filter:blur(4px) brightness(.98);transform:scale(1.03);
-  }
-  .girlPreviewShade{
-    position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.10));z-index:1;
-  }
-  .girlPreviewChara{
-    position:absolute;inset:auto 0 0 0;width:100%;height:96%;object-fit:contain;z-index:2;
-  }
-  .girlCardName{text-align:center;font-size:13px;font-weight:900}
+.roundOverlay{z-index:110;background:rgba(5,7,12,.86)}
+.roundStage{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;
+}
+.roundMain{font-size:54px;font-weight:900;line-height:1;letter-spacing:.08em}
+.roundSub{font-size:16px;font-weight:800;opacity:.9}
 
-  .customGrid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;
-  }
-  .customCard{
-    border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
-    border-radius:16px;padding:8px;text-align:center;cursor:pointer;
-  }
-  .customCard.selected{outline:2px solid rgba(255,230,120,.95)}
-  .customThumb{
-    width:100%;aspect-ratio:1 / 1;border-radius:16px;overflow:hidden;position:relative;background:#1b2130;margin-bottom:6px;
-  }
-  .customThumb img{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;transform:scale(1.05);
-  }
-  .customThumbTint{position:absolute;inset:0;opacity:.72;z-index:0}
-  .customName{font-size:12px;font-weight:900;line-height:1.35}
+.conquestCutinOverlay{
+  z-index:150;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.08), transparent 30%),
+    linear-gradient(180deg, rgba(0,0,0,.92) 0%, rgba(15,18,28,.96) 100%);
+}
+.conquestCutinBox{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 18px max(28px, env(safe-area-inset-bottom));text-align:center;
+}
+.conquestCutinLabel{
+  font-size:14px;font-weight:900;letter-spacing:.14em;color:#ffd36d;margin-bottom:10px;
+  text-shadow:0 2px 12px rgba(0,0,0,.35);
+}
+.conquestCutinTitle{
+  font-size:34px;font-weight:900;line-height:1.2;margin-bottom:16px;text-shadow:0 4px 18px rgba(0,0,0,.45);
+}
+.conquestCutinSub{
+  font-size:15px;font-weight:800;opacity:.9;line-height:1.7;margin-bottom:20px;
+}
+.conquestCutinHero{
+  position:relative;width:min(88vw,360px);height:min(46vh,360px);border-radius:28px;overflow:hidden;
+  background:linear-gradient(180deg,#171b29 0%, #0a0d14 100%);
+  border:1px solid rgba(255,255,255,.10);box-shadow:0 18px 40px rgba(0,0,0,.36);margin-bottom:18px;
+}
+.conquestCutinBg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(6px) brightness(.92);transform:scale(1.05);z-index:0;
+}
+.conquestCutinShade{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.18) 100%),
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.12), transparent 32%);
+  z-index:1;
+}
+.conquestCutinGirl{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:108%;height:100%;object-fit:contain;object-position:center bottom;z-index:2;
+}
+.conquestCutinNamePlate{
+  position:absolute;left:14px;bottom:14px;z-index:3;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.64);
+  border:1px solid rgba(255,255,255,.10);font-size:14px;font-weight:900;
+}
+.conquestCutinBtn{
+  appearance:none;border:none;border-radius:999px;padding:16px 34px;background:#fff;color:#111;font-size:18px;font-weight:900;cursor:pointer;
+  box-shadow:0 14px 28px rgba(0,0,0,.24);
+}
+ .roundResultOverlay{z-index:125;background:rgba(5,7,12,.88)}
+.roundResultBox{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(90vw,420px);max-height:88vh;overflow:auto;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
+  padding:24px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);text-align:center;
+}
+.roundResultRound{font-size:18px;font-weight:900;opacity:.9;margin-bottom:12px}
+.roundResultWin{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:10px}
+.roundResultDesc{font-size:15px;line-height:1.6;opacity:.92;margin-bottom:14px}
+.roundResultScore{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.roundResultScoreLine{
+  display:flex;justify-content:space-between;align-items:center;padding:10px 12px;
+  background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:800;
+}
+.nextRoundWrap{margin-top:14px}
 
-  .colorList{display:flex;flex-direction:column;gap:10px}
-  .colorLine{
-    display:grid;grid-template-columns:74px 1fr 54px;align-items:center;gap:10px;
-    background:rgba(255,255,255,.05);border-radius:14px;padding:8px 10px;
-  }
-  .colorThumb{
-    width:74px;aspect-ratio:1 / 1;border-radius:12px;overflow:hidden;position:relative;background:#1b2130;
-  }
-  .colorThumb img{
-    width:100%;height:100%;object-fit:contain;display:block;position:relative;z-index:1;padding:2px;transform:scale(1.05);
-  }
-  .colorThumbTint{position:absolute;inset:0;opacity:.76;z-index:0}
-  .colorName{font-size:13px;font-weight:900}
-  .colorPicker{width:44px;height:34px;border:none;background:none;padding:0}
+.resultOverlay{z-index:120;background:rgba(5,7,12,.92)}
+.resultBox{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(92vw,430px);max-height:88vh;overflow:auto;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
+  padding:22px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);
+}
+.resultTitle{font-size:28px;font-weight:900;text-align:center;margin-bottom:10px}
+.resultSub{text-align:center;font-size:15px;opacity:.92;margin-bottom:16px;line-height:1.6}
+.resultList{
+  background:rgba(255,255,255,.05);border-radius:18px;padding:10px;margin-bottom:14px;
+}
+.resultLine{
+  display:flex;justify-content:space-between;align-items:center;padding:10px 10px;
+  border-radius:12px;background:rgba(255,255,255,.04);margin-bottom:6px;font-size:14px;font-weight:800;
+}
+.resultLine:last-child{margin-bottom:0}
+.resultPointBox{
+  background:rgba(255,255,255,.05);border-radius:18px;padding:12px;margin-bottom:14px;
+}
+.resultPointTitle{font-size:15px;font-weight:900;margin-bottom:8px}
+.resultPointLine{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;font-size:14px;font-weight:800;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.resultPointLine:last-child{border-bottom:none}
+.resultButtons{
+  display:flex;flex-direction:column;gap:10px;margin-top:6px;padding-bottom:calc(env(safe-area-inset-bottom) + 80px);
+}
+.resultBtn{
+  appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
+}
+.resultRetry{background:#fff;color:#111}
+.resultConfig{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
 
-  .modeRow{
-    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 14px;
-  }
-  .modeBtn{
-    appearance:none;border:none;border-radius:999px;padding:10px 16px;font-weight:900;
-    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
-  }
-  .modeBtn.selected{background:#fff;color:#111}
+.handRevealOverlay{background:rgba(5,7,12,.92);z-index:128}
+.handRevealBox{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(92vw,420px);
+  background:rgba(0,0,0,.85);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  padding:20px 16px;
+  text-align:center;
+  box-shadow:0 14px 36px rgba(0,0,0,.35);
+}
+.handRevealTitle{font-size:20px;font-weight:900;margin-bottom:12px}
+.handRevealGrid{
+  display:grid;grid-template-columns:repeat(3, 70px);gap:10px;justify-content:center;
+}
+.handRevealTile{
+  width:70px;height:70px;border-radius:14px;overflow:hidden;position:relative;background:#1b2130;border:1px solid rgba(255,255,255,.08);
+}
+.handRevealTint{position:absolute;inset:0;opacity:.72;z-index:0}
+.handRevealTile img{
+  width:100%;height:100%;object-fit:contain;position:relative;z-index:1;
+}
+.handRevealFallback{
+  position:relative;z-index:1;font-size:11px;font-weight:900;padding:8px;line-height:1.2;text-align:center;
+}
+.handRevealTile.empty{visibility:hidden}
 
-  .girlOverlay{background:#000;z-index:130}
-  .girlBgWrap{position:absolute;inset:0}
-  .girlBgScene{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:0;
-    filter:blur(6px) brightness(.98);transform:scale(1.03);
-  }
-  .girlBgShade{
-    position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 100%);z-index:1;
-  }
-  .girlChara{
-    position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
-    width:min(118vw,600px);height:100%;object-fit:contain;object-position:center bottom;z-index:2;
-  }
-  .girlUi{
-    position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
-    padding:20px 16px max(20px, env(safe-area-inset-bottom));z-index:3;
-  }
-  .girlSpeech{
-    width:100%;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    color:#fff;border-radius:28px;padding:16px 16px 18px;border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.08);
-  }
-  .girlName{
-    display:inline-block;margin-bottom:12px;padding:8px 15px;border-radius:999px;background:rgba(0,0,0,.72);
-    color:#fff;font-size:14px;font-weight:900;
-  }
-  .girlText{
-    font-size:18px;font-weight:900;line-height:1.55;min-height:42px;text-shadow:0 1px 2px rgba(0,0,0,.28);
-  }
-
-  .bigTileWrap{
-    display:none;width:100%;margin:0 0 16px;align-items:center;justify-content:center;flex-direction:column;gap:10px;
-  }
-  .bigTileWrap.show{display:flex}
-  .bigTileCard{
-    width:min(56vw,240px);aspect-ratio:1 / 1;border-radius:20px;display:flex;align-items:center;justify-content:center;
-    overflow:hidden;position:relative;border:3px solid rgba(255,255,255,.22);box-shadow:0 18px 36px rgba(0,0,0,.30);
-    color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);background:#1b2130;
-  }
-  .bigTileTint{position:absolute;inset:0;opacity:.82;z-index:0}
-  .bigTileImg{
-    width:100%;height:100%;object-fit:contain;position:relative;z-index:1;padding:4px;transform:scale(1.08);
-  }
-  .bigTileFallback{
-    position:relative;z-index:1;font-size:28px;font-weight:900;padding:16px;text-align:center;
-  }
-  .bigTileCaption{
-    font-size:18px;font-weight:900;
-    text-shadow:0 2px 6px rgba(0,0,0,.65);
-    background:rgba(0,0,0,.34);
-    padding:8px 14px;border-radius:999px;
-    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  }
-
-  .roundOverlay{z-index:110;background:rgba(5,7,12,.86)}
-  .roundStage{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;
-  }
-  .roundMain{font-size:54px;font-weight:900;line-height:1;letter-spacing:.08em}
-  .roundSub{font-size:16px;font-weight:800;opacity:.9}
-
-  .conquestCutinOverlay{
-    z-index:150;
-    background:
-      radial-gradient(circle at 50% 20%, rgba(255,255,255,.08), transparent 30%),
-      linear-gradient(180deg, rgba(0,0,0,.92) 0%, rgba(15,18,28,.96) 100%);
-  }
-  .conquestCutinBox{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:24px 18px max(28px, env(safe-area-inset-bottom));
-    text-align:center;
-  }
-  .conquestCutinLabel{
-    font-size:14px;
-    font-weight:900;
-    letter-spacing:.14em;
-    color:#ffd36d;
-    margin-bottom:10px;
-    text-shadow:0 2px 12px rgba(0,0,0,.35);
-  }
-  .conquestCutinTitle{
-    font-size:34px;
-    font-weight:900;
-    line-height:1.2;
-    margin-bottom:16px;
-    text-shadow:0 4px 18px rgba(0,0,0,.45);
-  }
-  .conquestCutinSub{
-    font-size:15px;
-    font-weight:800;
-    opacity:.9;
-    line-height:1.7;
-    margin-bottom:20px;
-  }
-  .conquestCutinHero{
-    position:relative;
-    width:min(88vw,360px);
-    height:min(46vh,360px);
-    border-radius:28px;
-    overflow:hidden;
-    background:linear-gradient(180deg,#171b29 0%, #0a0d14 100%);
-    border:1px solid rgba(255,255,255,.10);
-    box-shadow:0 18px 40px rgba(0,0,0,.36);
-    margin-bottom:18px;
-  }
-  .conquestCutinBg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    filter:blur(6px) brightness(.92);
-    transform:scale(1.05);
-    z-index:0;
-  }
-  .conquestCutinShade{
-    position:absolute;
-    inset:0;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.18) 100%),
-      radial-gradient(circle at 50% 20%, rgba(255,255,255,.12), transparent 32%);
-    z-index:1;
-  }
-  .conquestCutinGirl{
-    position:absolute;
-    left:50%;
-    bottom:0;
-    transform:translateX(-50%);
-    width:108%;
-    height:100%;
-    object-fit:contain;
-    object-position:center bottom;
-    z-index:2;
-  }
-  .conquestCutinNamePlate{
-    position:absolute;
-    left:14px;
-    bottom:14px;
-    z-index:3;
-    padding:8px 14px;
-    border-radius:999px;
-    background:rgba(0,0,0,.64);
-    border:1px solid rgba(255,255,255,.10);
-    font-size:14px;
-    font-weight:900;
-  }
-  .conquestCutinBtn{
-    appearance:none;
-    border:none;
-    border-radius:999px;
-    padding:16px 34px;
-    background:#fff;
-    color:#111;
-    font-size:18px;
-    font-weight:900;
-    cursor:pointer;
-    box-shadow:0 14px 28px rgba(0,0,0,.24);
-  }
-   .roundResultOverlay{z-index:125;background:rgba(5,7,12,.88)}
-  .roundResultBox{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(90vw,420px);max-height:88vh;overflow:auto;
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
-    padding:24px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);text-align:center;
-  }
-  .roundResultRound{font-size:18px;font-weight:900;opacity:.9;margin-bottom:12px}
-  .roundResultWin{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:10px}
-  .roundResultDesc{font-size:15px;line-height:1.6;opacity:.92;margin-bottom:14px}
-  .roundResultScore{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-  .roundResultScoreLine{
-    display:flex;justify-content:space-between;align-items:center;padding:10px 12px;
-    background:rgba(255,255,255,.05);border-radius:12px;font-size:14px;font-weight:800;
-  }
-  .nextRoundWrap{margin-top:14px}
-
-  .resultOverlay{z-index:120;background:rgba(5,7,12,.92)}
-  .resultBox{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(92vw,430px);max-height:88vh;overflow:auto;
-    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:28px;
-    padding:22px 18px 18px;box-shadow:0 14px 36px rgba(0,0,0,.22);
-  }
-  .resultTitle{font-size:28px;font-weight:900;text-align:center;margin-bottom:10px}
-  .resultSub{text-align:center;font-size:15px;opacity:.92;margin-bottom:16px;line-height:1.6}
-  .resultList{
-    background:rgba(255,255,255,.05);border-radius:18px;padding:10px;margin-bottom:14px;
-  }
-  .resultLine{
-    display:flex;justify-content:space-between;align-items:center;padding:10px 10px;
-    border-radius:12px;background:rgba(255,255,255,.04);margin-bottom:6px;font-size:14px;font-weight:800;
-  }
-  .resultLine:last-child{margin-bottom:0}
-  .resultPointBox{
-    background:rgba(255,255,255,.05);
-    border-radius:18px;
-    padding:12px;
-    margin-bottom:14px;
-  }
-  .resultPointTitle{
-    font-size:15px;
-    font-weight:900;
-    margin-bottom:8px;
-  }
-  .resultPointLine{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    padding:8px 0;
-    font-size:14px;
-    font-weight:800;
-    border-bottom:1px solid rgba(255,255,255,.06);
-  }
-  .resultPointLine:last-child{border-bottom:none}
-  .resultRankUp{
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:14px;
-    background:rgba(255,230,120,.12);
-    border:1px solid rgba(255,230,120,.28);
-    font-size:14px;
-    font-weight:900;
-    color:#ffe78a;
-  }
-  .resultButtons{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:6px;
-    padding-bottom:calc(env(safe-area-inset-bottom) + 80px);
-  }
-  .resultBtn{
-    appearance:none;border:none;border-radius:18px;padding:16px 14px;font-size:16px;font-weight:900;cursor:pointer;
-  }
-  .resultRetry{background:#fff;color:#111}
-  .resultConfig{background:#2b3044;color:#fff;border:1px solid rgba(255,255,255,.08)}
-
-  .handRevealOverlay{background:rgba(5,7,12,.92);z-index:128}
-  .handRevealBox{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(92vw,420px);
-    background:rgba(0,0,0,.85);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:20px;
-    padding:20px 16px;
-    text-align:center;
-    box-shadow:0 14px 36px rgba(0,0,0,.35);
-  }
-  .handRevealTitle{
-    font-size:20px;
-    font-weight:900;
-    margin-bottom:12px;
-  }
-  .handRevealGrid{
-    display:grid;
-    grid-template-columns:repeat(3, 70px);
-    gap:10px;
-    justify-content:center;
-  }
-  .handRevealTile{
-    width:70px;
-    height:70px;
-    border-radius:14px;
-    overflow:hidden;
-    position:relative;
-    background:#1b2130;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .handRevealTint{position:absolute;inset:0;opacity:.72;z-index:0}
-  .handRevealTile img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    position:relative;
-    z-index:1;
-    transform:scale(1.08);
-  }
-  .handRevealFallback{
-    position:relative;
-    z-index:1;
-    font-size:12px;
-    font-weight:900;
-    padding:8px;
-    line-height:1.35;
-  }
-  .handRevealTile.empty{visibility:hidden}
-
-  @media (max-width:390px){
-    .tileBtn{width:78px;height:78px}
-    .roundMain{font-size:46px}
-    .topGrid{grid-template-columns:104px 1fr}
-    .titleHero{
-      width:min(90vw,320px);
-      height:min(40vh,290px);
-      margin-bottom:14px;
-    }
-    .titleLogo{font-size:29px}
-    .titleProfileTitle{font-size:19px}
-    .titlePointValue{font-size:14px}
-    .conquestCutinTitle{font-size:29px}
-    .conquestCutinHero{
-      width:min(90vw,330px);
-      height:min(42vh,320px);
-    }
-    .roundResultWin{font-size:25px}
-    .girlChara{width:min(122vw,560px);height:100%}
-    .handRevealTile{width:62px;height:62px}
-    .handRevealGrid{grid-template-columns:repeat(3,62px)}
-  }
+@media (max-width:390px){
+  .tileBtn{width:78px;height:78px}
+  .roundMain{font-size:46px}
+  .topGrid{grid-template-columns:104px 1fr}
+  .titleHero{width:min(90vw,320px);height:min(40vh,290px);margin-bottom:14px}
+  .titleLogo{font-size:29px}
+  .titleProfileTitle{font-size:19px}
+  .titlePointValue{font-size:14px}
+  .conquestCutinTitle{font-size:29px}
+  .conquestCutinHero{width:min(90vw,330px);height:min(42vh,320px)}
+  .roundResultWin{font-size:25px}
+  .girlChara{width:min(122vw,560px);height:100%}
+  .handRevealTile{width:62px;height:62px}
+  .handRevealGrid{grid-template-columns:repeat(3,62px)}
+}
 </style>
 </head>
 <body>
-  <div class="app">
-    <div class="title">デカブサジャラジャラ × チー娘</div>
+<div class="app">
+  <div class="title">デカブサジャラジャラ × チー娘</div>
 
-    <div class="panel statusBox">
-      <div class="statusTop">
-        <span id="turnLabel">現在の番：あなた</span>
-        <span id="roundLabel">東局</span>
-      </div>
-      <div class="statusMain" id="statusMain">ゲーム開始</div>
-      <div class="subInfo" id="subInfo">通常手札5枚 / 3枚×2セットで上がり</div>
+  <div class="panel statusBox">
+    <div class="statusTop">
+      <span id="turnLabel">現在の番：あなた</span>
+      <span id="roundLabel">東局</span>
     </div>
+    <div class="statusMain" id="statusMain">ゲーム開始</div>
+    <div class="subInfo" id="subInfo">通常手札5枚 / 3枚×2セットで上がり</div>
+  </div>
 
-    <div class="panel scoreWrap">
-      <div class="scoreHead">
-        <div class="scoreTitle">点数</div>
-        <button class="miniBtn" id="openCustomBtn" type="button">牌カスタム</button>
-      </div>
-      <div class="scoreList" id="scoreList"></div>
+  <div class="panel scoreWrap">
+    <div class="scoreHead">
+      <div class="scoreTitle">点数</div>
+      <div class="scoreTitle" id="modeText">フリー</div>
     </div>
+    <div class="scoreList" id="scoreList"></div>
+  </div>
 
-    <div class="panel topArea">
-      <div class="topGrid">
-        <div class="wallBox">
-          <div class="topTitle">山札</div>
-          <div class="wallInner">
-            <div class="wallCount" id="deckCount">0</div>
-            <div class="wallSub">残り枚数</div>
-          </div>
-        </div>
-
-        <div class="riverBox">
-          <div class="riverHead">
-            <div class="topTitle">捨て牌</div>
-            <div class="riverOwner" id="lastOwner">---</div>
-          </div>
-          <div class="riverColumnHeads" id="riverColumnHeads"></div>
-          <div class="riverGrid" id="riverGrid"></div>
-          <div class="riverEmpty" id="riverEmpty">まだ捨て牌はありません</div>
+  <div class="panel topArea">
+    <div class="topGrid">
+      <div class="wallBox">
+        <div class="topTitle">山札</div>
+        <div class="wallInner">
+          <div class="wallCount" id="deckCount">0</div>
+          <div class="wallSub">残り枚数</div>
         </div>
       </div>
-    </div>
 
-    <div class="panel handWrap">
-      <div class="handTitle">あなたの手札</div>
-      <div class="hand" id="hand"></div>
-    </div>
-
-    <div class="actionWrap">
-      <button class="actionBtn" id="tsumoBtn" type="button" disabled>ツモ</button>
-      <button class="actionBtn" id="ronBtn" type="button" disabled>ロン</button>
-      <button class="actionBtn" id="passBtn" type="button" disabled>スルー</button>
-    </div>
-
-    <div class="controls">
-      <button class="mainBtn" id="resetBtn" type="button">リセット</button>
-    </div>
-
-    <div class="panel historyWrap">
-      <div class="historyTitle">履歴</div>
-      <div class="historyBox" id="historyBox"></div>
-    </div>
-  </div>
-
-  <div class="overlay titleOverlay show" id="titleOverlay">
-    <div class="titleScreen">
-      <div class="titleHero">
-        <div class="titleHeroBg"></div>
-        <img id="titleGirlImage" class="titleGirlImage" src="img/girlA_1.png" alt="チー娘">
-        <div class="titleHeroShade"></div>
-      </div>
-
-      <div class="titleLogo">デカブサジャラジャラ<br>× チー娘</div>
-
-      <div class="titleModeRow">
-        <button class="titleModeBtn active" data-mode="free" id="modeFreeBtn" type="button">フリー</button>
-        <button class="titleModeBtn" data-mode="conquest" id="modeConquestBtn" type="button">制覇</button>
-      </div>
-
-      <div class="titleProfileCard">
-        <div class="titleProfileMain">
-          <div class="titleProfileLabel">現在の称号</div>
-          <div class="titleProfileTitle" id="titleProfileTitle">見習いジャララー</div>
+      <div class="riverBox">
+        <div class="riverHead">
+          <div class="topTitle">捨て牌</div>
+          <div class="riverOwner" id="lastOwner">---</div>
         </div>
+        <div class="riverColumnHeads" id="riverColumnHeads"></div>
+        <div class="riverGrid" id="riverGrid"></div>
+        <div class="riverEmpty" id="riverEmpty">まだ捨て牌はありません</div>
+      </div>
+    </div>
+  </div>
 
-        <div class="titleProfilePoints">
-          <div class="titlePointBox">
-            <div class="titlePointLabel">ポイント</div>
-            <div class="titlePointValue" id="titleProfilePoint">0pt</div>
-          </div>
-          <div class="titlePointBox">
-            <div class="titlePointLabel">総対戦数</div>
-            <div class="titlePointValue" id="titleProfilePlayCount">0</div>
-          </div>
-          <div class="titlePointBox">
-            <div class="titlePointLabel">1位回数</div>
-            <div class="titlePointValue" id="titleProfileFirstCount">0</div>
-          </div>
+  <div class="panel handWrap">
+    <div class="handTitle">あなたの手札</div>
+    <div class="hand" id="hand"></div>
+  </div>
+
+  <div class="actionWrap">
+    <button class="actionBtn" id="tsumoBtn" type="button" disabled>ツモ</button>
+    <button class="actionBtn" id="ronBtn" type="button" disabled>ロン</button>
+    <button class="actionBtn" id="passBtn" type="button" disabled>スルー</button>
+  </div>
+
+  <div class="controls">
+    <button class="mainBtn" id="resetBtn" type="button">リセット</button>
+  </div>
+
+  <div class="panel historyWrap">
+    <div class="historyTitle">履歴</div>
+    <div class="historyBox" id="historyBox"></div>
+  </div>
+</div>
+
+<div class="overlay titleOverlay show" id="titleOverlay">
+  <div class="titleScreen">
+    <div class="titleHero">
+      <div class="titleHeroBg"></div>
+      <img id="titleGirlImage" class="titleGirlImage" src="img/girlA_1.png" alt="チー娘">
+      <div class="titleHeroShade"></div>
+    </div>
+
+    <div class="titleLogo">デカブサジャラジャラ<br>× チー娘</div>
+
+    <div class="titleModeRow">
+      <button class="titleModeBtn active" id="modeFreeBtn" type="button">フリー</button>
+      <button class="titleModeBtn" id="modeConquestBtn" type="button">制覇</button>
+    </div>
+
+    <div class="titleProfileCard">
+      <div class="titleProfileMain">
+        <div class="titleProfileLabel">現在の進行</div>
+        <div class="titleProfileTitle" id="titleProfileTitle">チー娘制覇 0 / 4</div>
+      </div>
+
+      <div class="titleProfilePoints">
+        <div class="titlePointBox">
+          <div class="titlePointLabel">ポイント</div>
+          <div class="titlePointValue" id="titleProfilePoint">0pt</div>
         </div>
-
-        <div class="titleBadgeWrap">
-          <div class="titleBadge" id="titleBadgeRank">RANK 01</div>
-          <div class="titleBadge" id="titleBadgeTop">TOP 0</div>
-          <div class="titleBadge" id="titleBadgeConquest">制覇 0 / 4</div>
+        <div class="titlePointBox">
+          <div class="titlePointLabel">総対戦数</div>
+          <div class="titlePointValue" id="titleProfilePlayCount">0</div>
         </div>
-
-        <div class="titleQuote" id="titleQuote">今日はどこまでジャラジャラする？</div>
-      </div>
-
-      <div class="titleSub">
-        パートナーを1人選んで、CPU3人を決めて、<br>
-        デカブサ牌を9種選んで遊ぼう。
-      </div>
-
-      <button class="startBtn" id="startBtn" type="button">START</button>
-      <div class="titleNote">プレイヤーだけ ロン / ツモ 手動</div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="girlSelectOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">パートナーを選ぶ</div>
-      <div class="stepSub">あなた担当のチー娘を1人選択</div>
-      <div class="girlSelectGrid" id="girlSelectGrid"></div>
-      <div class="stepButtons">
-        <button class="stepBtnPrimary" id="girlSelectNextBtn" type="button">次へ</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="cpuSelectOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">CPUを選ぶ</div>
-      <div class="stepSub">パートナー以外から3人選択</div>
-      <div class="selectCount" id="cpuSelectCount">0/3 選択中</div>
-      <div class="girlSelectGrid" id="cpuSelectGrid"></div>
-      <div class="stepButtons">
-        <button class="stepBtnSecondary" id="cpuSelectBackBtn" type="button">戻る</button>
-        <button class="stepBtnPrimary" id="cpuSelectNextBtn" type="button">次へ</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="modeSelectOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">周回数を選ぶ</div>
-      <div class="stepSub">東→南→西→北 を何周するか選択</div>
-      <div class="modeRow">
-        <button class="modeBtn selected" data-loop="1" type="button">1周</button>
-        <button class="modeBtn" data-loop="2" type="button">2周</button>
-        <button class="modeBtn" data-loop="3" type="button">3周</button>
-        <button class="modeBtn" data-loop="4" type="button">4周</button>
-      </div>
-      <div class="stepButtons">
-        <button class="stepBtnSecondary" id="modeSelectBackBtn" type="button">戻る</button>
-        <button class="stepBtnPrimary" id="modeSelectNextBtn" type="button">次へ</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="tileSelectOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">牌に使うキャラを選ぶ</div>
-      <div class="stepSub">12体の中から 9体ちょうど選択</div>
-      <div class="selectCount" id="tileSelectCount">0/9 選択中</div>
-      <div class="customGrid" id="tileSelectGrid"></div>
-      <div class="stepButtons">
-        <button class="stepBtnSecondary" id="tileSelectBackBtn" type="button">戻る</button>
-        <button class="stepBtnPrimary" id="tileSelectNextBtn" type="button">次へ</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="colorSelectOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">色を選ぶ</div>
-      <div class="stepSub">選んだ9体それぞれの背景色を設定</div>
-      <div class="colorList" id="colorList"></div>
-      <div class="stepButtons">
-        <button class="stepBtnSecondary" id="colorSelectBackBtn" type="button">戻る</button>
-        <button class="stepBtnPrimary" id="gameStartBtn" type="button">ゲーム開始</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay stepOverlay" id="customOverlay">
-    <div class="stepBox">
-      <div class="stepTitle">牌カスタム</div>
-      <div class="stepSub">今の牌構成を変更して、次回リセット後に反映</div>
-      <div class="selectCount" id="customSelectCount">0/9 選択中</div>
-      <div class="customGrid" id="customGrid"></div>
-      <div class="stepButtons">
-        <button class="stepBtnPrimary" id="saveCustomBtn" type="button">保存</button>
-        <button class="stepBtnSecondary" id="closeCustomBtn" type="button">閉じる</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay girlOverlay" id="girlOverlay">
-    <div class="girlBgWrap">
-      <img class="girlBgScene" id="girlBgScene" alt="">
-      <div class="girlBgShade"></div>
-      <img class="girlChara" id="girlChara" alt="">
-    </div>
-
-    <div class="girlUi">
-      <div class="bigTileWrap" id="bigTileWrap">
-        <div class="bigTileCard" id="bigTileCard">
-          <div class="bigTileTint" id="bigTileTint"></div>
-          <div class="bigTileFallback" id="bigTileFallback">デカブサ</div>
+        <div class="titlePointBox">
+          <div class="titlePointLabel">1位回数</div>
+          <div class="titlePointValue" id="titleProfileFirstCount">0</div>
         </div>
-        <div class="bigTileCaption" id="bigTileCaption">デカブサを捨てる</div>
       </div>
 
-      <div class="girlSpeech">
-        <div class="girlName" id="girlName">チー娘A</div>
-        <div class="girlText" id="girlText">いくよ。</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay roundOverlay" id="roundOverlay">
-    <div class="roundStage">
-      <div class="roundMain" id="roundOverlayMain">東局</div>
-      <div class="roundSub" id="roundOverlaySub">開局</div>
-    </div>
-  </div>
-
-  <div class="overlay conquestCutinOverlay" id="conquestCutinOverlay">
-    <div class="conquestCutinBox">
-      <div class="conquestCutinLabel">CONQUEST MODE</div>
-      <div class="conquestCutinTitle">制覇戦</div>
-      <div class="conquestCutinSub" id="conquestCutinSub">次の相手と戦う</div>
-
-      <div class="conquestCutinHero">
-        <img class="conquestCutinBg" id="conquestCutinBg" src="img/bg_east.png" alt="">
-        <div class="conquestCutinShade"></div>
-        <img class="conquestCutinGirl" id="conquestCutinGirl" src="img/girlA_1.png" alt="">
-        <div class="conquestCutinNamePlate" id="conquestCutinNamePlate">チー娘A</div>
+      <div class="titleBadgeWrap">
+        <div class="titleBadge" id="titleBadgeRank">RANK 01</div>
+        <div class="titleBadge" id="titleBadgeTop">TOP 0</div>
+        <div class="titleBadge" id="titleBadgeConquest">制覇 0 / 4</div>
       </div>
 
-      <button class="conquestCutinBtn" id="conquestCutinBtn" type="button">対戦開始</button>
+      <div class="titleQuote" id="titleQuote">今日はどこまでジャラジャラする？</div>
+    </div>
+
+    <div class="titleSub">
+      フリーは自由対戦。<br>
+      制覇は敵チー娘を倒して進んでいくモード。
+    </div>
+
+    <button class="startBtn" id="startBtn" type="button">START</button>
+    <div class="titleNote">プレイヤーだけ ロン / ツモ 手動</div>
+  </div>
+</div>
+
+<div class="overlay stepOverlay" id="girlSelectOverlay">
+  <div class="stepBox">
+    <div class="stepTitle">パートナーを選ぶ</div>
+    <div class="stepSub" id="girlSelectSub">あなた担当のチー娘を1人選択</div>
+    <div class="girlSelectGrid" id="girlSelectGrid"></div>
+    <div class="stepButtons">
+      <button class="stepBtnPrimary" id="girlSelectNextBtn" type="button">次へ</button>
     </div>
   </div>
-    <div class="overlay roundResultOverlay" id="roundResultOverlay">
-    <div class="roundResultBox">
-      <div class="roundResultRound" id="roundResultRound">東局終了</div>
-      <div class="roundResultWin" id="roundResultWin">チー娘A ロン</div>
-      <div class="roundResultDesc" id="roundResultDesc">チー娘Cから3点</div>
-      <div class="roundResultScore" id="roundResultScore"></div>
-      <div class="nextRoundWrap">
-        <button id="nextRoundBtn" class="stepBtnPrimary" type="button">次の局へ</button>
+</div>
+
+<div class="overlay stepOverlay" id="cpuSelectOverlay">
+  <div class="stepBox">
+    <div class="stepTitle">CPUを選ぶ</div>
+    <div class="stepSub">パートナー以外から3人選択</div>
+    <div class="selectCount" id="cpuSelectCount">0/3 選択中</div>
+    <div class="girlSelectGrid" id="cpuSelectGrid"></div>
+    <div class="stepButtons">
+      <button class="stepBtnSecondary" id="cpuSelectBackBtn" type="button">戻る</button>
+      <button class="stepBtnPrimary" id="cpuSelectNextBtn" type="button">次へ</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay stepOverlay" id="modeSelectOverlay">
+  <div class="stepBox">
+    <div class="stepTitle">周回数を選ぶ</div>
+    <div class="stepSub">東→南→西→北 を何周するか選択</div>
+    <div class="modeRow">
+      <button class="modeBtn selected" data-loop="1" type="button">1周</button>
+      <button class="modeBtn" data-loop="2" type="button">2周</button>
+      <button class="modeBtn" data-loop="3" type="button">3周</button>
+      <button class="modeBtn" data-loop="4" type="button">4周</button>
+    </div>
+    <div class="stepButtons">
+      <button class="stepBtnSecondary" id="modeSelectBackBtn" type="button">戻る</button>
+      <button class="stepBtnPrimary" id="modeSelectNextBtn" type="button">次へ</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay stepOverlay" id="tileSelectOverlay">
+  <div class="stepBox">
+    <div class="stepTitle">牌に使うキャラを選ぶ</div>
+    <div class="stepSub">9体は固定。色だけ変更可能</div>
+    <div class="colorList" id="colorList"></div>
+    <div class="stepButtons">
+      <button class="stepBtnSecondary" id="tileSelectBackBtn" type="button">戻る</button>
+      <button class="stepBtnPrimary" id="gameStartBtn" type="button">ゲーム開始</button>
+    </div>
+  </div>
+</div>
+<div class="overlay girlOverlay" id="girlOverlay">
+  <div class="girlBgWrap">
+    <img class="girlBgScene" id="girlBgScene" alt="">
+    <div class="girlBgShade"></div>
+    <img class="girlChara" id="girlChara" alt="">
+  </div>
+
+  <div class="girlUi">
+    <div class="bigTileWrap" id="bigTileWrap">
+      <div class="bigTileCard" id="bigTileCard">
+        <div class="bigTileTint" id="bigTileTint"></div>
+        <div class="bigTileFallback" id="bigTileFallback">デカブサ</div>
       </div>
+      <div class="bigTileCaption" id="bigTileCaption">デカブサを捨てる</div>
+    </div>
+
+    <div class="girlSpeech">
+      <div class="girlName" id="girlName">チー娘A</div>
+      <div class="girlText" id="girlText">いくよ。</div>
     </div>
   </div>
+</div>
 
-  <div class="overlay resultOverlay" id="resultOverlay">
-    <div class="resultBox">
-      <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
-      <div class="resultSub" id="resultSub">トップで終了しました。</div>
-      <div class="resultList" id="resultList"></div>
-      <div class="resultPointBox" id="resultPointBox"></div>
-      <div class="resultButtons">
-        <button class="resultBtn resultConfig" id="backToSetupBtn" type="button">設定に戻る</button>
-        <button class="resultBtn resultRetry" id="retryBtn" type="button">もう一回</button>
-      </div>
+<div class="overlay roundOverlay" id="roundOverlay">
+  <div class="roundStage">
+    <div class="roundMain" id="roundOverlayMain">東局</div>
+    <div class="roundSub" id="roundOverlaySub">開局</div>
+  </div>
+</div>
+
+<div class="overlay conquestCutinOverlay" id="conquestCutinOverlay">
+  <div class="conquestCutinBox">
+    <div class="conquestCutinLabel">CONQUEST MODE</div>
+    <div class="conquestCutinTitle">制覇戦</div>
+    <div class="conquestCutinSub" id="conquestCutinSub">次の敵が現れた</div>
+
+    <div class="conquestCutinHero">
+      <img class="conquestCutinBg" id="conquestCutinBg" src="img/bg_east.png" alt="">
+      <div class="conquestCutinShade"></div>
+      <img class="conquestCutinGirl" id="conquestCutinGirl" src="img/girlA_1.png" alt="">
+      <div class="conquestCutinNamePlate" id="conquestCutinNamePlate">チー娘A</div>
+    </div>
+
+    <button class="conquestCutinBtn" id="conquestCutinBtn" type="button">対戦開始</button>
+  </div>
+</div>
+
+<div class="overlay roundResultOverlay" id="roundResultOverlay">
+  <div class="roundResultBox">
+    <div class="roundResultRound" id="roundResultRound">東局終了</div>
+    <div class="roundResultWin" id="roundResultWin">チー娘A ロン</div>
+    <div class="roundResultDesc" id="roundResultDesc">チー娘Cから3点</div>
+    <div class="roundResultScore" id="roundResultScore"></div>
+    <div class="nextRoundWrap">
+      <button id="nextRoundBtn" class="stepBtnPrimary" type="button">次の局へ</button>
     </div>
   </div>
+</div>
 
-  <div class="overlay handRevealOverlay" id="handRevealOverlay">
-    <div class="handRevealBox">
-      <div class="handRevealTitle" id="handRevealTitle">手札公開</div>
-      <div class="handRevealGrid" id="handRevealGrid"></div>
+<div class="overlay resultOverlay" id="resultOverlay">
+  <div class="resultBox">
+    <div class="resultTitle" id="resultTitle">あなたの勝ち！</div>
+    <div class="resultSub" id="resultSub">トップで終了しました。</div>
+    <div class="resultList" id="resultList"></div>
+    <div class="resultPointBox" id="resultPointBox"></div>
+    <div class="resultButtons">
+      <button class="resultBtn resultConfig" id="backToSetupBtn" type="button">設定に戻る</button>
+      <button class="resultBtn resultRetry" id="retryBtn" type="button">もう一回</button>
     </div>
   </div>
-
-  <script>
-    const SAVE_KEY = "dekabusaJaraJaraComplete02";
-    const BASE_HAND_SIZE = 5;
-    const COPIES_PER_TILE = 6;
-    const PICK_COUNT = 9;
-    const WAIT_LONG = 1150;
-    const WAIT_DISCARD_PREVIEW = 800;
-    const WAIT_ROUND_START_GAP = 500;
-    const PARENT_ORDER = ["東","南","西","北"];
-    const START_POINT_MAP = {1:10,2:20,3:25,4:30};
-
-    const ALL_TILE_POOL = [
-      { id:"dekabusa", name:"デカブサ", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
-      { id:"ani", name:"デカブサ兄", defaultColor:"#ffd93d", image:"img/tile_aniki.png" },
-      { id:"namaken", name:"ナマケン", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
-      { id:"tora", name:"トラさん", defaultColor:"#6ee7a8", image:"img/tile_torasan.png" },
-      { id:"king", name:"キング", defaultColor:"#c084fc", image:"img/tile_king.png" },
-      { id:"gori", name:"ゴリさん", defaultColor:"#d2a679", image:"img/tile_gorisan.png" },
-      { id:"kabao", name:"カバオ", defaultColor:"#ffb86b", image:"img/tile_kabao.png" },
-      { id:"kan", name:"カンえもん", defaultColor:"#9aa4b8", image:"img/tile_kanemon.png" },
-      { id:"pan", name:"パンパン", defaultColor:"#ff8fd1", image:"img/tile_panpan.png" },
-      { id:"latero", name:"ラテロウ", defaultColor:"#d7b896", image:"img/tile_latero.png" },
-      { id:"juuzo", name:"ジュウゾウ", defaultColor:"#c7d2e2", image:"img/tile_juuzo.png" },
-      { id:"nisebusa", name:"ニセブサ", defaultColor:"#94a3ff", image:"img/tile_nisebusa.png" }
-    ];
-
-    const GIRLS = [
-      {
-        id:"girlA",
-        name:"チー娘A",
-        quotes:["今日はどこまでジャラジャラする？","落ち着いていこう。","いい流れにしよう。","まずは1位を狙おう。"],
-        conquestIntro:["ここからが本番だよ。","ちゃんと勝って進んでね。","私を倒せるかな？"],
-        introHuman:["あなたの番だよ。","どれ切る？","いけそうだね。","1枚選んでね。"],
-        thinkHuman:["ちょっと考えよう。","どれを残す？","ここ大事かも。","落ち着いていこう。"],
-        drawHumanGood:["それ良さそう！","来たかも！","ギュウ…？","かなりいいね。"],
-        drawHumanNormal:["どうかな。","まだこれからだね。","悪くないかも。","考えどころだね。"],
-        introCpu:["いくよ。","見てて。","引くね。","私の番だよ。"],
-        thinkCpu:["ちょっと考えるね。","どれかな。","ここ悩むかも。","まだ見てて。"],
-        drawCpuGood:["来たかも！","いい感じ。","揃いそう！","これ欲しかったかも。"],
-        drawCpuNormal:["うーん。","まだかな。","どうだろ。","悪くないよ。"],
-        discard:["これかな。","これを切るね。","いったんこれで。","これでいくよ。"],
-        tsumo:["ツモだよ！","自分で引いた！","ギュウ！！","やった！"],
-        ron:["それロン！","その牌もらい！","待ってたよ！","ロンだね！"],
-        loseTsumo:["やられた…","つもられた…","うそ…","きついかも…"],
-        loseRon:["それは無理…","ロンされた…","やられた…","くっ…"]
-      },
-      {
-        id:"girlB",
-        name:"チー娘B",
-        quotes:["まあ、悪くないんじゃない？","急がなくていいでしょ。","ちゃんと見て選んで。","今日は勝ちに行くよ。"],
-        conquestIntro:["ここで止まったらだめでしょ。","私を超えていきなよ。","勝てるなら見せて。"],
-        introHuman:["ほら、あなたの番。","どれ切るの？","ちゃんと見て選んで。","さて、どうするの。"],
-        thinkHuman:["急がなくていいでしょ。","ちゃんと見て。","ここは考えどころ。","まあ落ち着いて。"],
-        drawHumanGood:["悪くないじゃん。","来たかもね。","それ残す？","かなりいい形。"],
-        drawHumanNormal:["まあ普通。","まだ何とも。","急がなくていいでしょ。","考えるところね。"],
-        introCpu:["始めるよ。","見てなさい。","引く。","私の番ね。"],
-        thinkCpu:["少し考える。","ここは悩むかな。","どれを切るかね。","待ってて。"],
-        drawCpuGood:["来るね。","悪くない。","揃うんじゃない？","だいぶ近い。"],
-        drawCpuNormal:["普通。","まだかな。","まあいい。","そんなものね。"],
-        discard:["これで。","切るよ。","はい次。","これを捨てる。"],
-        tsumo:["ツモ。","自分で引いたわ。","これで上がり。","決まりね。"],
-        ron:["それロン。","通ったと思った？","その牌で完成。","待ってたわ。"],
-        loseTsumo:["つもられた…","ちょっと最悪。","やられたわ。","それはないでしょ。"],
-        loseRon:["ロンされた…","くっ…","やられた。","それは通らないの。"]
-      },
-      {
-        id:"girlC",
-        name:"チー娘C",
-        quotes:["……やるならやる。","静かに勝とう。","別に焦らなくていい。","今日はそんな日。"],
-        conquestIntro:["……ここで終わる？","進みたいなら勝って。","別に止めないけど。"],
-        introHuman:["あなたの番。","どれでもいいけど選んで。","……切って。","好きにして。"],
-        thinkHuman:["……考えて。","急がなくていい。","見てからでいい。","好きに決めて。"],
-        drawHumanGood:["揃うかもね。","来たっぽい。","まあ良さそう。","悪くない。"],
-        drawHumanNormal:["どうだろ。","まだ分からない。","……普通。","別に。"],
-        introCpu:["……いく。","引く。","始める。","私の番。"],
-        thinkCpu:["……考える。","少し待つ。","どれかな。","まだ決めない。"],
-        drawCpuGood:["来た。","揃うかも。","悪くない。","たぶんこれ。"],
-        drawCpuNormal:["……まだ。","ふつう。","別に。","そんな感じ。"],
-        discard:["これで。","切る。","……次。","いらない。"],
-        tsumo:["ツモ。","引いた。","上がり。","……勝ち。"],
-        ron:["それロン。","その牌でいい。","待ってた。","完成。"],
-        loseTsumo:["……やられた。","つもられた。","別に。","……負け。"],
-        loseRon:["ロンされた。","……無理。","やられた。","それは通る。"]
-      },
-      {
-        id:"girlD",
-        name:"チー娘D",
-        quotes:["引いてみよう。","いい感じに行けるかも。","ゆっくりでも大丈夫。","今日は上まで行こう。"],
-        conquestIntro:["最後までたどり着けるかな？","ここを越えたら大したもの。","思い切って来て。"],
-        introHuman:["いこうか。","あなたの番。","選んでみて。","悪くない流れ。"],
-        thinkHuman:["焦らなくていいよ。","見てから決めよう。","そのままでもいいかも。","ゆっくりで大丈夫。"],
-        drawHumanGood:["いいの来たかも。","それ、かなり良さそう。","揃いそうだね。","いけるかも。"],
-        drawHumanNormal:["まだ分からないね。","悪くはないかな。","続けてみよう。","ここからかな。"],
-        introCpu:["始めるね。","見てて。","引いてみる。","私の番。"],
-        thinkCpu:["ちょっと考える。","うーん、どうしよう。","ここ迷うね。","少し待って。"],
-        drawCpuGood:["いい感じ。","これは欲しかった。","近いかも。","揃いそう。"],
-        drawCpuNormal:["まだかな。","普通だね。","もう少し。","そんな感じ。"],
-        discard:["これにする。","じゃあこれで。","切るね。","これかな。"],
-        tsumo:["ツモ！","やった、引いた。","これで完成。","決まったね。"],
-        ron:["それロン。","その牌、もらうね。","待ってたよ。","ロンで上がり。"],
-        loseTsumo:["つもられちゃった。","やられたね。","今回はだめかも。","うーん、負け。"],
-        loseRon:["ロンされたね。","くやしい。","やられたかも。","今回は通っちゃった。"]
-      }
-    ];
-
-    const UNLOCKED_GIRLS_DEFAULT = ["girlA","girlB","girlC","girlD"];
-    const CONQUEST_ORDER = ["girlA","girlB","girlC","girlD"];
-
-    const DEFAULT_SETUP = {
-      supportGirlId:"girlA",
-      cpuGirlIds:["girlB","girlC","girlD"],
-      selectedTileIds:["dekabusa","ani","namaken","tora","king","gori","kabao","kan","pan"],
-      tileColors:{
-        dekabusa:"#ff6b6b",
-        ani:"#ffd93d",
-        namaken:"#6bcBff",
-        tora:"#6ee7a8",
-        king:"#c084fc",
-        gori:"#d2a679",
-        kabao:"#ffb86b",
-        kan:"#9aa4b8",
-        pan:"#ff8fd1"
-      }
-    };
-
-    const DEFAULT_PROFILE = {
-      totalPoint:0,
-      playCount:0,
-      firstCount:0,
-      winCount:0,
-      bestTitle:"見習いジャララー",
-      conquestProgress:0,
-      unlockedGirls:UNLOCKED_GIRLS_DEFAULT
-    };
-
-    const players = [
-      { id:"you",  name:"あなた", short:"自", type:"human", girlId:null, point:10, hand:[], seat:"" },
-      { id:"cpu1", name:"CPU1", short:"A", type:"cpu", girlId:null, point:10, hand:[], seat:"" },
-      { id:"cpu2", name:"CPU2", short:"B", type:"cpu", girlId:null, point:10, hand:[], seat:"" },
-      { id:"cpu3", name:"CPU3", short:"C", type:"cpu", girlId:null, point:10, hand:[], seat:"" }
-    ];
-
-    let gameSetup = JSON.parse(JSON.stringify(DEFAULT_SETUP));
-    let playerProfile = loadProfile();
-    let gameMode = "free";
-
-    let matchStats = {
-      playerWon:false,
-      playerWinType:null,
-      hakoFinish:false,
-      playerRenchan:0,
-      bestPlayerRenchan:0
-    };
-
-    let TILES = [];
-    let deck = [];
-    let discardPile = [];
-    let gameEnded = false;
-    let busy = false;
-    let waitingPlayerDiscard = false;
-    let justDrawnIndex = -1;
-    let historyLogs = [];
-    let parentSeatIndex = 0;
-    let turnIndex = 0;
-    let pendingTsumo = false;
-    let pendingRon = false;
-    let lastDiscardInfo = null;
-
-    let tempGirlId = null;
-    let tempCpuGirlIds = [];
-    let tempTileIds = [];
-    let tempTileColors = {};
-    let tempLoopCount = 1;
-
-    let humanTurnTimer1 = null;
-    let humanTurnTimer2 = null;
-
-    let loopCount = 1;
-    let totalRounds = 4;
-    let currentRoundNumber = 0;
-
-    const turnLabel = document.getElementById("turnLabel");
-    const roundLabel = document.getElementById("roundLabel");
-    const statusMain = document.getElementById("statusMain");
-    const subInfo = document.getElementById("subInfo");
-    const scoreList = document.getElementById("scoreList");
-    const deckCount = document.getElementById("deckCount");
-    const handEl = document.getElementById("hand");
-    const historyBox = document.getElementById("historyBox");
-
-    const startBtn = document.getElementById("startBtn");
-    const openCustomBtn = document.getElementById("openCustomBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const retryBtn = document.getElementById("retryBtn");
-    const backToSetupBtn = document.getElementById("backToSetupBtn");
-
-    const tsumoBtn = document.getElementById("tsumoBtn");
-    const ronBtn = document.getElementById("ronBtn");
-    const passBtn = document.getElementById("passBtn");
-    const nextRoundBtn = document.getElementById("nextRoundBtn");
-
-    const riverGrid = document.getElementById("riverGrid");
-    const riverEmpty = document.getElementById("riverEmpty");
-    const lastOwner = document.getElementById("lastOwner");
-    const riverColumnHeads = document.getElementById("riverColumnHeads");
-
-    const titleOverlay = document.getElementById("titleOverlay");
-    const girlSelectOverlay = document.getElementById("girlSelectOverlay");
-    const cpuSelectOverlay = document.getElementById("cpuSelectOverlay");
-    const modeSelectOverlay = document.getElementById("modeSelectOverlay");
-    const tileSelectOverlay = document.getElementById("tileSelectOverlay");
-    const colorSelectOverlay = document.getElementById("colorSelectOverlay");
-    const customOverlay = document.getElementById("customOverlay");
-
-    const girlSelectGrid = document.getElementById("girlSelectGrid");
-    const cpuSelectGrid = document.getElementById("cpuSelectGrid");
-    const tileSelectGrid = document.getElementById("tileSelectGrid");
-    const customGrid = document.getElementById("customGrid");
-    const colorList = document.getElementById("colorList");
-
-    const cpuSelectCount = document.getElementById("cpuSelectCount");
-    const tileSelectCount = document.getElementById("tileSelectCount");
-    const customSelectCount = document.getElementById("customSelectCount");
-
-    const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
-    const cpuSelectBackBtn = document.getElementById("cpuSelectBackBtn");
-    const cpuSelectNextBtn = document.getElementById("cpuSelectNextBtn");
-    const modeSelectBackBtn = document.getElementById("modeSelectBackBtn");
-    const modeSelectNextBtn = document.getElementById("modeSelectNextBtn");
-    const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
-    const tileSelectNextBtn = document.getElementById("tileSelectNextBtn");
-    const colorSelectBackBtn = document.getElementById("colorSelectBackBtn");
-    const gameStartBtn = document.getElementById("gameStartBtn");
-    const saveCustomBtn = document.getElementById("saveCustomBtn");
-    const closeCustomBtn = document.getElementById("closeCustomBtn");
-
-    const girlOverlay = document.getElementById("girlOverlay");
-    const girlBgScene = document.getElementById("girlBgScene");
-    const girlChara = document.getElementById("girlChara");
-    const girlNameEl = document.getElementById("girlName");
-    const girlTextEl = document.getElementById("girlText");
-    const bigTileWrap = document.getElementById("bigTileWrap");
-    const bigTileCard = document.getElementById("bigTileCard");
-    const bigTileTint = document.getElementById("bigTileTint");
-    const bigTileFallback = document.getElementById("bigTileFallback");
-    const bigTileCaption = document.getElementById("bigTileCaption");
-
-    const roundOverlay = document.getElementById("roundOverlay");
-    const roundOverlayMain = document.getElementById("roundOverlayMain");
-    const roundOverlaySub = document.getElementById("roundOverlaySub");
-
-    const conquestCutinOverlay = document.getElementById("conquestCutinOverlay");
-    const conquestCutinBg = document.getElementById("conquestCutinBg");
-    const conquestCutinGirl = document.getElementById("conquestCutinGirl");
-    const conquestCutinNamePlate = document.getElementById("conquestCutinNamePlate");
-    const conquestCutinSub = document.getElementById("conquestCutinSub");
-    const conquestCutinBtn = document.getElementById("conquestCutinBtn");
-
-    const roundResultOverlay = document.getElementById("roundResultOverlay");
-    const roundResultRound = document.getElementById("roundResultRound");
-    const roundResultWin = document.getElementById("roundResultWin");
-    const roundResultDesc = document.getElementById("roundResultDesc");
-    const roundResultScore = document.getElementById("roundResultScore");
-
-    const resultOverlay = document.getElementById("resultOverlay");
-    const resultTitle = document.getElementById("resultTitle");
-    const resultSub = document.getElementById("resultSub");
-    const resultList = document.getElementById("resultList");
-    const resultPointBox = document.getElementById("resultPointBox");
-
-    const handRevealOverlay = document.getElementById("handRevealOverlay");
-    const handRevealTitle = document.getElementById("handRevealTitle");
-    const handRevealGrid = document.getElementById("handRevealGrid");
-
-    const titleGirlImage = document.getElementById("titleGirlImage");
-    const titleProfileTitle = document.getElementById("titleProfileTitle");
-    const titleProfilePoint = document.getElementById("titleProfilePoint");
-    const titleProfilePlayCount = document.getElementById("titleProfilePlayCount");
-    const titleProfileFirstCount = document.getElementById("titleProfileFirstCount");
-    const titleBadgeRank = document.getElementById("titleBadgeRank");
-    const titleBadgeTop = document.getElementById("titleBadgeTop");
-    const titleBadgeConquest = document.getElementById("titleBadgeConquest");
-    const titleQuote = document.getElementById("titleQuote");
-
-    const modeFreeBtn = document.getElementById("modeFreeBtn");
-    const modeConquestBtn = document.getElementById("modeConquestBtn");
-    const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
-
-    function loadProfile(){
-      try{
-        const raw = localStorage.getItem(SAVE_KEY);
-        if(!raw) return JSON.parse(JSON.stringify(DEFAULT_PROFILE));
-        return { ...JSON.parse(JSON.stringify(DEFAULT_PROFILE)), ...JSON.parse(raw) };
-      }catch(e){
-        return JSON.parse(JSON.stringify(DEFAULT_PROFILE));
-      }
-    }
-    function saveProfile(){ localStorage.setItem(SAVE_KEY, JSON.stringify(playerProfile)); }
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-    function wait(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
-    function clearHumanTimers(){
-      if(humanTurnTimer1){ clearTimeout(humanTurnTimer1); humanTurnTimer1 = null; }
-      if(humanTurnTimer2){ clearTimeout(humanTurnTimer2); humanTurnTimer2 = null; }
-    }
-    function shuffle(array){
-      const arr = [...array];
-      for(let i=arr.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-    function getGirlById(id){ return GIRLS.find(g => g.id === id) || GIRLS[0]; }
-    function getGirlImages(girl){ return [`img/${girl.id}_1.png`,`img/${girl.id}_2.png`,`img/${girl.id}_3.png`]; }
-    function isGirlUnlocked(id){ return (playerProfile.unlockedGirls || []).includes(id); }
-    function getSupportGirl(){ return getGirlById(gameSetup.supportGirlId); }
-    function getGirlForPlayer(player){ return player.id === "you" ? getSupportGirl() : getGirlById(player.girlId); }
-    function getSeatBgBySeat(seat){
-      if(seat === "東") return "img/bg_east.png";
-      if(seat === "南") return "img/bg_south.png";
-      if(seat === "西") return "img/bg_west.png";
-      return "img/bg_north.png";
-    }
-    function getTitleByPoint(pt){
-      if(pt >= 1200) return "伝説のジャララー";
-      if(pt >= 800) return "ジャラジャラ名人";
-      if(pt >= 500) return "チー娘公認";
-      if(pt >= 300) return "デカブサ使い";
-      if(pt >= 150) return "上級ジャララー";
-      if(pt >= 50) return "並ジャララー";
-      return "見習いジャララー";
-    }
-    function getRankNumberByPoint(pt){
-      if(pt >= 1200) return "07";
-      if(pt >= 800) return "06";
-      if(pt >= 500) return "05";
-      if(pt >= 300) return "04";
-      if(pt >= 150) return "03";
-      if(pt >= 50) return "02";
-      return "01";
-    }
-    function getThemeByTitle(title){
-      if(title === "伝説のジャララー") return { a:"#ffe78a", b:"#ff8f6b" };
-      if(title === "ジャラジャラ名人") return { a:"#9fd2ff", b:"#8f9cff" };
-      if(title === "チー娘公認") return { a:"#ffc9ef", b:"#a996ff" };
-      if(title === "デカブサ使い") return { a:"#ffd58f", b:"#8ec5ff" };
-      if(title === "上級ジャララー") return { a:"#b7ffaf", b:"#7ed0ff" };
-      if(title === "並ジャララー") return { a:"#d3d7ff", b:"#9fb3ff" };
-      return { a:"#8fb3ff", b:"#ffd36d" };
-    }
-
-    function updateTitleScreenProfile(){
-      const title = getTitleByPoint(playerProfile.totalPoint);
-      const theme = getThemeByTitle(title);
-      document.documentElement.style.setProperty("--titleAccent", theme.a);
-      document.documentElement.style.setProperty("--titleAccent2", theme.b);
-
-      titleProfileTitle.textContent = title;
-      titleProfileTitle.style.color = theme.a;
-      titleProfilePoint.textContent = `${playerProfile.totalPoint}pt`;
-      titleProfilePlayCount.textContent = `${playerProfile.playCount}`;
-      titleProfileFirstCount.textContent = `${playerProfile.firstCount}`;
-      titleBadgeRank.textContent = `RANK ${getRankNumberByPoint(playerProfile.totalPoint)}`;
-      titleBadgeTop.textContent = `TOP ${playerProfile.firstCount}`;
-      titleBadgeConquest.textContent = `制覇 ${playerProfile.conquestProgress} / ${CONQUEST_ORDER.length}`;
-      titleBadgeRank.style.color = theme.a;
-      titleBadgeTop.style.color = theme.b;
-      titleQuote.textContent = rand(getSupportGirl().quotes);
-      titleGirlImage.src = `img/${getSupportGirl().id}_1.png`;
-    }
-
-    function resetMatchStats(){
-      matchStats = {
-        playerWon:false,
-        playerWinType:null,
-        hakoFinish:false,
-        playerRenchan:0,
-        bestPlayerRenchan:0
-      };
-    }
-
-    function getLoopBasePoint(loop){
-      if(loop === 1) return 10;
-      if(loop === 2) return 22;
-      if(loop === 3) return 36;
-      return 52;
-    }
-    function getRankBonus(rank){
-      if(rank === 1) return 12;
-      if(rank === 2) return 6;
-      if(rank === 3) return 3;
-      return 1;
-    }
-    function calcMatchReward(playerRank){
-      let pt = 0;
-      const base = getLoopBasePoint(loopCount);
-      const rankBonus = getRankBonus(playerRank);
-      pt += base + rankBonus;
-      if(matchStats.playerWon) pt += 2;
-      if(matchStats.hakoFinish) pt += 5;
-      if(matchStats.bestPlayerRenchan >= 2) pt += 3;
-      if(gameMode === "conquest" && playerRank === 1) pt += 10;
-      return {
-        base,
-        rankBonus,
-        winBonus: matchStats.playerWon ? 2 : 0,
-        hakoBonus: matchStats.hakoFinish ? 5 : 0,
-        renchanBonus: matchStats.bestPlayerRenchan >= 2 ? 3 : 0,
-        conquestBonus: (gameMode === "conquest" && playerRank === 1) ? 10 : 0,
-        total: pt
-      };
-    }
-
-    function applyProfileReward(playerRank){
-      const beforePoint = playerProfile.totalPoint;
-      const beforeTitle = getTitleByPoint(beforePoint);
-      const reward = calcMatchReward(playerRank);
-
-      playerProfile.playCount += 1;
-      if(playerRank === 1) playerProfile.firstCount += 1;
-      if(matchStats.playerWon) playerProfile.winCount += 1;
-      playerProfile.totalPoint += reward.total;
-
-      if(gameMode === "conquest" && playerRank === 1){
-        playerProfile.conquestProgress = Math.min(CONQUEST_ORDER.length, playerProfile.conquestProgress + 1);
-      }
-
-      const afterTitle = getTitleByPoint(playerProfile.totalPoint);
-      playerProfile.bestTitle = afterTitle;
-      saveProfile();
-
-      return {
-        reward,
-        beforePoint,
-        afterPoint: playerProfile.totalPoint,
-        beforeTitle,
-        afterTitle,
-        rankUp: beforeTitle !== afterTitle
-      };
-    }
-
-    function renderResultPointBox(profileResult, playerRank){
-      resultPointBox.innerHTML = `
-        <div class="resultPointTitle">今回の成長</div>
-        <div class="resultPointLine"><span>順位</span><span>${playerRank}位</span></div>
-        <div class="resultPointLine"><span>周回ボーナス</span><span>+${profileResult.reward.base}pt</span></div>
-        <div class="resultPointLine"><span>順位ボーナス</span><span>+${profileResult.reward.rankBonus}pt</span></div>
-        <div class="resultPointLine"><span>上がりボーナス</span><span>+${profileResult.reward.winBonus}pt</span></div>
-        <div class="resultPointLine"><span>ハコ飛ばし</span><span>+${profileResult.reward.hakoBonus}pt</span></div>
-        <div class="resultPointLine"><span>連荘ボーナス</span><span>+${profileResult.reward.renchanBonus}pt</span></div>
-        <div class="resultPointLine"><span>制覇ボーナス</span><span>+${profileResult.reward.conquestBonus}pt</span></div>
-        <div class="resultPointLine"><span>獲得ポイント</span><span>+${profileResult.reward.total}pt</span></div>
-        <div class="resultPointLine"><span>現在ポイント</span><span>${profileResult.afterPoint}pt</span></div>
-        <div class="resultPointLine"><span>称号</span><span>${profileResult.afterTitle}</span></div>
-        <div class="resultPointLine"><span>総対戦数</span><span>${playerProfile.playCount}</span></div>
-        <div class="resultPointLine"><span>1位回数</span><span>${playerProfile.firstCount}</span></div>
-        ${profileResult.rankUp ? `<div class="resultRankUp">称号アップ！<br>${profileResult.beforeTitle} → ${profileResult.afterTitle}</div>` : ""}
-      `;
-    }
-
-    function assignSeats(){
-      const seats = shuffle(["東","南","西","北"]);
-      players.forEach((p, i) => { p.seat = seats[i]; });
-    }
-    function sortBySeat(list){
-      const rank = { "東":0, "南":1, "西":2, "北":3 };
-      return [...list].sort((a,b) => rank[a.seat] - rank[b.seat]);
-    }
-    function getTurnOrder(){ return sortBySeat(players); }
-    function getCurrentPlayer(){ return getTurnOrder()[turnIndex]; }
-    function getCurrentParentSeat(){ return PARENT_ORDER[parentSeatIndex]; }
-    function getRoundName(){ return `${getCurrentParentSeat()}局`; }
-    function getParentPlayer(){ return players.find(p => p.seat === getCurrentParentSeat()); }
-
-    function syncCpuPlayersFromSetup(){
-      players[1].girlId = gameSetup.cpuGirlIds[0] || "girlB";
-      players[2].girlId = gameSetup.cpuGirlIds[1] || "girlC";
-      players[3].girlId = gameSetup.cpuGirlIds[2] || "girlD";
-      players[1].name = getGirlById(players[1].girlId).name;
-      players[2].name = getGirlById(players[2].girlId).name;
-      players[3].name = getGirlById(players[3].girlId).name;
-    }
-
-    function rebuildActiveTiles(){
-      TILES = gameSetup.selectedTileIds.map(id => {
-        const base = ALL_TILE_POOL.find(t => t.id === id);
-        if(!base) return null;
-        return { ...base, color: gameSetup.tileColors[id] || base.defaultColor };
-      }).filter(Boolean);
-    }
-
-    function getTileDef(id){ return TILES.find(t => t.id === id); }
-    function getTileName(id){ const tile = getTileDef(id); return tile ? tile.name : id; }
-    function getTileColor(id){ const tile = getTileDef(id); return tile ? tile.color : "#888"; }
-    function formatPoint(p){ return Number.isInteger(p) ? `${p}` : p.toFixed(1); }
-
-    function createDeck(){
-      const arr = [];
-      TILES.forEach(tile => { for(let i=0;i<COPIES_PER_TILE;i++) arr.push(tile.id); });
-      return shuffle(arr);
-    }
-
-    function countMap(hand){
-      const map = {};
-      hand.forEach(tileId => { map[tileId] = (map[tileId] || 0) + 1; });
-      return map;
-    }
-
-    function sortHandByGroups(hand){
-      const map = countMap(hand);
-      return [...hand].sort((a,b) => {
-        const ca = map[a], cb = map[b];
-        if(cb !== ca) return cb - ca;
-        return getTileName(a).localeCompare(getTileName(b), "ja");
-      });
-    }
-
-    function sortHandKeepDrawnLast(hand){
-      if(hand.length <= 1) return [...hand];
-      const drawn = hand[hand.length - 1];
-      const rest = hand.slice(0, -1);
-      const map = countMap(hand);
-      rest.sort((a,b) => {
-        const ca = map[a], cb = map[b];
-        if(cb !== ca) return cb - ca;
-        return getTileName(a).localeCompare(getTileName(b), "ja");
-      });
-      return [...rest, drawn];
-    }
-
-    function getCompletedTriples(hand){
-      const map = countMap(hand);
-      let sets = 0;
-      for(const key in map) sets += Math.floor(map[key] / 3);
-      return sets;
-    }
-
-    function isWinningHand(hand){ return getCompletedTriples(hand) >= 2; }
-    function isTenpai(hand){
-      const unique = [...new Set(TILES.map(t => t.id))];
-      for(const tileId of unique){
-        if(isWinningHand([...hand, tileId])) return true;
-      }
-      return false;
-    }
-    function canRonWithTile(hand, tileId){ return isWinningHand([...hand, tileId]); }
-
-    function drawTile(player){
-      if(deck.length <= 0) return null;
-      const tileId = deck.pop();
-      player.hand.push(tileId);
-      return tileId;
-    }
-
-    function setBusy(flag){
-      busy = flag;
-      resetBtn.disabled = flag;
-      openCustomBtn.disabled = flag;
-    }
-
-    function updateActionButtons(){
-      const enabled = !busy && !gameEnded;
-      tsumoBtn.disabled = !(enabled && pendingTsumo);
-      ronBtn.disabled = !(enabled && pendingRon);
-      passBtn.disabled = !(enabled && pendingRon);
-      tsumoBtn.classList.toggle("ready", enabled && pendingTsumo);
-      ronBtn.classList.toggle("ready", enabled && pendingRon);
-    }
-
-    function clearPendingActions(){
-      pendingTsumo = false;
-      pendingRon = false;
-      lastDiscardInfo = null;
-      updateActionButtons();
-    }
-
-    function addHistory(text){
-      historyLogs.unshift(text);
-      renderHistory();
-    }
-    function showOverlay(el){ el.classList.add("show"); }
-    function hideOverlay(el){ el.classList.remove("show"); }
-
-    function renderHistory(){
-      historyBox.innerHTML = "";
-      if(!historyLogs.length){
-        const div = document.createElement("div");
-        div.className = "historyLine";
-        div.textContent = "まだ履歴はありません。";
-        historyBox.appendChild(div);
-        return;
-      }
-      historyLogs.forEach(line => {
-        const div = document.createElement("div");
-        div.className = "historyLine";
-        div.textContent = line;
-        historyBox.appendChild(div);
-      });
-    }
-
-    function setMode(mode){
-      gameMode = mode;
-      modeFreeBtn.classList.toggle("active", mode === "free");
-      modeConquestBtn.classList.toggle("active", mode === "conquest");
-    }
-
-    function renderModeButtons(){
-      modeButtons.forEach(btn => {
-        btn.classList.toggle("selected", Number(btn.dataset.loop) === tempLoopCount);
-      });
-    }
-
-    function renderGirlSelect(){
-      girlSelectGrid.innerHTML = "";
-      GIRLS.forEach(girl => {
-        const locked = !isGirlUnlocked(girl.id);
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
-        card.style.opacity = locked ? ".45" : "1";
-        card.addEventListener("click", () => {
-          if(locked){
-            alert("このチー娘は未解放です");
-            return;
-          }
-          tempGirlId = girl.id;
-          renderGirlSelect();
-        });
-        card.innerHTML = `
-          <div class="girlPreview">
-            <img class="girlPreviewBg" src="img/bg_east.png" alt="">
-            <div class="girlPreviewShade"></div>
-            <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
-          </div>
-          <div class="girlCardName">${girl.name}${locked ? "（未解放）" : ""}</div>
-        `;
-        girlSelectGrid.appendChild(card);
-      });
-    }
-
-    function renderCpuSelect(){
-      cpuSelectGrid.innerHTML = "";
-      const selectable = GIRLS.filter(g => g.id !== tempGirlId && isGirlUnlocked(g.id));
-      cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
-
-      selectable.forEach(girl => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "girlCard" + (tempCpuGirlIds.includes(girl.id) ? " selected" : "");
-        card.addEventListener("click", () => {
-          const exists = tempCpuGirlIds.includes(girl.id);
-          if(exists){
-            tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== girl.id);
-          } else {
-            if(tempCpuGirlIds.length >= 3){
-              alert("CPUは3人選んでね。");
-              return;
-            }
-            tempCpuGirlIds.push(girl.id);
-          }
-          renderCpuSelect();
-        });
-        card.innerHTML = `
-          <div class="girlPreview">
-            <img class="girlPreviewBg" src="img/bg_south.png" alt="">
-            <div class="girlPreviewShade"></div>
-            <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
-          </div>
-          <div class="girlCardName">${girl.name}</div>
-        `;
-        cpuSelectGrid.appendChild(card);
-      });
-    }
-
-    function renderTilePickGrid(targetEl, selectedIds, countEl){
-      targetEl.innerHTML = "";
-      if(countEl) countEl.textContent = `${selectedIds.length}/9 選択中`;
-
-      ALL_TILE_POOL.forEach(tile => {
-        const card = document.createElement("button");
-        card.type = "button";
-        card.className = "customCard" + (selectedIds.includes(tile.id) ? " selected" : "");
-        card.addEventListener("click", () => {
-          const exists = selectedIds.includes(tile.id);
-          if(exists){
-            selectedIds.splice(selectedIds.indexOf(tile.id), 1);
-          }else{
-            if(selectedIds.length >= PICK_COUNT){
-              alert("9体選択中です。先に1体外してね。");
-              return;
-            }
-            selectedIds.push(tile.id);
-            if(!tempTileColors[tile.id]) tempTileColors[tile.id] = tile.defaultColor;
-          }
-          renderTilePickGrid(targetEl, selectedIds, countEl);
-        });
-
-        const bgColor = selectedIds.includes(tile.id)
-          ? (tempTileColors[tile.id] || tile.defaultColor)
-          : tile.defaultColor;
-
-        card.innerHTML = `
-          <div class="customThumb">
-            <div class="customThumbTint" style="background:${bgColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="customName">${tile.name}</div>
-        `;
-        targetEl.appendChild(card);
-      });
-    }
-
-    function renderColorList(){
-      colorList.innerHTML = "";
-      tempTileIds.forEach(id => {
-        const tile = ALL_TILE_POOL.find(t => t.id === id);
-        const row = document.createElement("div");
-        row.className = "colorLine";
-        row.innerHTML = `
-          <div class="colorThumb">
-            <div class="colorThumbTint" style="background:${tempTileColors[id] || tile.defaultColor}"></div>
-            <img src="${tile.image}" alt="${tile.name}">
-          </div>
-          <div class="colorName">${tile.name}</div>
-        `;
-        const picker = document.createElement("input");
-        picker.type = "color";
-        picker.className = "colorPicker";
-        picker.value = tempTileColors[id] || tile.defaultColor;
-        picker.addEventListener("input", e => {
-          tempTileColors[id] = e.target.value;
-          renderColorList();
-        });
-        row.appendChild(picker);
-        colorList.appendChild(row);
-      });
-    }
-
-    function beginSetupFlow(){
-      updateTitleScreenProfile();
-      tempGirlId = gameSetup.supportGirlId || "girlA";
-      tempCpuGirlIds = [...(gameSetup.cpuGirlIds || ["girlB","girlC","girlD"])];
-      tempTileIds = [...(gameSetup.selectedTileIds || [])];
-      tempTileColors = JSON.parse(JSON.stringify(gameSetup.tileColors || {}));
-      tempLoopCount = loopCount || 1;
-      hideOverlay(titleOverlay);
+</div>
+
+<div class="overlay handRevealOverlay" id="handRevealOverlay">
+  <div class="handRevealBox">
+    <div class="handRevealTitle" id="handRevealTitle">手札公開</div>
+    <div class="handRevealGrid" id="handRevealGrid"></div>
+  </div>
+</div>
+
+<script>
+const SAVE_KEY = "dekabusaJaraJaraConquestV1";
+const BASE_HAND_SIZE = 5;
+const COPIES_PER_TILE = 6;
+const PARENT_ORDER = ["東","南","西","北"];
+const START_POINT_MAP = {1:10,2:20,3:25,4:30};
+
+const TILE_POOL = [
+  { id:"dekabusa", name:"デカブサ", colorGroup:"red", defaultColor:"#ff6b6b", image:"img/tile_dekabusa.png" },
+  { id:"ani", name:"デカブサ兄", colorGroup:"red", defaultColor:"#ff8f8f", image:"img/tile_aniki.png" },
+  { id:"tora", name:"トラさん", colorGroup:"red", defaultColor:"#ffb36b", image:"img/tile_torasan.png" },
+  { id:"namaken", name:"ナマケン", colorGroup:"blue", defaultColor:"#6bcBff", image:"img/tile_namaken.png" },
+  { id:"kan", name:"カンえもん", colorGroup:"blue", defaultColor:"#9aa4ff", image:"img/tile_kanemon.png" },
+  { id:"king", name:"キング", colorGroup:"green", defaultColor:"#6ee7a8", image:"img/tile_king.png" },
+  { id:"gori", name:"ゴリさん", colorGroup:"green", defaultColor:"#98e29a", image:"img/tile_gorisan.png" },
+  { id:"kabao", name:"カバオ", colorGroup:"yellow", defaultColor:"#ffd93d", image:"img/tile_kabao.png" },
+  { id:"pan", name:"パンパン", colorGroup:"yellow", defaultColor:"#ffcf7a", image:"img/tile_panpan.png" }
+];
+
+const GIRLS = [
+  {
+    id:"girlA", name:"チー娘A",
+    quotes:["今日はどこまでジャラジャラする？","落ち着いていこう。","いい流れにしよう。"],
+    conquestIntro:["ここからが本番だよ。","私を倒せるかな？"],
+    introHuman:["あなたの番だよ。","どれ切る？"],
+    thinkHuman:["ちょっと考えよう。","ここ大事かも。"],
+    drawHumanGood:["それ良さそう！","来たかも！"],
+    drawHumanNormal:["どうかな。","悪くないかも。"],
+    introCpu:["いくよ。","私の番だよ。"],
+    thinkCpu:["どれかな。","考えるね。"],
+    drawCpuGood:["揃いそう！","いい感じ。"],
+    drawCpuNormal:["まだかな。","どうだろ。"],
+    discard:["これかな。","これでいくよ。"],
+    tsumo:["ツモだよ！","やった！"],
+    ron:["それロン！","待ってたよ！"],
+    loseTsumo:["やられた…","きついかも…"],
+    loseRon:["ロンされた…","くっ…"]
+  },
+  {
+    id:"girlB", name:"チー娘B",
+    quotes:["急がなくていいでしょ。","今日は勝ちに行くよ。"],
+    conquestIntro:["ここで止まったらだめでしょ。","勝てるなら見せて。"],
+    introHuman:["ほら、あなたの番。","ちゃんと見て選んで。"],
+    thinkHuman:["急がなくていいでしょ。","ここは考えどころ。"],
+    drawHumanGood:["悪くないじゃん。","かなりいい形。"],
+    drawHumanNormal:["まあ普通。","まだ何とも。"],
+    introCpu:["始めるよ。","私の番ね。"],
+    thinkCpu:["少し考える。","どれを切るかね。"],
+    drawCpuGood:["来るね。","悪くない。"],
+    drawCpuNormal:["普通。","まだかな。"],
+    discard:["これで。","切るよ。"],
+    tsumo:["ツモ。","決まりね。"],
+    ron:["それロン。","待ってたわ。"],
+    loseTsumo:["つもられた…","やられたわ。"],
+    loseRon:["ロンされた…","くっ…"]
+  },
+  {
+    id:"girlC", name:"チー娘C",
+    quotes:["……やるならやる。","別に焦らなくていい。"],
+    conquestIntro:["……ここで終わる？","進みたいなら勝って。"],
+    introHuman:["あなたの番。","……切って。"],
+    thinkHuman:["……考えて。","急がなくていい。"],
+    drawHumanGood:["揃うかもね。","悪くない。"],
+    drawHumanNormal:["どうだろ。","……普通。"],
+    introCpu:["……いく。","私の番。"],
+    thinkCpu:["……考える。","どれかな。"],
+    drawCpuGood:["来た。","悪くない。"],
+    drawCpuNormal:["……まだ。","ふつう。"],
+    discard:["これで。","切る。"],
+    tsumo:["ツモ。","……勝ち。"],
+    ron:["それロン。","待ってた。"],
+    loseTsumo:["……やられた。","……負け。"],
+    loseRon:["ロンされた。","……無理。"]
+  },
+  {
+    id:"girlD", name:"チー娘D",
+    quotes:["いい感じに行けるかも。","今日は上まで行こう。"],
+    conquestIntro:["最後までたどり着けるかな？","ここを越えたら大したもの。"],
+    introHuman:["いこうか。","あなたの番。"],
+    thinkHuman:["焦らなくていいよ。","見てから決めよう。"],
+    drawHumanGood:["いいの来たかも。","揃いそうだね。"],
+    drawHumanNormal:["まだ分からないね。","悪くはないかな。"],
+    introCpu:["始めるね。","私の番。"],
+    thinkCpu:["ちょっと考える。","ここ迷うね。"],
+    drawCpuGood:["いい感じ。","近いかも。"],
+    drawCpuNormal:["まだかな。","普通だね。"],
+    discard:["これにする。","これかな。"],
+    tsumo:["ツモ！","決まったね。"],
+    ron:["それロン。","待ってたよ。"],
+    loseTsumo:["つもられちゃった。","やられたね。"],
+    loseRon:["ロンされたね。","くやしい。"]
+  }
+];
+
+const DEFAULT_PROFILE = {
+  totalPoint:0,
+  playCount:0,
+  firstCount:0,
+  conquestProgress:0
+};
+
+const players = [
+  { id:"you",  name:"あなた", short:"自", type:"human", girlId:null, point:10, hand:[], seat:"" },
+  { id:"cpu1", name:"CPU1", short:"A", type:"cpu", girlId:null, point:10, hand:[], seat:"" },
+  { id:"cpu2", name:"CPU2", short:"B", type:"cpu", girlId:null, point:10, hand:[], seat:"" },
+  { id:"cpu3", name:"CPU3", short:"C", type:"cpu", girlId:null, point:10, hand:[], seat:"" }
+];
+
+let playerProfile = loadProfile();
+let gameMode = "free";
+let gameSetup = {
+  supportGirlId:"girlA",
+  cpuGirlIds:["girlB","girlC","girlD"],
+  tileColors:Object.fromEntries(TILE_POOL.map(t => [t.id, t.defaultColor]))
+};
+
+let enemyGirlId = null;
+let tempGirlId = null;
+let tempCpuGirlIds = [];
+let tempLoopCount = 1;
+let loopCount = 1;
+let totalRounds = 4;
+let currentRoundNumber = 0;
+
+let TILES = [];
+let deck = [];
+let discardPile = [];
+let gameEnded = false;
+let busy = false;
+let waitingPlayerDiscard = false;
+let justDrawnIndex = -1;
+let historyLogs = [];
+let parentSeatIndex = 0;
+let turnIndex = 0;
+let pendingTsumo = false;
+let pendingRon = false;
+let lastDiscardInfo = null;
+let humanTurnTimer1 = null;
+let humanTurnTimer2 = null;
+let lastWinBonus = null;
+
+const turnLabel = document.getElementById("turnLabel");
+const roundLabel = document.getElementById("roundLabel");
+const statusMain = document.getElementById("statusMain");
+const subInfo = document.getElementById("subInfo");
+const scoreList = document.getElementById("scoreList");
+const deckCount = document.getElementById("deckCount");
+const handEl = document.getElementById("hand");
+const historyBox = document.getElementById("historyBox");
+const riverGrid = document.getElementById("riverGrid");
+const riverEmpty = document.getElementById("riverEmpty");
+const lastOwner = document.getElementById("lastOwner");
+const riverColumnHeads = document.getElementById("riverColumnHeads");
+const modeText = document.getElementById("modeText");
+
+const titleOverlay = document.getElementById("titleOverlay");
+const girlSelectOverlay = document.getElementById("girlSelectOverlay");
+const cpuSelectOverlay = document.getElementById("cpuSelectOverlay");
+const modeSelectOverlay = document.getElementById("modeSelectOverlay");
+const tileSelectOverlay = document.getElementById("tileSelectOverlay");
+const girlOverlay = document.getElementById("girlOverlay");
+const roundOverlay = document.getElementById("roundOverlay");
+const conquestCutinOverlay = document.getElementById("conquestCutinOverlay");
+const roundResultOverlay = document.getElementById("roundResultOverlay");
+const resultOverlay = document.getElementById("resultOverlay");
+const handRevealOverlay = document.getElementById("handRevealOverlay");
+
+const girlSelectGrid = document.getElementById("girlSelectGrid");
+const cpuSelectGrid = document.getElementById("cpuSelectGrid");
+const colorList = document.getElementById("colorList");
+
+const titleGirlImage = document.getElementById("titleGirlImage");
+const titleProfileTitle = document.getElementById("titleProfileTitle");
+const titleProfilePoint = document.getElementById("titleProfilePoint");
+const titleProfilePlayCount = document.getElementById("titleProfilePlayCount");
+const titleProfileFirstCount = document.getElementById("titleProfileFirstCount");
+const titleBadgeRank = document.getElementById("titleBadgeRank");
+const titleBadgeTop = document.getElementById("titleBadgeTop");
+const titleBadgeConquest = document.getElementById("titleBadgeConquest");
+const titleQuote = document.getElementById("titleQuote");
+
+const girlSelectSub = document.getElementById("girlSelectSub");
+const cpuSelectCount = document.getElementById("cpuSelectCount");
+
+const girlBgScene = document.getElementById("girlBgScene");
+const girlChara = document.getElementById("girlChara");
+const girlNameEl = document.getElementById("girlName");
+const girlTextEl = document.getElementById("girlText");
+const bigTileWrap = document.getElementById("bigTileWrap");
+const bigTileCard = document.getElementById("bigTileCard");
+const bigTileTint = document.getElementById("bigTileTint");
+const bigTileFallback = document.getElementById("bigTileFallback");
+const bigTileCaption = document.getElementById("bigTileCaption");
+
+const roundOverlayMain = document.getElementById("roundOverlayMain");
+const roundOverlaySub = document.getElementById("roundOverlaySub");
+
+const conquestCutinBg = document.getElementById("conquestCutinBg");
+const conquestCutinGirl = document.getElementById("conquestCutinGirl");
+const conquestCutinNamePlate = document.getElementById("conquestCutinNamePlate");
+const conquestCutinSub = document.getElementById("conquestCutinSub");
+const conquestCutinBtn = document.getElementById("conquestCutinBtn");
+
+const roundResultRound = document.getElementById("roundResultRound");
+const roundResultWin = document.getElementById("roundResultWin");
+const roundResultDesc = document.getElementById("roundResultDesc");
+const roundResultScore = document.getElementById("roundResultScore");
+
+const resultTitle = document.getElementById("resultTitle");
+const resultSub = document.getElementById("resultSub");
+const resultList = document.getElementById("resultList");
+const resultPointBox = document.getElementById("resultPointBox");
+
+const handRevealTitle = document.getElementById("handRevealTitle");
+const handRevealGrid = document.getElementById("handRevealGrid");
+
+const modeFreeBtn = document.getElementById("modeFreeBtn");
+const modeConquestBtn = document.getElementById("modeConquestBtn");
+const startBtn = document.getElementById("startBtn");
+const girlSelectNextBtn = document.getElementById("girlSelectNextBtn");
+const cpuSelectBackBtn = document.getElementById("cpuSelectBackBtn");
+const cpuSelectNextBtn = document.getElementById("cpuSelectNextBtn");
+const modeSelectBackBtn = document.getElementById("modeSelectBackBtn");
+const modeSelectNextBtn = document.getElementById("modeSelectNextBtn");
+const tileSelectBackBtn = document.getElementById("tileSelectBackBtn");
+const gameStartBtn = document.getElementById("gameStartBtn");
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+const tsumoBtn = document.getElementById("tsumoBtn");
+const ronBtn = document.getElementById("ronBtn");
+const passBtn = document.getElementById("passBtn");
+const resetBtn = document.getElementById("resetBtn");
+const retryBtn = document.getElementById("retryBtn");
+const backToSetupBtn = document.getElementById("backToSetupBtn");
+const modeButtons = Array.from(document.querySelectorAll(".modeBtn"));
+
+function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+function loadProfile(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return deepClone(DEFAULT_PROFILE);
+    return { ...deepClone(DEFAULT_PROFILE), ...JSON.parse(raw) };
+  }catch(e){
+    return deepClone(DEFAULT_PROFILE);
+  }
+}
+function saveProfile(){ localStorage.setItem(SAVE_KEY, JSON.stringify(playerProfile)); }
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function wait(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+function clearHumanTimers(){
+  if(humanTurnTimer1){ clearTimeout(humanTurnTimer1); humanTurnTimer1 = null; }
+  if(humanTurnTimer2){ clearTimeout(humanTurnTimer2); humanTurnTimer2 = null; }
+}
+function shuffle(array){
+  const arr = [...array];
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function getGirlById(id){ return GIRLS.find(g => g.id === id) || GIRLS[0]; }
+function getGirlImages(girl){ return [`img/${girl.id}_1.png`,`img/${girl.id}_2.png`,`img/${girl.id}_3.png`]; }
+function getSupportGirl(){ return getGirlById(gameSetup.supportGirlId); }
+function getGirlForPlayer(player){ return player.id === "you" ? getSupportGirl() : getGirlById(player.girlId); }
+function getSeatBgBySeat(seat){
+  if(seat === "東") return "img/bg_east.png";
+  if(seat === "南") return "img/bg_south.png";
+  if(seat === "西") return "img/bg_west.png";
+  return "img/bg_north.png";
+}
+function getRankNumberByPoint(pt){
+  if(pt >= 1200) return "07";
+  if(pt >= 800) return "06";
+  if(pt >= 500) return "05";
+  if(pt >= 300) return "04";
+  if(pt >= 150) return "03";
+  if(pt >= 50) return "02";
+  return "01";
+}
+function getTitleByPoint(pt){
+  if(pt >= 1200) return "伝説のジャララー";
+  if(pt >= 800) return "ジャラジャラ名人";
+  if(pt >= 500) return "チー娘公認";
+  if(pt >= 300) return "デカブサ使い";
+  if(pt >= 150) return "上級ジャララー";
+  if(pt >= 50) return "並ジャララー";
+  return "見習いジャララー";
+}
+function setMode(mode){
+  gameMode = mode;
+  modeFreeBtn.classList.toggle("active", mode === "free");
+  modeConquestBtn.classList.toggle("active", mode === "conquest");
+  modeText.textContent = mode === "conquest" ? "制覇" : "フリー";
+}
+function updateTitleScreenProfile(){
+  titleProfileTitle.textContent = `チー娘制覇 ${playerProfile.conquestProgress} / ${GIRLS.length}`;
+  titleProfilePoint.textContent = `${playerProfile.totalPoint}pt`;
+  titleProfilePlayCount.textContent = `${playerProfile.playCount}`;
+  titleProfileFirstCount.textContent = `${playerProfile.firstCount}`;
+  titleBadgeRank.textContent = `RANK ${getRankNumberByPoint(playerProfile.totalPoint)}`;
+  titleBadgeTop.textContent = `TOP ${playerProfile.firstCount}`;
+  titleBadgeConquest.textContent = `制覇 ${playerProfile.conquestProgress} / ${GIRLS.length}`;
+  titleQuote.textContent = rand(getSupportGirl().quotes);
+  titleGirlImage.src = `img/${getSupportGirl().id}_1.png`;
+}
+function showOverlay(el){ el.classList.add("show"); }
+function hideOverlay(el){ el.classList.remove("show"); }
+
+function renderGirlSelect(){
+  girlSelectGrid.innerHTML = "";
+  GIRLS.forEach(girl => {
+    if(gameMode === "conquest" && girl.id === enemyGirlId) return;
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "girlCard" + (tempGirlId === girl.id ? " selected" : "");
+    card.addEventListener("click", () => {
+      tempGirlId = girl.id;
       renderGirlSelect();
-      showOverlay(girlSelectOverlay);
-    }
-
-    function getConquestBossId(){
-      return CONQUEST_ORDER[playerProfile.conquestProgress] || CONQUEST_ORDER[CONQUEST_ORDER.length - 1];
-    }
-
-    function proceedToCpuSelect(){
-      if(!tempGirlId){
-        alert("パートナーを選んでね。");
-        return;
+    });
+    card.innerHTML = `
+      <div class="girlPreview">
+        <img class="girlPreviewBg" src="img/bg_east.png" alt="">
+        <div class="girlPreviewShade"></div>
+        <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
+      </div>
+      <div class="girlCardName">${girl.name}</div>
+    `;
+    girlSelectGrid.appendChild(card);
+  });
+}
+function renderCpuSelect(){
+  cpuSelectGrid.innerHTML = "";
+  const selectable = GIRLS.filter(g => g.id !== tempGirlId);
+  cpuSelectCount.textContent = `${tempCpuGirlIds.length}/3 選択中`;
+  selectable.forEach(girl => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "girlCard" + (tempCpuGirlIds.includes(girl.id) ? " selected" : "");
+    card.addEventListener("click", () => {
+      const exists = tempCpuGirlIds.includes(girl.id);
+      if(exists){
+        tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== girl.id);
+      }else{
+        if(tempCpuGirlIds.length >= 3){
+          alert("CPUは3人選んでね。");
+          return;
+        }
+        tempCpuGirlIds.push(girl.id);
       }
-      tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
-      hideOverlay(girlSelectOverlay);
-
-      if(gameMode === "conquest"){
-        const nextBossId = getConquestBossId();
-        const pool = GIRLS.filter(g => g.id !== tempGirlId && g.id !== nextBossId && isGirlUnlocked(g.id));
-        const shuffled = shuffle(pool).slice(0,2);
-        tempCpuGirlIds = [nextBossId, ...shuffled.map(g => g.id)];
-        proceedToModeSelect();
-        return;
-      }
-
       renderCpuSelect();
-      showOverlay(cpuSelectOverlay);
-    }
-
-    function proceedToModeSelect(){
-      if(gameMode === "free" && tempCpuGirlIds.length !== 3){
-        alert("CPUを3人選んでね。");
-        return;
-      }
-      hideOverlay(cpuSelectOverlay);
-      renderModeButtons();
-      showOverlay(modeSelectOverlay);
-    }
-
-    function proceedToTileSelect(){
-      if(!tempLoopCount){
-        alert("周回数を選んでね。");
-        return;
-      }
-      hideOverlay(modeSelectOverlay);
-      renderTilePickGrid(tileSelectGrid, tempTileIds, tileSelectCount);
-      showOverlay(tileSelectOverlay);
-    }
-
-    function proceedToColorSelect(){
-      if(tempTileIds.length !== PICK_COUNT){
-        alert("9体ちょうど選んでね。");
-        return;
-      }
-      tempTileIds.forEach(id => {
-        const base = ALL_TILE_POOL.find(t => t.id === id);
-        if(!tempTileColors[id]) tempTileColors[id] = base.defaultColor;
-      });
-      hideOverlay(tileSelectOverlay);
+    });
+    card.innerHTML = `
+      <div class="girlPreview">
+        <img class="girlPreviewBg" src="img/bg_south.png" alt="">
+        <div class="girlPreviewShade"></div>
+        <img class="girlPreviewChara" src="img/${girl.id}_1.png" alt="${girl.name}">
+      </div>
+      <div class="girlCardName">${girl.name}</div>
+    `;
+    cpuSelectGrid.appendChild(card);
+  });
+}
+function renderColorList(){
+  colorList.innerHTML = "";
+  TILE_POOL.forEach(tile => {
+    const row = document.createElement("div");
+    row.className = "colorLine";
+    row.innerHTML = `
+      <div class="colorThumb">
+        <div class="colorThumbTint" style="background:${gameSetup.tileColors[tile.id]}"></div>
+        ${tile.image ? `<img src="${tile.image}" alt="${tile.name}">` : ""}
+      </div>
+      <div class="colorName">${tile.name}<br><span style="font-size:11px;opacity:.7">${tile.colorGroup}</span></div>
+    `;
+    const picker = document.createElement("input");
+    picker.type = "color";
+    picker.className = "colorPicker";
+    picker.value = gameSetup.tileColors[tile.id];
+    picker.addEventListener("input", e => {
+      gameSetup.tileColors[tile.id] = e.target.value;
       renderColorList();
-      showOverlay(colorSelectOverlay);
+    });
+    row.appendChild(picker);
+    colorList.appendChild(row);
+  });
+}
+function rebuildActiveTiles(){
+  TILES = TILE_POOL.map(t => ({ ...t, color:gameSetup.tileColors[t.id] || t.defaultColor }));
+}
+function getTileDef(id){ return TILES.find(t => t.id === id); }
+function getTileName(id){ const tile = getTileDef(id); return tile ? tile.name : id; }
+function getTileColor(id){ const tile = getTileDef(id); return tile ? tile.color : "#888"; }
+function getTileGroup(id){ const tile = getTileDef(id); return tile ? tile.colorGroup : "none"; }
+function formatPoint(p){ return Number.isInteger(p) ? `${p}` : p.toFixed(1); }
+
+function createDeck(){
+  const arr = [];
+  TILES.forEach(tile => { for(let i=0;i<COPIES_PER_TILE;i++) arr.push(tile.id); });
+  return shuffle(arr);
+}
+function countMap(hand){
+  const map = {};
+  hand.forEach(tileId => { map[tileId] = (map[tileId] || 0) + 1; });
+  return map;
+}
+function sortHandByGroups(hand){
+  const map = countMap(hand);
+  return [...hand].sort((a,b) => {
+    const ca = map[a], cb = map[b];
+    if(cb !== ca) return cb - ca;
+    return getTileName(a).localeCompare(getTileName(b), "ja");
+  });
+}
+function sortHandKeepDrawnLast(hand){
+  if(hand.length <= 1) return [...hand];
+  const drawn = hand[hand.length - 1];
+  const rest = hand.slice(0,-1);
+  const map = countMap(hand);
+  rest.sort((a,b) => {
+    const ca = map[a], cb = map[b];
+    if(cb !== ca) return cb - ca;
+    return getTileName(a).localeCompare(getTileName(b), "ja");
+  });
+  return [...rest, drawn];
+}
+function getCompletedTriples(hand){
+  const map = countMap(hand);
+  let sets = 0;
+  for(const key in map) sets += Math.floor(map[key] / 3);
+  return sets;
+}
+function isWinningHand(hand){ return getCompletedTriples(hand) >= 2; }
+function isTenpai(hand){
+  const unique = [...new Set(TILES.map(t => t.id))];
+  for(const tileId of unique){
+    if(isWinningHand([...hand, tileId])) return true;
+  }
+  return false;
+}
+function canRonWithTile(hand, tileId){ return isWinningHand([...hand, tileId]); }
+function drawTile(player){
+  if(deck.length <= 0) return null;
+  const tileId = deck.pop();
+  player.hand.push(tileId);
+  return tileId;
+}
+function calcBonusFromWinningTiles(hand){
+  const colorCount = {};
+  const charCount = {};
+  hand.forEach(id => {
+    const group = getTileGroup(id);
+    colorCount[group] = (colorCount[group] || 0) + 1;
+    charCount[id] = (charCount[id] || 0) + 1;
+  });
+  let bonus = 0;
+  let textParts = [];
+
+  Object.entries(colorCount).forEach(([group,n]) => {
+    if(n >= 3){
+      const add = n === 3 ? 1 : 2;
+      bonus += add;
+      textParts.push(`同色${n}枚 +${add}`);
+    }else if(n === 2){
+      bonus += 0.5;
+      textParts.push(`同色2枚 +0.5`);
     }
+  });
 
-    function showConquestCutin(girlId){
-      return new Promise(resolve => {
-        const girl = getGirlById(girlId);
-        conquestCutinBg.src = "img/bg_east.png";
-        conquestCutinGirl.src = `img/${girl.id}_1.png`;
-        conquestCutinNamePlate.textContent = girl.name;
-        conquestCutinSub.textContent = `${girl.name} が立ちはだかる`;
-
-        const onStart = () => {
-          conquestCutinBtn.removeEventListener("click", onStart);
-          hideOverlay(conquestCutinOverlay);
-          resolve();
-        };
-
-        conquestCutinBtn.addEventListener("click", onStart);
-        showOverlay(conquestCutinOverlay);
-      });
+  Object.entries(charCount).forEach(([id,n]) => {
+    if(n >= 3){
+      const add = n === 3 ? 1.5 : 3;
+      bonus += add;
+      textParts.push(`${getTileName(id)}×${n} +${add}`);
+    }else if(n === 2){
+      bonus += 1;
+      textParts.push(`${getTileName(id)}×2 +1`);
     }
+  });
 
-    function createRiverTile(tileId, isLast){
-      const div = document.createElement("div");
-      div.className = "riverTile" + (isLast ? " last" : "");
-      const tint = document.createElement("div");
-      tint.className = "riverTint";
-      tint.style.background = getTileColor(tileId);
-      div.appendChild(tint);
-      const tile = getTileDef(tileId);
-      if(tile && tile.image){
-        const img = document.createElement("img");
-        img.className = "riverImg";
-        img.src = tile.image;
-        img.alt = tile.name;
-        div.appendChild(img);
-      }
-      return div;
-    }
-
-    function renderRiverColumnHeads(){
-      riverColumnHeads.innerHTML = "";
-      getTurnOrder().forEach(player => {
-        const div = document.createElement("div");
-        div.className = "riverColHead";
-        div.textContent = `${player.seat} ${player.name}`;
-        riverColumnHeads.appendChild(div);
-      });
-    }
-
-    function renderDiscardPile(){
-      riverGrid.innerHTML = "";
-      renderRiverColumnHeads();
-
-      if(!discardPile.length){
-        riverEmpty.style.display = "flex";
-        lastOwner.textContent = "---";
-        return;
-      }
-
-      riverEmpty.style.display = "none";
-      const order = getTurnOrder();
-      const playerIndexMap = {};
-      order.forEach((player, index) => { playerIndexMap[player.id] = index; });
-
-      const columnStacks = [[],[],[],[]];
-      discardPile.forEach((item, index) => {
-        const col = playerIndexMap[item.playerId];
-        if(col !== undefined){
-          columnStacks[col].push({ ...item, isLast:index === discardPile.length - 1 });
-        }
-      });
-
-      const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
-      for(let row=0; row<maxRows; row++){
-        for(let col=0; col<4; col++){
-          const item = columnStacks[col][row];
-          if(item){
-            riverGrid.appendChild(createRiverTile(item.tileId, item.isLast));
-          }else{
-            const empty = document.createElement("div");
-            empty.className = "riverTile";
-            empty.style.opacity = "0";
-            riverGrid.appendChild(empty);
-          }
-        }
-      }
-      lastOwner.textContent = discardPile[discardPile.length - 1].owner;
-    }
-
-    function renderScores(){
-      scoreList.innerHTML = "";
-      getTurnOrder().forEach(player => {
-        const row = document.createElement("div");
-        row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
-        let badgeClass = "badge-you";
-        if(player.id === "cpu1") badgeClass = "badge-a";
-        if(player.id === "cpu2") badgeClass = "badge-b";
-        if(player.id === "cpu3") badgeClass = "badge-c";
-        row.innerHTML = `
-          <div class="scoreName">
-            <span class="scoreBadge ${badgeClass}">${player.short}</span>
-            <span>${player.seat}　${player.name}${player.seat === getCurrentParentSeat() ? "（親）" : ""}</span>
-          </div>
-          <div>${formatPoint(player.point)}点</div>
-        `;
-        scoreList.appendChild(row);
-      });
-    }
-
-    function renderTileContent(parent, tileId){
-      const tile = getTileDef(tileId);
-      parent.innerHTML = "";
-      const inner = document.createElement("div");
-      inner.className = "tileInner";
-      const tint = document.createElement("div");
-      tint.className = "tileTint";
-      tint.style.background = getTileColor(tileId);
-      inner.appendChild(tint);
-
-      if(tile && tile.image){
-        const img = document.createElement("img");
-        img.className = "tileImg";
-        img.src = tile.image;
-        img.alt = tile.name;
-        inner.appendChild(img);
+  return { bonus, text:textParts.join(" / ") || "ボーナスなし" };
+}
+function setBusy(flag){
+  busy = flag;
+  resetBtn.disabled = flag;
+}
+function updateActionButtons(){
+  const enabled = !busy && !gameEnded;
+  tsumoBtn.disabled = !(enabled && pendingTsumo);
+  ronBtn.disabled = !(enabled && pendingRon);
+  passBtn.disabled = !(enabled && pendingRon);
+  tsumoBtn.classList.toggle("ready", enabled && pendingTsumo);
+  ronBtn.classList.toggle("ready", enabled && pendingRon);
+}
+function clearPendingActions(){
+  pendingTsumo = false;
+  pendingRon = false;
+  lastDiscardInfo = null;
+  updateActionButtons();
+}
+function addHistory(text){
+  historyLogs.unshift(text);
+  renderHistory();
+}
+function renderHistory(){
+  historyBox.innerHTML = "";
+  if(!historyLogs.length){
+    const div = document.createElement("div");
+    div.className = "historyLine";
+    div.textContent = "まだ履歴はありません。";
+    historyBox.appendChild(div);
+    return;
+  }
+  historyLogs.forEach(line => {
+    const div = document.createElement("div");
+    div.className = "historyLine";
+    div.textContent = line;
+    historyBox.appendChild(div);
+  });
+}
+function assignSeats(){
+  const seats = shuffle(["東","南","西","北"]);
+  players.forEach((p, i) => { p.seat = seats[i]; });
+}
+function sortBySeat(list){
+  const rank = { "東":0, "南":1, "西":2, "北":3 };
+  return [...list].sort((a,b) => rank[a.seat] - rank[b.seat]);
+}
+function getTurnOrder(){ return sortBySeat(players); }
+function getCurrentPlayer(){ return getTurnOrder()[turnIndex]; }
+function getCurrentParentSeat(){ return PARENT_ORDER[parentSeatIndex]; }
+function getRoundName(){ return `${getCurrentParentSeat()}局`; }
+function getParentPlayer(){ return players.find(p => p.seat === getCurrentParentSeat()); }
+function syncCpuPlayersFromSetup(){
+  players[1].girlId = gameSetup.cpuGirlIds[0] || "girlB";
+  players[2].girlId = gameSetup.cpuGirlIds[1] || "girlC";
+  players[3].girlId = gameSetup.cpuGirlIds[2] || "girlD";
+  players[1].name = getGirlById(players[1].girlId).name;
+  players[2].name = getGirlById(players[2].girlId).name;
+  players[3].name = getGirlById(players[3].girlId).name;
+}
+function renderRiverColumnHeads(){
+  riverColumnHeads.innerHTML = "";
+  getTurnOrder().forEach(player => {
+    const div = document.createElement("div");
+    div.className = "riverColHead";
+    div.textContent = `${player.seat} ${player.name}`;
+    riverColumnHeads.appendChild(div);
+  });
+}
+function createRiverTile(tileId, isLast){
+  const div = document.createElement("div");
+  div.className = "riverTile" + (isLast ? " last" : "");
+  const tint = document.createElement("div");
+  tint.className = "riverTint";
+  tint.style.background = getTileColor(tileId);
+  div.appendChild(tint);
+  const tile = getTileDef(tileId);
+  if(tile && tile.image){
+    const img = document.createElement("img");
+    img.className = "riverImg";
+    img.src = tile.image;
+    img.alt = tile.name;
+    div.appendChild(img);
+  }else{
+    const fallback = document.createElement("div");
+    fallback.className = "riverFallback";
+    fallback.textContent = getTileName(tileId);
+    div.appendChild(fallback);
+  }
+  return div;
+}
+function renderDiscardPile(){
+  riverGrid.innerHTML = "";
+  renderRiverColumnHeads();
+  if(!discardPile.length){
+    riverEmpty.style.display = "flex";
+    lastOwner.textContent = "---";
+    return;
+  }
+  riverEmpty.style.display = "none";
+  const order = getTurnOrder();
+  const playerIndexMap = {};
+  order.forEach((player, index) => { playerIndexMap[player.id] = index; });
+  const columnStacks = [[],[],[],[]];
+  discardPile.forEach((item, index) => {
+    const col = playerIndexMap[item.playerId];
+    if(col !== undefined) columnStacks[col].push({ ...item, isLast:index === discardPile.length - 1 });
+  });
+  const maxRows = Math.max(...columnStacks.map(col => col.length), 0);
+  for(let row=0; row<maxRows; row++){
+    for(let col=0; col<4; col++){
+      const item = columnStacks[col][row];
+      if(item){
+        riverGrid.appendChild(createRiverTile(item.tileId, item.isLast));
       }else{
-        const fallback = document.createElement("div");
-        fallback.className = "tileFallback";
-        fallback.textContent = getTileName(tileId);
-        inner.appendChild(fallback);
+        const empty = document.createElement("div");
+        empty.className = "riverTile";
+        empty.style.opacity = "0";
+        riverGrid.appendChild(empty);
       }
-      parent.appendChild(inner);
     }
-
-    function renderHand(){
-      handEl.innerHTML = "";
-      players[0].hand.forEach((tileId, index) => {
-        const btn = document.createElement("button");
-        btn.className = "tileBtn" + (index === justDrawnIndex ? " drawn" : "");
-        btn.disabled = !(waitingPlayerDiscard && !busy && !gameEnded && !pendingRon && !pendingTsumo);
-        btn.addEventListener("click", () => onPlayerDiscard(index));
-        renderTileContent(btn, tileId);
-        handEl.appendChild(btn);
-      });
+  }
+  lastOwner.textContent = discardPile[discardPile.length - 1].owner;
+}
+function renderScores(){
+  scoreList.innerHTML = "";
+  getTurnOrder().forEach(player => {
+    const row = document.createElement("div");
+    row.className = "scoreLine" + (getCurrentPlayer().id === player.id && !gameEnded ? " active" : "");
+    let badgeClass = "badge-you";
+    if(player.id === "cpu1") badgeClass = "badge-a";
+    if(player.id === "cpu2") badgeClass = "badge-b";
+    if(player.id === "cpu3") badgeClass = "badge-c";
+    row.innerHTML = `
+      <div class="scoreName">
+        <span class="scoreBadge ${badgeClass}">${player.short}</span>
+        <span>${player.seat}　${player.name}${player.seat === getCurrentParentSeat() ? "（親）" : ""}</span>
+      </div>
+      <div>${formatPoint(player.point)}点</div>
+    `;
+    scoreList.appendChild(row);
+  });
+}
+function renderTileContent(parent, tileId){
+  const tile = getTileDef(tileId);
+  parent.innerHTML = "";
+  const inner = document.createElement("div");
+  inner.className = "tileInner";
+  const tint = document.createElement("div");
+  tint.className = "tileTint";
+  tint.style.background = getTileColor(tileId);
+  inner.appendChild(tint);
+  if(tile && tile.image){
+    const img = document.createElement("img");
+    img.className = "tileImg";
+    img.src = tile.image;
+    img.alt = tile.name;
+    inner.appendChild(img);
+  }else{
+    const fallback = document.createElement("div");
+    fallback.className = "tileFallback";
+    fallback.textContent = getTileName(tileId);
+    inner.appendChild(fallback);
+  }
+  parent.appendChild(inner);
+}
+function renderHand(){
+  handEl.innerHTML = "";
+  players[0].hand.forEach((tileId, index) => {
+    const btn = document.createElement("button");
+    btn.className = "tileBtn" + (index === justDrawnIndex ? " drawn" : "");
+    btn.disabled = !(waitingPlayerDiscard && !busy && !gameEnded && !pendingRon && !pendingTsumo);
+    btn.addEventListener("click", () => onPlayerDiscard(index));
+    renderTileContent(btn, tileId);
+    handEl.appendChild(btn);
+  });
+}
+function renderAll(){
+  const current = getCurrentPlayer();
+  turnLabel.textContent = `${current.seat}　${current.name}の番`;
+  roundLabel.textContent = `${getRoundName()} / ${currentRoundNumber}/${totalRounds}`;
+  deckCount.textContent = deck.length;
+  renderDiscardPile();
+  renderScores();
+  renderHand();
+  updateActionButtons();
+}
+function showGirl(girlObj, text, seat = null){
+  const images = getGirlImages(girlObj);
+  girlBgScene.src = seat ? getSeatBgBySeat(seat) : getSeatBgBySeat("東");
+  girlChara.src = rand(images);
+  girlNameEl.textContent = girlObj.name;
+  girlTextEl.textContent = text;
+  bigTileWrap.classList.remove("show");
+  showOverlay(girlOverlay);
+}
+function updateGirlText(text){ girlTextEl.textContent = text; }
+function hideGirl(){ bigTileWrap.classList.remove("show"); hideOverlay(girlOverlay); }
+function showBigTile(tileId, caption){
+  const tile = getTileDef(tileId);
+  bigTileTint.style.background = getTileColor(tileId);
+  bigTileCard.innerHTML = "";
+  bigTileCard.appendChild(bigTileTint);
+  if(tile && tile.image){
+    const img = document.createElement("img");
+    img.className = "bigTileImg";
+    img.src = tile.image;
+    img.alt = tile.name;
+    bigTileCard.appendChild(img);
+  }else{
+    bigTileFallback.textContent = getTileName(tileId);
+    bigTileCard.appendChild(bigTileFallback);
+  }
+  bigTileCaption.textContent = caption;
+  bigTileWrap.classList.add("show");
+}
+async function showRoundIntro(){
+  roundOverlayMain.textContent = getRoundName();
+  roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
+  showOverlay(roundOverlay);
+  await wait(900);
+  hideOverlay(roundOverlay);
+  await wait(180);
+}
+function getConquestEnemyId(){
+  return GIRLS[playerProfile.conquestProgress % GIRLS.length].id;
+}
+function showConquestCutin(girlId){
+  return new Promise(resolve => {
+    const girl = getGirlById(girlId);
+    conquestCutinBg.src = "img/bg_east.png";
+    conquestCutinGirl.src = `img/${girl.id}_1.png`;
+    conquestCutinNamePlate.textContent = girl.name;
+    conquestCutinSub.textContent = `${girl.name} が立ちはだかる`;
+    const onStart = () => {
+      conquestCutinBtn.removeEventListener("click", onStart);
+      hideOverlay(conquestCutinOverlay);
+      resolve();
+    };
+    conquestCutinBtn.addEventListener("click", onStart);
+    showOverlay(conquestCutinOverlay);
+  });
+}
+function cpuChooseDiscardIndex(player){
+  const hand = player.hand;
+  if(Math.random() < 0.35) return Math.floor(Math.random() * hand.length);
+  const map = countMap(hand);
+  let best = Infinity;
+  let cand = [];
+  hand.forEach((tileId,i) => {
+    let score = 0;
+    const count = map[tileId];
+    if(count >= 3) score += 1000;
+    else if(count === 2) score += 100;
+    if(score < best){
+      best = score;
+      cand = [i];
+    }else if(score === best){
+      cand.push(i);
     }
-
-    function renderAll(){
-      const current = getCurrentPlayer();
-      turnLabel.textContent = `${current.seat}　${current.name}の番`;
-      roundLabel.textContent = `${getRoundName()} / ${currentRoundNumber}/${totalRounds}`;
-      deckCount.textContent = deck.length;
-      renderDiscardPile();
-      renderScores();
-      renderHand();
-      updateActionButtons();
-    }
-
-    function showGirl(girlObj, text, seat = null){
-      const images = getGirlImages(girlObj);
-      girlBgScene.src = seat ? getSeatBgBySeat(seat) : getSeatBgBySeat("東");
-      girlChara.src = rand(images);
-      girlNameEl.textContent = girlObj.name;
-      girlTextEl.textContent = text;
-      bigTileWrap.classList.remove("show");
-      showOverlay(girlOverlay);
-    }
-
-    function updateGirlText(text){ girlTextEl.textContent = text; }
-    function hideGirl(){ bigTileWrap.classList.remove("show"); hideOverlay(girlOverlay); }
-
-    function showBigTile(tileId, caption){
-      const tile = getTileDef(tileId);
-      bigTileTint.style.background = getTileColor(tileId);
-      bigTileCard.innerHTML = "";
-      bigTileCard.appendChild(bigTileTint);
-
-      if(tile && tile.image){
-        const img = document.createElement("img");
-        img.className = "bigTileImg";
-        img.src = tile.image;
-        img.alt = tile.name;
-        bigTileCard.appendChild(img);
-      }else{
-        bigTileFallback.textContent = getTileName(tileId);
-        bigTileCard.appendChild(bigTileFallback);
-      }
-      bigTileCaption.textContent = caption;
-      bigTileWrap.classList.add("show");
-    }
-
-    async function showRoundIntro(){
-      roundOverlayMain.textContent = getRoundName();
-      roundOverlaySub.textContent = `親：${getParentPlayer().seat}　${getParentPlayer().name}`;
-      showOverlay(roundOverlay);
-      await wait(900);
-      hideOverlay(roundOverlay);
-      await wait(180);
-    }
-
-    function cpuChooseDiscardIndex(player){
-      const hand = player.hand;
-      if(Math.random() < 0.38){
-        return Math.floor(Math.random() * hand.length);
-      }
-      const map = countMap(hand);
-      let bestScore = Infinity;
-      let candidates = [];
-      hand.forEach((tileId, i) => {
-        const count = map[tileId];
-        let score = 0;
-        if(count >= 3) score += 1000;
-        else if(count === 2) score += 100;
-        if(getCompletedTriples(hand) >= 1 && count === 2) score += 80;
-        if(score < bestScore){
-          bestScore = score;
-          candidates = [i];
-        }else if(score === bestScore){
-          candidates.push(i);
-        }
-      });
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    function getCpuRonCandidateAfterDiscard(discarder, tileId){
-      const order = getTurnOrder();
-      const startIdx = order.findIndex(p => p.id === discarder.id);
-      for(let offset = 1; offset < order.length; offset++){
-        const candidate = order[(startIdx + offset) % order.length];
-        if(candidate.id === "you") continue;
-        if(canRonWithTile(candidate.hand, tileId)){
-          if(Math.random() < 0.88) return candidate;
-        }
-      }
-      return null;
-    }
-
-    function advanceTurn(){
-      const order = getTurnOrder();
-      turnIndex = (turnIndex + 1) % order.length;
-    }
-
-    function applyTsumoPoints(winner){
-      const isParent = winner.seat === getCurrentParentSeat();
-      players.forEach(p => {
-        if(p.id !== winner.id){
-          p.point -= 1;
-          winner.point += 1;
-        }
-      });
-      if(isParent) winner.point += 1;
-    }
-
-    function applyRonPoints(winner, loser){
-      const isParent = winner.seat === getCurrentParentSeat();
-      let gain = 3;
-      if(isParent) gain += 1;
-      loser.point -= gain;
+  });
+  return rand(cand);
+}
+function getCpuRonCandidateAfterDiscard(discarder, tileId){
+  const order = getTurnOrder();
+  const startIdx = order.findIndex(p => p.id === discarder.id);
+  for(let offset=1; offset<order.length; offset++){
+    const candidate = order[(startIdx + offset) % order.length];
+    if(candidate.id === "you") continue;
+    if(canRonWithTile(candidate.hand, tileId) && Math.random() < 0.88) return candidate;
+  }
+  return null;
+}
+function advanceTurn(){
+  const order = getTurnOrder();
+  turnIndex = (turnIndex + 1) % order.length;
+}
+function applyTsumoPoints(winner, bonusInfo){
+  const isParent = winner.seat === getCurrentParentSeat();
+  let gain = 1 + bonusInfo.bonus;
+  players.forEach(p => {
+    if(p.id !== winner.id){
+      p.point -= gain;
       winner.point += gain;
     }
-
-    function applyDrawPoints(){
-      const tenpaiPlayers = players.filter(p => isTenpai(p.hand));
-      const notenPlayers = players.filter(p => !isTenpai(p.hand));
-      const t = tenpaiPlayers.length;
-      if(t === 0 || t === 4) return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
-
-      if(t === 1){
-        tenpaiPlayers[0].point += 3;
-        notenPlayers.forEach(p => p.point -= 1);
-      }else if(t === 2){
-        tenpaiPlayers.forEach(p => p.point += 1.5);
-        notenPlayers.forEach(p => p.point -= 1.5);
-      }else if(t === 3){
-        tenpaiPlayers.forEach(p => p.point += 1);
-        notenPlayers[0].point -= 3;
-      }
-      return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
+  });
+  if(isParent) winner.point += 1;
+}
+function applyRonPoints(winner, loser, bonusInfo){
+  const isParent = winner.seat === getCurrentParentSeat();
+  let gain = 3 + bonusInfo.bonus;
+  if(isParent) gain += 1;
+  loser.point -= gain;
+  winner.point += gain;
+}
+function applyDrawPoints(){
+  const tenpaiPlayers = players.filter(p => isTenpai(p.hand));
+  const notenPlayers = players.filter(p => !isTenpai(p.hand));
+  const t = tenpaiPlayers.length;
+  if(t === 0 || t === 4) return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
+  if(t === 1){
+    tenpaiPlayers[0].point += 3;
+    notenPlayers.forEach(p => p.point -= 1);
+  }else if(t === 2){
+    tenpaiPlayers.forEach(p => p.point += 1.5);
+    notenPlayers.forEach(p => p.point -= 1.5);
+  }else if(t === 3){
+    tenpaiPlayers.forEach(p => p.point += 1);
+    notenPlayers[0].point -= 3;
+  }
+  return { tenpaiCount:t, tenpaiPlayers, notenPlayers };
+}
+function getFinalWinnersByPoints(){
+  const max = Math.max(...players.map(p => p.point));
+  return players.filter(p => p.point === max);
+}
+function hasHako(){ return players.some(p => p.point <= 0); }
+function renderRoundResultScores(){
+  roundResultScore.innerHTML = "";
+  const sorted = [...players].sort((a,b) => b.point - a.point);
+  sorted.forEach(p => {
+    const row = document.createElement("div");
+    row.className = "roundResultScoreLine";
+    row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
+    roundResultScore.appendChild(row);
+  });
+}
+function showRoundResult(roundText, winText, descText){
+  return new Promise(resolve => {
+    roundResultRound.textContent = roundText;
+    roundResultWin.textContent = winText;
+    roundResultDesc.textContent = descText;
+    renderRoundResultScores();
+    showOverlay(roundResultOverlay);
+    resolve();
+  });
+}
+function renderRevealHand(handTiles){
+  handRevealGrid.innerHTML = "";
+  const tiles = [...handTiles];
+  if(tiles.length === 5) tiles.push("__empty__");
+  tiles.forEach(tileId => {
+    const div = document.createElement("div");
+    div.className = "handRevealTile";
+    if(tileId === "__empty__"){
+      div.classList.add("empty");
+      handRevealGrid.appendChild(div);
+      return;
     }
-
-    function getFinalWinnersByPoints(){
-      const max = Math.max(...players.map(p => p.point));
-      return players.filter(p => p.point === max);
+    const tint = document.createElement("div");
+    tint.className = "handRevealTint";
+    tint.style.background = getTileColor(tileId);
+    div.appendChild(tint);
+    const tile = getTileDef(tileId);
+    if(tile && tile.image){
+      const img = document.createElement("img");
+      img.src = tile.image;
+      img.alt = tile.name;
+      div.appendChild(img);
+    }else{
+      const fallback = document.createElement("div");
+      fallback.className = "handRevealFallback";
+      fallback.textContent = getTileName(tileId);
+      div.appendChild(fallback);
     }
-    function hasHako(){ return players.some(p => p.point <= 0); }
-
-    function renderRoundResultScores(){
-      roundResultScore.innerHTML = "";
-      const sorted = [...players].sort((a,b) => b.point - a.point);
-      sorted.forEach(p => {
-        const row = document.createElement("div");
-        row.className = "roundResultScoreLine";
-        row.innerHTML = `<span>${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
-        roundResultScore.appendChild(row);
-      });
-    }
-
-    function showRoundResult(roundText, winText, descText){
-      return new Promise(resolve => {
-        roundResultRound.textContent = roundText;
-        roundResultWin.textContent = winText;
-        roundResultDesc.textContent = descText;
-        renderRoundResultScores();
-        showOverlay(roundResultOverlay);
-        resolve();
-      });
-    }
-
-    async function showWinLoseDialogue(result){
-      if(result.type === "tsumo"){
-        const winGirl = getGirlForPlayer(result.winner);
-        showGirl(winGirl, rand(winGirl.tsumo), result.winner.seat);
-        await wait(760);
-        const losers = players.filter(p => p.id !== result.winner.id);
-        for(const p of losers){
-          const loseGirl = getGirlForPlayer(p);
-          showGirl(loseGirl, rand(loseGirl.loseTsumo), p.seat);
-          await wait(620);
-        }
-      }else if(result.type === "ron"){
-        const winGirl = getGirlForPlayer(result.winner);
-        showGirl(winGirl, rand(winGirl.ron), result.winner.seat);
-        await wait(760);
-        if(result.loser){
-          const loseGirl = getGirlForPlayer(result.loser);
-          showGirl(loseGirl, rand(loseGirl.loseRon), result.loser.seat);
-          await wait(620);
-        }
-      }
-      hideGirl();
-    }
-
-    function renderRevealHand(handTiles){
-      handRevealGrid.innerHTML = "";
-      const tiles = [...handTiles];
-      if(tiles.length === 5) tiles.push("__empty__");
-      tiles.forEach(tileId => {
-        const div = document.createElement("div");
-        div.className = "handRevealTile";
-        if(tileId === "__empty__"){
-          div.classList.add("empty");
-          handRevealGrid.appendChild(div);
-          return;
-        }
-        const tint = document.createElement("div");
-        tint.className = "handRevealTint";
-        tint.style.background = getTileColor(tileId);
-        div.appendChild(tint);
-
-        const tile = getTileDef(tileId);
-        if(tile && tile.image){
-          const img = document.createElement("img");
-          img.src = tile.image;
-          img.alt = tile.name;
-          div.appendChild(img);
-        }else{
-          const fallback = document.createElement("div");
-          fallback.className = "handRevealFallback";
-          fallback.textContent = getTileName(tileId);
-          div.appendChild(fallback);
-        }
-        handRevealGrid.appendChild(div);
-      });
-    }
-
-    async function showRevealHand(titleText, handTiles, waitMs = 1100){
-      handRevealTitle.textContent = titleText;
-      renderRevealHand(sortHandByGroups([...handTiles]));
-      showOverlay(handRevealOverlay);
-      await wait(waitMs);
-      hideOverlay(handRevealOverlay);
-    }
-
-    async function showWinReveal(result, discardInfo = null){
-      if(result.type === "tsumo"){
-        const revealHand = [...result.winner.hand];
-        await showRevealHand(`${result.winner.name}　ツモ手`, revealHand);
-      }else if(result.type === "ron"){
-        const ronTile = discardInfo ? discardInfo.tileId : null;
-        const revealHand = ronTile
-          ? sortHandByGroups([...result.winner.hand, ronTile])
-          : sortHandByGroups([...result.winner.hand]);
-        await showRevealHand(`${result.winner.name}　ロン手`, revealHand);
-      }
-    }
-
-    async function showDrawTenpaiReveal(drawInfo){
-      if(!drawInfo || !drawInfo.tenpaiPlayers || drawInfo.tenpaiPlayers.length === 0) return;
-      for(const p of drawInfo.tenpaiPlayers){
-        await showRevealHand(`${p.name}　テンパイ`, [...p.hand], 950);
-        await wait(120);
-      }
-    }
-
-    function updateParentAfterResult(result, drawInfo){
-      const parentSeat = getCurrentParentSeat();
-      const parentPlayer = players.find(p => p.seat === parentSeat);
-
-      if(result && (result.type === "tsumo" || result.type === "ron")){
-        if(result.winner.seat === parentSeat) return;
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-        return;
-      }
-
-      if(drawInfo){
-        const parentTenpai = isTenpai(parentPlayer.hand);
-        if(parentTenpai) return;
-        parentSeatIndex = (parentSeatIndex + 1) % 4;
-      }
-    }
-
-    async function finalizeSetupAndStart(){
-      if(gameMode === "conquest"){
-        const bossId = getConquestBossId();
-        const pool = GIRLS.filter(g => g.id !== tempGirlId && g.id !== bossId && isGirlUnlocked(g.id));
-        const shuffled = shuffle(pool).slice(0,2);
-        tempCpuGirlIds = [bossId, ...shuffled.map(g => g.id)];
-      }
-
-      gameSetup = {
-        supportGirlId: tempGirlId,
-        cpuGirlIds: [...tempCpuGirlIds],
-        selectedTileIds: [...tempTileIds],
-        tileColors: JSON.parse(JSON.stringify(tempTileColors))
-      };
-
-      loopCount = tempLoopCount;
-      totalRounds = loopCount * 4;
-      currentRoundNumber = 0;
-
-      syncCpuPlayersFromSetup();
-      rebuildActiveTiles();
-      updateTitleScreenProfile();
-      hideOverlay(colorSelectOverlay);
-
-      if(gameMode === "conquest"){
-        await showConquestCutin(getConquestBossId());
-      }
-
-      await resetGame();
-    }
-
-    function openCustom(){
-      if(busy) return;
-      tempTileIds = [...gameSetup.selectedTileIds];
-      tempTileColors = JSON.parse(JSON.stringify(gameSetup.tileColors));
-      renderTilePickGrid(customGrid, tempTileIds, customSelectCount);
-      showOverlay(customOverlay);
-    }
-
-    function closeCustom(){ hideOverlay(customOverlay); }
-
-    function saveCustomInGame(){
-      if(tempTileIds.length !== PICK_COUNT){
-        alert("9体ちょうど選んでね。");
-        return;
-      }
-      gameSetup.selectedTileIds = [...tempTileIds];
-      gameSetup.tileColors = JSON.parse(JSON.stringify(tempTileColors));
-      rebuildActiveTiles();
-      closeCustom();
-      renderAll();
-      addHistory("牌カスタムを保存。次回リセット後に反映。");
-    }
-
-    async function resetGame(){
-      clearHumanTimers();
-      hideGirl();
-      hideOverlay(roundResultOverlay);
-      hideResultScreen();
-      hideOverlay(handRevealOverlay);
-      hideOverlay(conquestCutinOverlay);
-
-      setBusy(true);
-      gameEnded = false;
-      historyLogs = [];
-      discardPile = [];
-      deck = [];
-      lastDiscardInfo = null;
-      justDrawnIndex = -1;
-      waitingPlayerDiscard = false;
-      clearPendingActions();
-      resetMatchStats();
-
-      syncCpuPlayersFromSetup();
-
-      const startPoint = START_POINT_MAP[loopCount] || 10;
-      players.forEach(p => {
-        p.point = startPoint;
-        p.hand = [];
-      });
-
-      players[0].girlId = gameSetup.supportGirlId;
-      assignSeats();
-      parentSeatIndex = 0;
-      currentRoundNumber = 0;
-
-      rebuildActiveTiles();
-      renderHistory();
-      renderAll();
-
-      await startRound(true);
-      setBusy(false);
-    }
-
-    async function startRound(isFirst){
-      clearHumanTimers();
-      hideGirl();
-      hideOverlay(roundResultOverlay);
-      hideOverlay(handRevealOverlay);
-
-      setBusy(true);
-      discardPile = [];
-      clearPendingActions();
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      players.forEach(p => p.hand = []);
-
-      deck = createDeck();
-      for(let i=0;i<BASE_HAND_SIZE;i++) players.forEach(p => drawTile(p));
-      players.forEach(p => p.hand = sortHandByGroups(p.hand));
-
-      const order = getTurnOrder();
-      turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
-      currentRoundNumber += 1;
-
-      addHistory(`${getRoundName()} ${Math.ceil(currentRoundNumber / 4)}周目 / ${currentRoundNumber}局目 開始`);
-      renderAll();
-
-      if(!isFirst) await wait(WAIT_ROUND_START_GAP);
-      await showRoundIntro();
-      setBusy(false);
-
-      if(getCurrentPlayer().id === "you"){
-        startHumanTurn();
-      }else{
-        await startCpuTurn(getCurrentPlayer());
-      }
-    }
-
-    function startHumanTurn(){
-      clearHumanTimers();
-      const girl = getSupportGirl();
-
-      waitingPlayerDiscard = false;
-      justDrawnIndex = -1;
-      pendingRon = false;
-      pendingTsumo = false;
-      renderAll();
-
-      showGirl(girl, rand(girl.introHuman), players[0].seat);
-
-      humanTurnTimer1 = setTimeout(() => {
-        updateGirlText("...");
-      }, 550);
-
-      humanTurnTimer2 = setTimeout(() => {
-        updateGirlText(rand(girl.thinkHuman));
-
-        setTimeout(() => {
-          const drawn = drawTile(players[0]);
-          if(!drawn){
-            updateGirlText("……");
-            setTimeout(async () => {
-              hideGirl();
-              await finishRound({ type:"draw" });
-            }, 400);
-            return;
-          }
-
-          players[0].hand = sortHandKeepDrawnLast(players[0].hand);
-          justDrawnIndex = players[0].hand.length - 1;
-          pendingTsumo = isWinningHand(players[0].hand);
-          pendingRon = false;
-          waitingPlayerDiscard = true;
-          renderAll();
-
-          updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
-
-          setTimeout(() => {
-            hideGirl();
-            renderAll();
-          }, 700);
-        }, 700);
-      }, WAIT_LONG);
-    }
-
-    async function startCpuTurn(player){
-      clearHumanTimers();
-      setBusy(true);
-
-      const girl = getGirlForPlayer(player);
-      showGirl(girl, rand(girl.introCpu), player.seat);
-      await wait(550);
-
-      updateGirlText("...");
-      await wait(350);
-
-      updateGirlText(rand(girl.thinkCpu));
+    handRevealGrid.appendChild(div);
+  });
+}
+async function showRevealHand(titleText, handTiles, waitMs = 1100){
+  handRevealTitle.textContent = titleText;
+  renderRevealHand(sortHandByGroups([...handTiles]));
+  showOverlay(handRevealOverlay);
+  await wait(waitMs);
+  hideOverlay(handRevealOverlay);
+}
+async function showWinReveal(result, discardInfo = null){
+  if(result.type === "tsumo"){
+    await showRevealHand(`${result.winner.name}　ツモ手`, [...result.winner.hand]);
+  }else if(result.type === "ron"){
+    const ronTile = discardInfo ? discardInfo.tileId : null;
+    const revealHand = ronTile ? sortHandByGroups([...result.winner.hand, ronTile]) : [...result.winner.hand];
+    await showRevealHand(`${result.winner.name}　ロン手`, revealHand);
+  }
+}
+async function showDrawTenpaiReveal(drawInfo){
+  if(!drawInfo || !drawInfo.tenpaiPlayers || drawInfo.tenpaiPlayers.length === 0) return;
+  for(const p of drawInfo.tenpaiPlayers){
+    await showRevealHand(`${p.name}　テンパイ`, [...p.hand], 950);
+    await wait(120);
+  }
+}
+async function showWinLoseDialogue(result){
+  if(result.type === "tsumo"){
+    const winGirl = getGirlForPlayer(result.winner);
+    showGirl(winGirl, rand(winGirl.tsumo), result.winner.seat);
+    await wait(760);
+    const losers = players.filter(p => p.id !== result.winner.id);
+    for(const p of losers){
+      const loseGirl = getGirlForPlayer(p);
+      showGirl(loseGirl, rand(loseGirl.loseTsumo), p.seat);
       await wait(600);
+    }
+  }else if(result.type === "ron"){
+    const winGirl = getGirlForPlayer(result.winner);
+    showGirl(winGirl, rand(winGirl.ron), result.winner.seat);
+    await wait(760);
+    const loseGirl = getGirlForPlayer(result.loser);
+    showGirl(loseGirl, rand(loseGirl.loseRon), result.loser.seat);
+    await wait(600);
+  }
+  hideGirl();
+}
+function updateParentAfterResult(result, drawInfo){
+  const parentSeat = getCurrentParentSeat();
+  const parentPlayer = players.find(p => p.seat === parentSeat);
+  if(result && (result.type === "tsumo" || result.type === "ron")){
+    if(result.winner.seat === parentSeat) return;
+    parentSeatIndex = (parentSeatIndex + 1) % 4;
+    return;
+  }
+  if(drawInfo){
+    if(isTenpai(parentPlayer.hand)) return;
+    parentSeatIndex = (parentSeatIndex + 1) % 4;
+  }
+}
+async function finalizeSetupAndStart(){
+  gameSetup.supportGirlId = tempGirlId;
+  if(gameMode === "conquest"){
+    enemyGirlId = getConquestEnemyId();
+    const others = GIRLS.map(g => g.id).filter(id => id !== tempGirlId && id !== enemyGirlId);
+    gameSetup.cpuGirlIds = [enemyGirlId, ...shuffle(others).slice(0,2)];
+  }else{
+    gameSetup.cpuGirlIds = [...tempCpuGirlIds];
+  }
+  loopCount = tempLoopCount;
+  totalRounds = loopCount * 4;
+  currentRoundNumber = 0;
+  syncCpuPlayersFromSetup();
+  rebuildActiveTiles();
+  updateTitleScreenProfile();
+  hideOverlay(tileSelectOverlay);
+  if(gameMode === "conquest"){
+    await showConquestCutin(enemyGirlId);
+  }
+  await resetGame();
+}
+async function resetGame(){
+  clearHumanTimers();
+  hideGirl();
+  hideOverlay(roundResultOverlay);
+  hideOverlay(resultOverlay);
+  hideOverlay(handRevealOverlay);
+  hideOverlay(conquestCutinOverlay);
+  setBusy(true);
+  gameEnded = false;
+  historyLogs = [];
+  discardPile = [];
+  deck = [];
+  lastDiscardInfo = null;
+  justDrawnIndex = -1;
+  waitingPlayerDiscard = false;
+  clearPendingActions();
+  lastWinBonus = null;
 
-      const drawn = drawTile(player);
+  syncCpuPlayersFromSetup();
+  const startPoint = START_POINT_MAP[loopCount] || 10;
+  players.forEach(p => {
+    p.point = startPoint;
+    p.hand = [];
+  });
+  players[0].girlId = gameSetup.supportGirlId;
+  assignSeats();
+  parentSeatIndex = 0;
+  currentRoundNumber = 0;
+  rebuildActiveTiles();
+  renderHistory();
+  renderAll();
+  await startRound(true);
+  setBusy(false);
+}
+async function startRound(isFirst){
+  clearHumanTimers();
+  hideGirl();
+  hideOverlay(roundResultOverlay);
+  hideOverlay(handRevealOverlay);
+  setBusy(true);
+  discardPile = [];
+  clearPendingActions();
+  waitingPlayerDiscard = false;
+  justDrawnIndex = -1;
+  players.forEach(p => p.hand = []);
+  deck = createDeck();
+  for(let i=0;i<BASE_HAND_SIZE;i++) players.forEach(p => drawTile(p));
+  players.forEach(p => p.hand = sortHandByGroups(p.hand));
+  const order = getTurnOrder();
+  turnIndex = order.findIndex(p => p.seat === getCurrentParentSeat());
+  currentRoundNumber += 1;
+  addHistory(`${getRoundName()} ${Math.ceil(currentRoundNumber / 4)}周目 / ${currentRoundNumber}局目 開始`);
+  renderAll();
+  if(!isFirst) await wait(500);
+  await showRoundIntro();
+  setBusy(false);
+  if(getCurrentPlayer().id === "you"){
+    startHumanTurn();
+  }else{
+    await startCpuTurn(getCurrentPlayer());
+  }
+}
+function startHumanTurn(){
+  clearHumanTimers();
+  const girl = getSupportGirl();
+  waitingPlayerDiscard = false;
+  justDrawnIndex = -1;
+  pendingRon = false;
+  pendingTsumo = false;
+  renderAll();
+  showGirl(girl, rand(girl.introHuman), players[0].seat);
+
+  humanTurnTimer1 = setTimeout(() => {
+    updateGirlText("...");
+  }, 550);
+
+  humanTurnTimer2 = setTimeout(() => {
+    updateGirlText(rand(girl.thinkHuman));
+    setTimeout(() => {
+      const drawn = drawTile(players[0]);
       if(!drawn){
-        hideGirl();
-        await finishRound({ type:"draw" });
+        updateGirlText("……");
+        setTimeout(async () => {
+          hideGirl();
+          await finishRound({ type:"draw" });
+        }, 300);
         return;
       }
-
-      player.hand = sortHandByGroups(player.hand);
-
-      const tsumo = isWinningHand(player.hand);
-      updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
-      await wait(550);
-
-      if(tsumo){
-        await finishRound({ type:"tsumo", winner:player });
-        return;
-      }
-
-      updateGirlText("...");
-      await wait(300);
-
-      const discardIndex = cpuChooseDiscardIndex(player);
-      const discardTile = player.hand[discardIndex];
-
-      showBigTile(discardTile, `${player.name}：${getTileName(discardTile)}を捨てる`);
-      updateGirlText(rand(girl.discard));
-      await wait(WAIT_DISCARD_PREVIEW);
-
-      player.hand.splice(discardIndex,1);
-      player.hand = sortHandByGroups(player.hand);
-
-      discardPile.push({
-        tileId: discardTile,
-        owner: `${player.seat} ${player.name}`,
-        playerId: player.id
-      });
-      addHistory(`${player.seat} ${player.name}：${getTileName(discardTile)}を捨てた`);
+      players[0].hand = sortHandKeepDrawnLast(players[0].hand);
+      justDrawnIndex = players[0].hand.length - 1;
+      pendingTsumo = isWinningHand(players[0].hand);
+      waitingPlayerDiscard = true;
       renderAll();
-
-      if(canRonWithTile(players[0].hand, discardTile)){
-        pendingRon = true;
-        pendingTsumo = false;
-        lastDiscardInfo = { tileId: discardTile, discarder: player };
-        waitingPlayerDiscard = false;
-        setBusy(false);
+      updateGirlText(pendingTsumo ? rand(girl.drawHumanGood) : rand(girl.drawHumanNormal));
+      setTimeout(() => {
         hideGirl();
-        statusMain.textContent = "ロンできます";
-        subInfo.textContent = `${player.name}の捨て牌：${getTileName(discardTile)}`;
-        updateActionButtons();
-        return;
-      }
-
-      const ronCpu = getCpuRonCandidateAfterDiscard(player, discardTile);
-      if(ronCpu){
-        lastDiscardInfo = { tileId: discardTile, discarder: player };
-        await finishRound({ type:"ron", winner:ronCpu, loser:player });
-        return;
-      }
-
-      hideGirl();
-      await wait(140);
-      advanceTurn();
-      setBusy(false);
-
-      if(getCurrentPlayer().id === "you"){
-        startHumanTurn();
-      }else{
-        await startCpuTurn(getCurrentPlayer());
-      }
-    }
-
-    function onPlayerDiscard(index){
-      if(!waitingPlayerDiscard || busy || gameEnded || pendingRon) return;
-
-      clearHumanTimers();
-      const me = players[0];
-      const tileId = me.hand[index];
-      const girl = getSupportGirl();
-
-      setBusy(true);
-      waitingPlayerDiscard = false;
-
-      showGirl(girl, "...", me.seat);
-      showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
-
-      setTimeout(() => { updateGirlText(rand(girl.discard)); }, 180);
-
-      setTimeout(async () => {
-        me.hand.splice(index,1);
-        me.hand = sortHandByGroups(me.hand);
-
-        discardPile.push({
-          tileId,
-          owner:`${me.seat} あなた`,
-          playerId:me.id
-        });
-        addHistory(`${me.seat} あなた：${getTileName(tileId)}を捨てた`);
-
-        justDrawnIndex = -1;
-        pendingTsumo = false;
         renderAll();
+      }, 650);
+    }, 650);
+  }, 850);
+}
+async function startCpuTurn(player){
+  clearHumanTimers();
+  setBusy(true);
+  const girl = getGirlForPlayer(player);
+  showGirl(girl, rand(girl.introCpu), player.seat);
+  await wait(500);
+  updateGirlText("...");
+  await wait(320);
+  updateGirlText(rand(girl.thinkCpu));
+  await wait(540);
 
-        const ronCpu = getCpuRonCandidateAfterDiscard(me, tileId);
-        if(ronCpu){
-          lastDiscardInfo = { tileId, discarder: me };
-          await finishRound({ type:"ron", winner:ronCpu, loser:me });
-          return;
-        }
+  const drawn = drawTile(player);
+  if(!drawn){
+    hideGirl();
+    await finishRound({ type:"draw" });
+    return;
+  }
+  player.hand = sortHandByGroups(player.hand);
+  const tsumo = isWinningHand(player.hand);
+  updateGirlText(tsumo ? rand(girl.drawCpuGood) : rand(girl.drawCpuNormal));
+  await wait(520);
 
-        hideGirl();
-        advanceTurn();
-        setBusy(false);
+  if(tsumo){
+    await finishRound({ type:"tsumo", winner:player });
+    return;
+  }
 
-        if(getCurrentPlayer().id === "you"){
-          startHumanTurn();
-        }else{
-          await startCpuTurn(getCurrentPlayer());
-        }
-      }, WAIT_DISCARD_PREVIEW);
-    }
+  updateGirlText("...");
+  await wait(280);
 
-    async function finishRound(result){
-      clearHumanTimers();
-      setBusy(true);
+  const discardIndex = cpuChooseDiscardIndex(player);
+  const discardTile = player.hand[discardIndex];
+  showBigTile(discardTile, `${player.name}：${getTileName(discardTile)}を捨てる`);
+  updateGirlText(rand(girl.discard));
+  await wait(700);
 
-      const savedDiscardInfo = lastDiscardInfo ? { ...lastDiscardInfo } : null;
+  player.hand.splice(discardIndex,1);
+  player.hand = sortHandByGroups(player.hand);
+  discardPile.push({
+    tileId:discardTile,
+    owner:`${player.seat} ${player.name}`,
+    playerId:player.id
+  });
+  addHistory(`${player.seat} ${player.name}：${getTileName(discardTile)}を捨てた`);
+  renderAll();
 
-      clearPendingActions();
-      waitingPlayerDiscard = false;
+  if(canRonWithTile(players[0].hand, discardTile)){
+    pendingRon = true;
+    pendingTsumo = false;
+    lastDiscardInfo = { tileId:discardTile, discarder:player };
+    waitingPlayerDiscard = false;
+    setBusy(false);
+    hideGirl();
+    statusMain.textContent = "ロンできます";
+    subInfo.textContent = `${player.name}の捨て牌：${getTileName(discardTile)}`;
+    updateActionButtons();
+    return;
+  }
 
-      let desc = "";
-      let winText = "";
-      const roundText = `${getRoundName()}終了`;
-      let drawInfo = null;
+  const ronCpu = getCpuRonCandidateAfterDiscard(player, discardTile);
+  if(ronCpu){
+    lastDiscardInfo = { tileId:discardTile, discarder:player };
+    await finishRound({ type:"ron", winner:ronCpu, loser:player });
+    return;
+  }
 
-      if(result.type === "tsumo"){
-        applyTsumoPoints(result.winner);
-        desc = `${result.winner.name}がツモ`;
-        winText = `${result.winner.seat} ${result.winner.name} ツモ`;
-        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
-        if(result.winner.id === "you"){
-          matchStats.playerWon = true;
-          matchStats.playerWinType = "tsumo";
-        }
+  hideGirl();
+  await wait(140);
+  advanceTurn();
+  setBusy(false);
+  if(getCurrentPlayer().id === "you"){
+    startHumanTurn();
+  }else{
+    await startCpuTurn(getCurrentPlayer());
+  }
+}
+function onPlayerDiscard(index){
+  if(!waitingPlayerDiscard || busy || gameEnded || pendingRon) return;
+  clearHumanTimers();
+  const me = players[0];
+  const tileId = me.hand[index];
+  const girl = getSupportGirl();
+  setBusy(true);
+  waitingPlayerDiscard = false;
+  showGirl(girl, "...", me.seat);
+  showBigTile(tileId, `あなた：${getTileName(tileId)}を捨てる`);
 
-      }else if(result.type === "ron"){
-        applyRonPoints(result.winner, result.loser);
-        const ronPoint = result.winner.seat === getCurrentParentSeat() ? 4 : 3;
-        desc = `${result.loser.name}から${ronPoint}点`;
-        winText = `${result.winner.seat} ${result.winner.name} ロン`;
-        addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
-        if(result.winner.id === "you"){
-          matchStats.playerWon = true;
-          matchStats.playerWinType = "ron";
-        }
+  setTimeout(() => { updateGirlText(rand(girl.discard)); }, 180);
 
-      }else{
-        drawInfo = applyDrawPoints();
-        if(drawInfo.tenpaiCount === 0){
-          desc = "山札切れ / 全員ノーテン";
-          winText = "流局";
-          addHistory(`${getRoundName()}：山札切れ / 全員ノーテン`);
-        }else if(drawInfo.tenpaiCount === 4){
-          desc = "山札切れ / 全員テンパイ";
-          winText = "流局";
-          addHistory(`${getRoundName()}：山札切れ / 全員テンパイ`);
-        }else{
-          const tenpaiNames = drawInfo.tenpaiPlayers.map(p => p.name).join(" / ");
-          desc = `テンパイ ${drawInfo.tenpaiCount}人：${tenpaiNames}`;
-          winText = "流局";
-          addHistory(`${getRoundName()}：山札切れ / テンパイ${drawInfo.tenpaiCount}人`);
-        }
-      }
-
-      renderAll();
-
-      if(result.type === "tsumo" || result.type === "ron"){
-        await showWinLoseDialogue(result);
-        await showWinReveal(result, savedDiscardInfo);
-      }else{
-        hideGirl();
-        await showDrawTenpaiReveal(drawInfo);
-      }
-
-      await showRoundResult(roundText, winText, desc);
-
-      await new Promise(resolve => {
-        nextRoundBtn.onclick = () => {
-          hideOverlay(roundResultOverlay);
-          resolve();
-        };
-      });
-
-      if(hasHako() && result.winner && result.winner.id === "you"){
-        matchStats.hakoFinish = true;
-      }
-
-      const parentSeatBeforeUpdate = getCurrentParentSeat();
-      const playerWasParent = players[0].seat === parentSeatBeforeUpdate;
-      let playerParentStayed = false;
-
-      if(result.type === "draw"){
-        if(playerWasParent && isTenpai(players[0].hand)) playerParentStayed = true;
-      }else if(result.winner && result.winner.seat === parentSeatBeforeUpdate){
-        if(result.winner.id === "you") playerParentStayed = true;
-      }
-
-      if(playerParentStayed){
-        matchStats.playerRenchan += 1;
-        if(matchStats.playerRenchan > matchStats.bestPlayerRenchan){
-          matchStats.bestPlayerRenchan = matchStats.playerRenchan;
-        }
-      }else{
-        matchStats.playerRenchan = 0;
-      }
-
-      if(hasHako() || currentRoundNumber >= totalRounds){
-        const winners = getFinalWinnersByPoints();
-        gameEnded = true;
-        showResultScreen(winners);
-        setBusy(false);
-        return;
-      }
-
-      updateParentAfterResult(result, drawInfo);
-
-      if(result.type === "draw"){
-        const parentNow = players.find(p => p.seat === getCurrentParentSeat());
-        if(isTenpai(parentNow.hand)){
-          addHistory(`親テンパイ継続：${parentNow.seat} ${parentNow.name}`);
-        }else{
-          addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
-        }
-      }else if(result.winner && result.winner.seat === getCurrentParentSeat()){
-        addHistory(`親継続：${result.winner.seat} ${result.winner.name}`);
-      }else{
-        addHistory(`親移動：${getCurrentParentSeat()} が次の親`);
-      }
-
-      await startRound(false);
-    }
-
-    function showResultScreen(winners){
-      resultList.innerHTML = "";
-      const sorted = [...players].sort((a,b) => b.point - a.point);
-
-      sorted.forEach((p, i) => {
-        const row = document.createElement("div");
-        row.className = "resultLine";
-        row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
-        resultList.appendChild(row);
-      });
-
-      const playerRank = sorted.findIndex(p => p.id === "you") + 1;
-      const profileResult = applyProfileReward(playerRank);
-      renderResultPointBox(profileResult, playerRank);
-      updateTitleScreenProfile();
-
-      if(gameMode === "conquest"){
-        if(playerRank === 1){
-          if(playerProfile.conquestProgress >= CONQUEST_ORDER.length){
-            resultSub.textContent = `制覇モードクリア！ / 全チー娘を倒したよ。`;
-            playerProfile.conquestProgress = 0;
-            saveProfile();
-            updateTitleScreenProfile();
-          }else{
-            const nextBossId = CONQUEST_ORDER[playerProfile.conquestProgress];
-            resultSub.textContent = `制覇モード勝利！ / 次の相手は ${getGirlById(nextBossId).name}`;
-          }
-        }else{
-          const currentBossId = getConquestBossId();
-          resultSub.textContent = `制覇モード敗北 / ${getGirlById(currentBossId).name} に再挑戦`;
-        }
-      }else{
-        if(winners.length === 1){
-          resultSub.textContent = `${loopCount}周モード終了 / トップで終了しました。`;
-        }else{
-          resultSub.textContent = winners.map(w => `${w.seat} ${w.name}`).join(" / ") + " が同点トップでした。";
-        }
-      }
-
-      resultTitle.textContent = winners.length === 1 ? `${winners[0].name}の優勝！` : "同点優勝！";
-      showOverlay(resultOverlay);
-    }
-
-    function hideResultScreen(){ hideOverlay(resultOverlay); }
-
-    async function resetAndPlaySameSettings(){
-      hideResultScreen();
-      await resetGame();
-    }
-
-    function backToSetup(){
-      hideResultScreen();
-      hideOverlay(roundResultOverlay);
-      hideOverlay(handRevealOverlay);
-      hideOverlay(conquestCutinOverlay);
-      hideGirl();
-      showOverlay(titleOverlay);
-      updateTitleScreenProfile();
-    }
-
-    modeFreeBtn.addEventListener("click", () => setMode("free"));
-    modeConquestBtn.addEventListener("click", () => setMode("conquest"));
-
-    startBtn.addEventListener("click", beginSetupFlow);
-    girlSelectNextBtn.addEventListener("click", proceedToCpuSelect);
-
-    cpuSelectBackBtn.addEventListener("click", () => {
-      hideOverlay(cpuSelectOverlay);
-      showOverlay(girlSelectOverlay);
+  setTimeout(async () => {
+    me.hand.splice(index,1);
+    me.hand = sortHandByGroups(me.hand);
+    discardPile.push({
+      tileId,
+      owner:`${me.seat} あなた`,
+      playerId:me.id
     });
-    cpuSelectNextBtn.addEventListener("click", proceedToModeSelect);
-
-    modeButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        tempLoopCount = Number(btn.dataset.loop);
-        renderModeButtons();
-      });
-    });
-
-    modeSelectBackBtn.addEventListener("click", () => {
-      if(gameMode === "conquest"){
-        hideOverlay(modeSelectOverlay);
-        showOverlay(girlSelectOverlay);
-      }else{
-        hideOverlay(modeSelectOverlay);
-        showOverlay(cpuSelectOverlay);
-      }
-    });
-    modeSelectNextBtn.addEventListener("click", proceedToTileSelect);
-
-    tileSelectBackBtn.addEventListener("click", () => {
-      hideOverlay(tileSelectOverlay);
-      showOverlay(modeSelectOverlay);
-    });
-    tileSelectNextBtn.addEventListener("click", proceedToColorSelect);
-
-    colorSelectBackBtn.addEventListener("click", () => {
-      hideOverlay(colorSelectOverlay);
-      showOverlay(tileSelectOverlay);
-    });
-    gameStartBtn.addEventListener("click", finalizeSetupAndStart);
-
-    openCustomBtn.addEventListener("click", openCustom);
-    closeCustomBtn.addEventListener("click", closeCustom);
-    saveCustomBtn.addEventListener("click", saveCustomInGame);
-
-    resetBtn.addEventListener("click", async () => { await resetGame(); });
-    retryBtn.addEventListener("click", async () => { await resetAndPlaySameSettings(); });
-    backToSetupBtn.addEventListener("click", backToSetup);
-
-    tsumoBtn.addEventListener("click", async () => {
-      if(!pendingTsumo || busy || gameEnded) return;
-      await finishRound({ type:"tsumo", winner:players[0] });
-    });
-
-    ronBtn.addEventListener("click", async () => {
-      if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
-      await finishRound({
-        type:"ron",
-        winner:players[0],
-        loser:lastDiscardInfo.discarder
-      });
-    });
-
-    passBtn.addEventListener("click", async () => {
-      if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
-      pendingRon = false;
-      waitingPlayerDiscard = false;
-      hideGirl();
-      advanceTurn();
-      setBusy(false);
-
-      if(getCurrentPlayer().id === "you"){
-        startHumanTurn();
-      }else{
-        await startCpuTurn(getCurrentPlayer());
-      }
-    });
-
-    renderModeButtons();
-    renderHistory();
-    rebuildActiveTiles();
-    syncCpuPlayersFromSetup();
-    updateTitleScreenProfile();
+    addHistory(`${me.seat} あなた：${getTileName(tileId)}を捨てた`);
+    justDrawnIndex = -1;
+    pendingTsumo = false;
     renderAll();
-  </script>
+
+    const ronCpu = getCpuRonCandidateAfterDiscard(me, tileId);
+    if(ronCpu){
+      lastDiscardInfo = { tileId, discarder:me };
+      await finishRound({ type:"ron", winner:ronCpu, loser:me });
+      return;
+    }
+
+    hideGirl();
+    advanceTurn();
+    setBusy(false);
+    if(getCurrentPlayer().id === "you"){
+      startHumanTurn();
+    }else{
+      await startCpuTurn(getCurrentPlayer());
+    }
+  }, 720);
+}
+async function finishRound(result){
+  clearHumanTimers();
+  setBusy(true);
+  const savedDiscardInfo = lastDiscardInfo ? { ...lastDiscardInfo } : null;
+  clearPendingActions();
+  waitingPlayerDiscard = false;
+
+  let desc = "";
+  let winText = "";
+  const roundText = `${getRoundName()}終了`;
+  let drawInfo = null;
+  lastWinBonus = null;
+
+  if(result.type === "tsumo"){
+    lastWinBonus = calcBonusFromWinningTiles(result.winner.hand);
+    applyTsumoPoints(result.winner, lastWinBonus);
+    desc = `${result.winner.name}がツモ / ${lastWinBonus.text}`;
+    winText = `${result.winner.seat} ${result.winner.name} ツモ`;
+    addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} ツモ`);
+  }else if(result.type === "ron"){
+    const winTiles = savedDiscardInfo ? [...result.winner.hand, savedDiscardInfo.tileId] : [...result.winner.hand];
+    lastWinBonus = calcBonusFromWinningTiles(winTiles);
+    applyRonPoints(result.winner, result.loser, lastWinBonus);
+    const ronPoint = (result.winner.seat === getCurrentParentSeat() ? 4 : 3) + lastWinBonus.bonus;
+    desc = `${result.loser.name}から${formatPoint(ronPoint)}点 / ${lastWinBonus.text}`;
+    winText = `${result.winner.seat} ${result.winner.name} ロン`;
+    addHistory(`${getRoundName()}：${result.winner.seat} ${result.winner.name} が ${result.loser.seat} ${result.loser.name} からロン`);
+  }else{
+    drawInfo = applyDrawPoints();
+    if(drawInfo.tenpaiCount === 0){
+      desc = "山札切れ / 全員ノーテン";
+      winText = "流局";
+    }else if(drawInfo.tenpaiCount === 4){
+      desc = "山札切れ / 全員テンパイ";
+      winText = "流局";
+    }else{
+      desc = `テンパイ ${drawInfo.tenpaiCount}人`;
+      winText = "流局";
+    }
+    addHistory(`${getRoundName()}：${desc}`);
+  }
+
+  renderAll();
+
+  if(result.type === "tsumo" || result.type === "ron"){
+    await showWinLoseDialogue(result);
+    await showWinReveal(result, savedDiscardInfo);
+  }else{
+    hideGirl();
+    await showDrawTenpaiReveal(drawInfo);
+  }
+
+  await showRoundResult(roundText, winText, desc);
+  await new Promise(resolve => {
+    nextRoundBtn.onclick = () => {
+      hideOverlay(roundResultOverlay);
+      resolve();
+    };
+  });
+
+  if(hasHako() || currentRoundNumber >= totalRounds){
+    const winners = getFinalWinnersByPoints();
+    gameEnded = true;
+    showResultScreen(winners);
+    setBusy(false);
+    return;
+  }
+
+  updateParentAfterResult(result, drawInfo);
+  await startRound(false);
+}
+function showResultScreen(winners){
+  resultList.innerHTML = "";
+  const sorted = [...players].sort((a,b) => b.point - a.point);
+  sorted.forEach((p, i) => {
+    const row = document.createElement("div");
+    row.className = "resultLine";
+    row.innerHTML = `<span>${i + 1}位　${p.seat}　${p.name}</span><span>${formatPoint(p.point)}点</span>`;
+    resultList.appendChild(row);
+  });
+
+  const playerRank = sorted.findIndex(p => p.id === "you") + 1;
+  playerProfile.playCount += 1;
+  if(playerRank === 1) playerProfile.firstCount += 1;
+  let gain = (loopCount * 10) + (playerRank === 1 ? 10 : playerRank === 2 ? 5 : 2);
+  if(gameMode === "conquest" && playerRank === 1){
+    playerProfile.conquestProgress = Math.min(GIRLS.length, playerProfile.conquestProgress + 1);
+    gain += 15;
+  }
+  playerProfile.totalPoint += gain;
+  saveProfile();
+  updateTitleScreenProfile();
+
+  resultPointBox.innerHTML = `
+    <div class="resultPointTitle">今回の成長</div>
+    <div class="resultPointLine"><span>順位</span><span>${playerRank}位</span></div>
+    <div class="resultPointLine"><span>獲得ポイント</span><span>+${gain}pt</span></div>
+    <div class="resultPointLine"><span>現在ポイント</span><span>${playerProfile.totalPoint}pt</span></div>
+    <div class="resultPointLine"><span>称号</span><span>${getTitleByPoint(playerProfile.totalPoint)}</span></div>
+  `;
+
+  if(gameMode === "conquest"){
+    if(playerRank === 1){
+      if(playerProfile.conquestProgress >= GIRLS.length){
+        resultSub.textContent = "制覇モードクリア！ 全チー娘を倒したよ。";
+        playerProfile.conquestProgress = 0;
+        saveProfile();
+      }else{
+        const nextEnemy = getConquestEnemyId();
+        resultSub.textContent = `制覇モード勝利！ 次の敵は ${getGirlById(nextEnemy).name}`;
+      }
+    }else{
+      resultSub.textContent = `制覇モード敗北 / ${getGirlById(enemyGirlId).name} に再挑戦`;
+    }
+  }else{
+    resultSub.textContent = `${loopCount}周モード終了 / トップを狙おう。`;
+  }
+
+  resultTitle.textContent = winners.length === 1 ? `${winners[0].name}の優勝！` : "同点優勝！";
+  showOverlay(resultOverlay);
+}
+function hideResultScreen(){ hideOverlay(resultOverlay); }
+async function resetAndPlaySameSettings(){
+  hideResultScreen();
+  await resetGame();
+}
+function backToSetup(){
+  hideResultScreen();
+  hideOverlay(roundResultOverlay);
+  hideOverlay(handRevealOverlay);
+  hideOverlay(conquestCutinOverlay);
+  hideGirl();
+  showOverlay(titleOverlay);
+  updateTitleScreenProfile();
+}
+
+modeFreeBtn.addEventListener("click", () => setMode("free"));
+modeConquestBtn.addEventListener("click", () => setMode("conquest"));
+
+startBtn.addEventListener("click", () => {
+  tempGirlId = gameSetup.supportGirlId || "girlA";
+  tempCpuGirlIds = [...(gameSetup.cpuGirlIds || ["girlB","girlC","girlD"])];
+  tempLoopCount = loopCount || 1;
+  girlSelectSub.textContent = gameMode === "conquest"
+    ? `敵は ${getGirlById(getConquestEnemyId()).name}。敵以外からパートナーを選択`
+    : "あなた担当のチー娘を1人選択";
+  hideOverlay(titleOverlay);
+  enemyGirlId = gameMode === "conquest" ? getConquestEnemyId() : null;
+  renderGirlSelect();
+  showOverlay(girlSelectOverlay);
+});
+
+girlSelectNextBtn.addEventListener("click", () => {
+  if(!tempGirlId){
+    alert("パートナーを選んでね。");
+    return;
+  }
+  hideOverlay(girlSelectOverlay);
+  if(gameMode === "conquest"){
+    renderColorList();
+    showOverlay(modeSelectOverlay);
+  }else{
+    tempCpuGirlIds = tempCpuGirlIds.filter(id => id !== tempGirlId);
+    renderCpuSelect();
+    showOverlay(cpuSelectOverlay);
+  }
+});
+
+cpuSelectBackBtn.addEventListener("click", () => {
+  hideOverlay(cpuSelectOverlay);
+  showOverlay(girlSelectOverlay);
+});
+cpuSelectNextBtn.addEventListener("click", () => {
+  if(tempCpuGirlIds.length !== 3){
+    alert("CPUを3人選んでね。");
+    return;
+  }
+  hideOverlay(cpuSelectOverlay);
+  showOverlay(modeSelectOverlay);
+});
+
+modeButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tempLoopCount = Number(btn.dataset.loop);
+    modeButtons.forEach(b => b.classList.toggle("selected", b === btn));
+  });
+});
+
+modeSelectBackBtn.addEventListener("click", () => {
+  hideOverlay(modeSelectOverlay);
+  if(gameMode === "conquest") showOverlay(girlSelectOverlay);
+  else showOverlay(cpuSelectOverlay);
+});
+modeSelectNextBtn.addEventListener("click", () => {
+  hideOverlay(modeSelectOverlay);
+  renderColorList();
+  showOverlay(tileSelectOverlay);
+});
+tileSelectBackBtn.addEventListener("click", () => {
+  hideOverlay(tileSelectOverlay);
+  showOverlay(modeSelectOverlay);
+});
+gameStartBtn.addEventListener("click", finalizeSetupAndStart);
+
+tsumoBtn.addEventListener("click", async () => {
+  if(!pendingTsumo || busy || gameEnded) return;
+  await finishRound({ type:"tsumo", winner:players[0] });
+});
+ronBtn.addEventListener("click", async () => {
+  if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
+  await finishRound({ type:"ron", winner:players[0], loser:lastDiscardInfo.discarder });
+});
+passBtn.addEventListener("click", async () => {
+  if(!pendingRon || busy || gameEnded || !lastDiscardInfo) return;
+  pendingRon = false;
+  waitingPlayerDiscard = false;
+  hideGirl();
+  advanceTurn();
+  setBusy(false);
+  if(getCurrentPlayer().id === "you") startHumanTurn();
+  else await startCpuTurn(getCurrentPlayer());
+});
+
+resetBtn.addEventListener("click", async () => { await resetGame(); });
+retryBtn.addEventListener("click", async () => { await resetAndPlaySameSettings(); });
+backToSetupBtn.addEventListener("click", backToSetup);
+
+rebuildActiveTiles();
+syncCpuPlayersFromSetup();
+updateTitleScreenProfile();
+renderHistory();
+renderAll();
+</script>
 </body>
 </html>
